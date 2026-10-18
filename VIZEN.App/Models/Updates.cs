@@ -173,7 +173,8 @@ public static class UpdateSignature
     /// <summary>Public keys of the VIZEN update key (SubjectPublicKeyInfo, base64). More than one allows a key change.</summary>
     public static readonly string[] TrustedKeys =
     [
-        "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAQGWdvIz8racIt15jo9eOteJj/7TwjejBY/uPjE5pHhgEfRAbcjilmtih5LhIuQuxLdq8zdYO6OPNPx9xqIaKw==", // 2026-10-18
+        "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAQGWdvIz8racIt15jo9eOteJj/7TwjejBY/uPjE5pHhgEfRAbcjilmtih5LhIuQuxLdq8zdYO6OPNPx9xqIaKw==", // main key, 2026-10-18
+        "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEyo4rO2UuWuTTlm9oU4SMi+eshXTsOwN+uCYoZF0tPbS+FruHaYtEjT8a1oPcE4bl2DXHJjpIwXxT+3oBJBgw8g==", // backup key (kept offline), 2026-10-18
     ];
 
     public static bool Verify(byte[] manifest, string? signatureBase64, IEnumerable<string>? trustedKeys = null)

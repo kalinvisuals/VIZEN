@@ -331,7 +331,8 @@ public class UpdateTests : IDisposable
     [Fact]
     public void BuiltInUpdateKeyIsAValidPublicKey()
     {
-        Assert.NotEmpty(UpdateSignature.TrustedKeys);
+        Assert.True(UpdateSignature.TrustedKeys.Length >= 2, "a main and a backup key"); // losing one key must not stop updates
+        Assert.Equal(UpdateSignature.TrustedKeys.Length, UpdateSignature.TrustedKeys.Distinct().Count());
         foreach (var key in UpdateSignature.TrustedKeys)
         {
             using var ecdsa = ECDsa.Create();

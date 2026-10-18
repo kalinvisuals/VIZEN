@@ -41,7 +41,9 @@ Every release has a machine-readable manifest, `latest.json`, and a detached sig
 The signature is ECDSA P-256 with SHA-256 over the exact bytes of `latest.json` (IEEE P1363, base64). The public key is
 built into VIZEN (`UpdateSignature.TrustedKeys`; more than one key can be listed for a key change). The private key is
 never in the repository: it stays on the release PC (`%USERPROFILE%\.vizen\update-signing-key.pem`, outside synced
-folders, with a backup kept offline) and in the GitHub secret `UPDATE_SIGNING_KEY`.
+folders, copied to offline USB drives) and in the GitHub secret `UPDATE_SIGNING_KEY`. A second, backup key
+(`update-signing-key-backup.pem`) is also trusted by VIZEN and kept only offline: if the main key is lost or exposed,
+releases are signed with the backup key and the next version replaces the lost key with a new one.
 
 The same two files are published in two places:
 
