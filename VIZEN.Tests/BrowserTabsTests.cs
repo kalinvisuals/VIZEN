@@ -164,6 +164,7 @@ public class BrowserTabsTests
         Assert.All(BrowserTabs.ExtensionIds, id => Assert.Matches("^[a-p]{32}$", id));
         Assert.Equal(BrowserTabs.ExtensionIds.Length, BrowserTabs.ExtensionIds.Distinct().Count());
         Assert.Contains("gkingdeoabnhbnjpikdmklembdjoplfl", BrowserTabs.ExtensionIds); // Microsoft Edge Add-ons
+        Assert.Contains("eifpggcoejhihbdighpghkacpghehnjb", BrowserTabs.ExtensionIds); // Chrome Web Store
     }
 
     [Fact]

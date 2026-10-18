@@ -58,10 +58,13 @@ public static class BrowserTabs
     /// Every VIZEN Connector build that may talk to VIZEN: the one loaded from its folder and the ones installed from the
     /// stores (the stores give the extension their own ID).
     /// </summary>
-    public static readonly string[] ExtensionIds = [ExtensionId, EdgeAddonsId];
+    public static readonly string[] ExtensionIds = [ExtensionId, EdgeAddonsId, ChromeWebStoreId];
 
     /// <summary>ID given by Microsoft Edge Add-ons (Partner Center, "CRX ID").</summary>
     public const string EdgeAddonsId = "gkingdeoabnhbnjpikdmklembdjoplfl";
+
+    /// <summary>ID given by the Chrome Web Store (developer dashboard).</summary>
+    public const string ChromeWebStoreId = "eifpggcoejhihbdighpghkacpghehnjb";
 
     /// <summary>Largest message accepted from either side (a list of tabs is a few KB).</summary>
     public const int MaxMessageBytes = 1024 * 1024;
