@@ -73,7 +73,7 @@ public sealed class BrowserHostRegistration
             ["description"] = "VIZEN Connector: shows browser tabs in the VIZEN app on this PC.",
             ["path"] = exePath,
             ["type"] = "stdio",
-            ["allowed_origins"] = new[] { $"chrome-extension://{BrowserTabs.ExtensionId}/" },
+            ["allowed_origins"] = BrowserTabs.ExtensionIds.Select(id => $"chrome-extension://{id}/").ToArray(),
         };
         File.WriteAllText(ManifestPath, JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true }));
         foreach (var (_, keyPath) in Keys)

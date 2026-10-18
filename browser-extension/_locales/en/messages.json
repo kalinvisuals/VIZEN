@@ -1,6 +1,6 @@
 {
   "extName": { "message": "VIZEN Connector" },
-  "extDescription": { "message": "Shows your tabs in the VIZEN app on this PC: switch to a tab, mute it, open it in its own window or mirror it live for capture. Nothing leaves your computer." },
+  "extDescription": { "message": "See every browser tab in the VIZEN app: switch to it, mute it, pop it out or mirror it live for capture. Stays on your PC." },
   "popupIntro": { "message": "Your tabs appear in VIZEN (site name and title only; incognito tabs are never shared)." },
   "popupConnected": { "message": "Connected" },
   "popupNotConnected": { "message": "VIZEN not connected" },

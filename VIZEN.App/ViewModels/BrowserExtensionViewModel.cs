@@ -92,6 +92,7 @@ public sealed class BrowserExtensionViewModel : ObservableObject, IDisposable
         _bridge.CommandFailed += (_, failure) => _activity.Add("", "Tabs.CommandFailed", "Tabs.CommandFailedDetail", failure.Error);
         if (IsRegistered)
         {
+            RefreshRegistration();
             _bridge.Start();
         }
     }
@@ -166,6 +167,27 @@ public sealed class BrowserExtensionViewModel : ObservableObject, IDisposable
         }
 
         RaiseStatus();
+    }
+
+    /// <summary>
+    /// Rewrites the host manifest of an existing connection, so a newer VIZEN also lets in the extension IDs it knows
+    /// (for example the store builds) without the user pressing Connect again.
+    /// </summary>
+    private void RefreshRegistration()
+    {
+        if (DemoMode.IsOn)
+        {
+            return;
+        }
+
+        try
+        {
+            _registration.Register(_exePath);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            // The connection that is already there keeps working for the IDs it lists.
+        }
     }
 
     private void Disconnect()

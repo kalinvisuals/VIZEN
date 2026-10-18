@@ -51,8 +51,17 @@ public static class BrowserTabs
     /// <summary>Name of the native messaging host registered for Chrome, Edge and Brave.</summary>
     public const string HostName = "com.vizen.connector";
 
-    /// <summary>ID of the VIZEN Connector extension (fixed by the public key in its manifest).</summary>
+    /// <summary>ID of the VIZEN Connector extension loaded from its folder (fixed by the public key in its manifest).</summary>
     public const string ExtensionId = "dlokfgkopfanhmfkaocoaedeppojcheh";
+
+    /// <summary>
+    /// Every VIZEN Connector build that may talk to VIZEN: the one loaded from its folder and the ones installed from the
+    /// stores (the stores give the extension their own ID).
+    /// </summary>
+    public static readonly string[] ExtensionIds = [ExtensionId, EdgeAddonsId];
+
+    /// <summary>ID given by Microsoft Edge Add-ons (Partner Center, "CRX ID").</summary>
+    public const string EdgeAddonsId = "gkingdeoabnhbnjpikdmklembdjoplfl";
 
     /// <summary>Largest message accepted from either side (a list of tabs is a few KB).</summary>
     public const int MaxMessageBytes = 1024 * 1024;

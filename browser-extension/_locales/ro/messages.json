@@ -1,6 +1,6 @@
 {
   "extName": { "message": "VIZEN Connector" },
-  "extDescription": { "message": "Arată taburile tale în aplicația VIZEN de pe acest PC: treci la un tab, pune-l pe mute, deschide-l în fereastră separată sau oglindește-l live pentru captură. Nimic nu pleacă de pe calculator." },
+  "extDescription": { "message": "Vezi fiecare tab în aplicația VIZEN: treci la el, pune-l pe mute, mută-l sau oglindește-l live. Totul rămâne pe PC." },
   "popupIntro": { "message": "Taburile tale apar în VIZEN (doar numele site-ului și titlul; taburile incognito nu se trimit niciodată)." },
   "popupConnected": { "message": "Conectat" },
   "popupNotConnected": { "message": "VIZEN nu e conectat" },

@@ -131,7 +131,7 @@ public class BrowserTabsTests
                 Assert.Equal(exe, root.GetProperty("path").GetString());
                 Assert.Equal("stdio", root.GetProperty("type").GetString());
                 var origins = root.GetProperty("allowed_origins").EnumerateArray().Select(o => o.GetString()).ToList();
-                Assert.Equal([$"chrome-extension://{BrowserTabs.ExtensionId}/"], origins); // only the VIZEN extension
+                Assert.Equal(BrowserTabs.ExtensionIds.Select(id => $"chrome-extension://{id}/"), origins); // only the VIZEN extension
             }
 
             registration.Unregister();
@@ -156,6 +156,14 @@ public class BrowserTabsTests
         registry.Set(key, @"C:\someone-else\host.json");
         new BrowserHostRegistration(registry, Path.GetTempPath()).Unregister();
         Assert.Equal(@"C:\someone-else\host.json", registry.Get(key));
+    }
+
+    [Fact]
+    public void ExtensionIdsAreValidChromiumIds()
+    {
+        Assert.All(BrowserTabs.ExtensionIds, id => Assert.Matches("^[a-p]{32}$", id));
+        Assert.Equal(BrowserTabs.ExtensionIds.Length, BrowserTabs.ExtensionIds.Distinct().Count());
+        Assert.Contains("gkingdeoabnhbnjpikdmklembdjoplfl", BrowserTabs.ExtensionIds); // Microsoft Edge Add-ons
     }
 
     [Fact]
