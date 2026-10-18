@@ -1,4 +1,4 @@
-; VIZEN — Inno Setup 6 script (no signing, no updater). VIZEN is free software under GPL-3.0.
+﻿; VIZEN — Inno Setup 6 script (no signing, no updater). VIZEN is free software under GPL-3.0.
 ; Build with scripts\build-installer.ps1, which publishes the app and passes the version and publish folder.
 ;   ISCC.exe /DMyAppVersion=0.3.0 /DPublishDir=<folder> installer\VIZEN.iss
 
@@ -87,10 +87,18 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 [Run]
 ; Started as the signed-in user, not elevated, so settings go to that user's profile.
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent runasoriginaluser
+; Update started from VIZEN (Settings > Updates, /SILENT /RELAUNCH=1): start VIZEN again when done.
+Filename: "{app}\{#MyAppExeName}"; Flags: nowait runasoriginaluser; Check: RelaunchAfterUpdate
 
 [Code]
 const
   RunKey = 'Software\Microsoft\Windows\CurrentVersion\Run';
+
+{ True for a silent update started by VIZEN itself, which closed and asked to be started again. }
+function RelaunchAfterUpdate(): Boolean;
+begin
+  Result := WizardSilent() and (ExpandConstant('{param:RELAUNCH|0}') = '1');
+end;
 
 { Runs a PowerShell command hidden and returns its exit code (-1 if it could not start). }
 function RunPowerShell(const Command: String): Integer;

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using VIZEN.App.Infrastructure;
 using VIZEN.App.Localization;
 
@@ -23,6 +23,8 @@ public sealed class AppSettings : ObservableObject
     private bool _allowFpsReduction;
     private bool _gpuRendering = true;
     private bool _showFullscreenTip = true;
+    private bool _autoCheckUpdates = true;
+    private bool _autoDownloadUpdates;
     private string? _saveErrorDetail;
     private readonly HashSet<string> _keepActiveApps = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _hotkeys = new(StringComparer.OrdinalIgnoreCase);
@@ -109,6 +111,20 @@ public sealed class AppSettings : ObservableObject
     }
 
     /// <summary>Apps (executable path) whose minimized windows VIZEN restores behind the active window.</summary>
+    /// <summary>Check for a new VIZEN at startup and every few hours (a few kilobytes; never installs by itself).</summary>
+    public bool AutoCheckUpdates
+    {
+        get => _autoCheckUpdates;
+        set => SetProperty(ref _autoCheckUpdates, value);
+    }
+
+    /// <summary>Also download a found update in the background, so installing it is immediate. Off by default.</summary>
+    public bool AutoDownloadUpdates
+    {
+        get => _autoDownloadUpdates;
+        set => SetProperty(ref _autoDownloadUpdates, value);
+    }
+
     public IReadOnlyCollection<string> KeepActiveApps => _keepActiveApps;
 
     public bool IsKeepActive(string appKey) => _keepActiveApps.Contains(appKey);
@@ -160,6 +176,8 @@ public sealed class AppSettings : ObservableObject
             settings._allowFpsReduction = data.AllowFpsReduction;
             settings._gpuRendering = data.GpuRendering;
             settings._showFullscreenTip = data.ShowFullscreenTip;
+            settings._autoCheckUpdates = data.AutoCheckUpdates;
+            settings._autoDownloadUpdates = data.AutoDownloadUpdates;
             settings._keepActiveApps.UnionWith(data.KeepActiveApps ?? []);
             foreach (var (action, gesture) in data.Hotkeys ?? [])
             {
@@ -196,6 +214,8 @@ public sealed class AppSettings : ObservableObject
                 AllowFpsReduction = AllowFpsReduction,
                 GpuRendering = GpuRendering,
                 ShowFullscreenTip = ShowFullscreenTip,
+                AutoCheckUpdates = AutoCheckUpdates,
+                AutoDownloadUpdates = AutoDownloadUpdates,
                 KeepActiveApps = [.. _keepActiveApps],
                 Hotkeys = new Dictionary<string, string>(_hotkeys),
             });
@@ -224,6 +244,8 @@ public sealed class AppSettings : ObservableObject
         public bool AllowFpsReduction { get; set; }
         public bool GpuRendering { get; set; } = true;
         public bool ShowFullscreenTip { get; set; } = true;
+        public bool AutoCheckUpdates { get; set; } = true;
+        public bool AutoDownloadUpdates { get; set; }
         public List<string>? KeepActiveApps { get; set; }
         public Dictionary<string, string>? Hotkeys { get; set; }
     }

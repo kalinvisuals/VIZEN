@@ -51,6 +51,13 @@ Text $dc 'VIZEN Connector' 30 $fontBold '#FFFFFF' 0 168 440
 Text $dc 'Every browser tab in VIZEN' 17 $font '#AEB6C6' 0 210 440
 $dc.Close(); Save $v 440 280 'promo-440x280.png'
 
+# Microsoft Store 1:1 box art
+$v = New-Object System.Windows.Media.DrawingVisual; $dc = $v.RenderOpen()
+Background $dc 1080 1080; Draw-Badge $dc 540 430 190
+Text $dc 'VIZEN' 96 $fontBold '#FFFFFF' 0 680 1080
+Text $dc 'Live overlays for Windows' 40 $font '#AEB6C6' 0 810 1080
+$dc.Close(); Save $v 1080 1080 'box-art-1080.png'
+
 # screenshots
 $shots = @(
   @('sources.png', 'Every browser tab, on its own', 'Switch to a tab, mute it or move it to its own window, right from VIZEN.'),

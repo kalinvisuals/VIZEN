@@ -300,6 +300,132 @@
                     </Grid>
                 </StackPanel>
             </Border>
+            <!-- ============ Updates ============ -->
+            <TextBlock Text="{DynamicResource Updates.Section}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}" DataContext="{Binding Updates}">
+                <StackPanel>
+                    <!-- Versions and status -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding StatusText}" Style="{StaticResource SettingTitle}" TextWrapping="Wrap" />
+                                <Border Style="{StaticResource Badge.Info}" Margin="10,0,0,0" VerticalAlignment="Center"
+                                        Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibility}}">
+                                    <TextBlock Text="{DynamicResource Updates.NewBadge}" FontSize="12" FontWeight="SemiBold" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource SettingDescription}" TextWrapping="Wrap">
+                                <Run Text="{DynamicResource Updates.Installed}" /><Run Text=" " /><Run Text="{Binding CurrentVersion, Mode=OneWay}" />
+                                <Run Text="  ·  " /><Run Text="{DynamicResource Updates.Channel}" /><Run Text=" " /><Run Text="{Binding ChannelText, Mode=OneWay}" />
+                            </TextBlock>
+                            <TextBlock Text="{Binding LastCheckedText}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0"
+                                       Visibility="{Binding LastCheckedText, Converter={StaticResource NullToVisibility}}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Style="{StaticResource Button.Secondary}" Command="{Binding CheckCommand}" VerticalAlignment="Top"
+                                Content="{DynamicResource Updates.Check}" AutomationProperties.Name="{DynamicResource Updates.Check}" />
+                    </Grid>
+
+                    <!-- The new version -->
+                    <Border CornerRadius="12" Padding="16,14" Margin="0,16,0,0" Background="{DynamicResource Brush.SurfaceHover}"
+                            Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel>
+                            <TextBlock FontWeight="SemiBold">
+                                <Run Text="VIZEN" /><Run Text=" " /><Run Text="{Binding LatestVersion, Mode=OneWay}" />
+                                <Run Text="{Binding SizeText, Mode=OneWay}" Foreground="{DynamicResource Brush.TextTertiary}" FontWeight="Normal" />
+                            </TextBlock>
+                            <TextBlock Text="{Binding ReleaseNotes}" Margin="0,8,0,0" TextWrapping="Wrap" Foreground="{DynamicResource Brush.TextSecondary}"
+                                       Visibility="{Binding ReleaseNotes, Converter={StaticResource NullToVisibility}}" />
+                            <TextBlock Text="{Binding SourceText}" Style="{StaticResource Text.Caption}" Margin="0,8,0,0"
+                                       Visibility="{Binding SourceText, Converter={StaticResource NullToVisibility}}" />
+
+                            <!-- download progress -->
+                            <Grid Margin="0,12,0,0" Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibility}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ProgressBar Height="6" Minimum="0" Maximum="100" Value="{Binding Progress, Mode=OneWay}" VerticalAlignment="Center"
+                                             Background="{DynamicResource Brush.Border}" Foreground="{DynamicResource Brush.Accent}" BorderThickness="0"
+                                             AutomationProperties.Name="{Binding ProgressText}" />
+                                <Button Grid.Column="1" Style="{StaticResource Button.Ghost}" Margin="12,0,0,0" Command="{Binding CancelDownloadCommand}"
+                                        Content="{DynamicResource Common.Cancel}" />
+                            </Grid>
+
+                            <!-- actions -->
+                            <WrapPanel Margin="0,12,0,0">
+                                <Button Style="{StaticResource Button.Primary}" Margin="0,0,8,0" Command="{Binding DownloadCommand}"
+                                        Content="{DynamicResource Updates.DownloadInstall}" AutomationProperties.Name="{DynamicResource Updates.DownloadInstall}"
+                                        Visibility="{Binding ShowDownload, Converter={StaticResource BoolToVisibility}}" />
+                                <Button Style="{StaticResource Button.Primary}" Margin="0,0,8,0" Command="{Binding InstallCommand}"
+                                        Content="{DynamicResource Updates.Install}" AutomationProperties.Name="{DynamicResource Updates.Install}"
+                                        Visibility="{Binding ShowInstall, Converter={StaticResource BoolToVisibility}}" />
+                                <Button Style="{StaticResource Button.Secondary}" Margin="0,0,8,0" Command="{Binding OpenReleasePageCommand}"
+                                        Content="{DynamicResource Updates.OpenPage}" AutomationProperties.Name="{DynamicResource Updates.OpenPage}"
+                                        Visibility="{Binding ShowOpenPage, Converter={StaticResource BoolToVisibility}}" />
+                            </WrapPanel>
+
+                            <!-- restart confirmation: nothing closes without it -->
+                            <Border CornerRadius="10" Padding="14,12" Margin="0,12,0,0" BorderThickness="1" BorderBrush="{DynamicResource Brush.Accent}"
+                                    Visibility="{Binding Confirming, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding ConfirmText}" TextWrapping="Wrap" />
+                                    <WrapPanel Margin="0,10,0,0">
+                                        <Button Style="{StaticResource Button.Primary}" Margin="0,0,8,0" Command="{Binding ConfirmInstallCommand}"
+                                                Content="{DynamicResource Updates.RestartInstall}" AutomationProperties.Name="{DynamicResource Updates.RestartInstall}" />
+                                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding CancelInstallCommand}"
+                                                Content="{DynamicResource Updates.Later}" AutomationProperties.Name="{DynamicResource Updates.Later}" />
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="{Binding WarningText}" Style="{StaticResource Text.Caption}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Visibility="{Binding WarningText, Converter={StaticResource NullToVisibility}}" />
+                    <TextBlock Text="{Binding ErrorText}" Foreground="{DynamicResource Brush.Danger}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Visibility="{Binding ErrorText, Converter={StaticResource NullToVisibility}}" />
+
+                    <!-- Store / App Installer: Windows updates VIZEN -->
+                    <Button Style="{StaticResource Button.Secondary}" HorizontalAlignment="Left" Margin="0,14,0,0" Command="{Binding OpenStoreCommand}"
+                            Content="{DynamicResource Updates.OpenStore}" AutomationProperties.Name="{DynamicResource Updates.OpenStore}"
+                            Visibility="{Binding ShowOpenStore, Converter={StaticResource BoolToVisibility}}" />
+
+                    <!-- Preferences (direct downloads only) -->
+                    <StackPanel Visibility="{Binding ShowOpenStore, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                        <Border Style="{StaticResource Divider}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,24,0">
+                                <TextBlock Text="{DynamicResource Updates.AutoCheck}" Style="{StaticResource SettingTitle}" />
+                                <TextBlock Text="{DynamicResource Updates.AutoCheckDescription}" Style="{StaticResource SettingDescription}" />
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding DataContext.Settings.AutoCheckUpdates, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      AutomationProperties.Name="{DynamicResource Updates.AutoCheck}" />
+                        </Grid>
+                        <Border Style="{StaticResource Divider}" Visibility="{Binding CanInstallHere, Converter={StaticResource BoolToVisibility}}" />
+                        <Grid Visibility="{Binding CanInstallHere, Converter={StaticResource BoolToVisibility}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,0,24,0">
+                                <TextBlock Text="{DynamicResource Updates.AutoDownload}" Style="{StaticResource SettingTitle}" />
+                                <TextBlock Text="{DynamicResource Updates.AutoDownloadDescription}" Style="{StaticResource SettingDescription}" />
+                            </StackPanel>
+                            <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding DataContext.Settings.AutoDownloadUpdates, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      AutomationProperties.Name="{DynamicResource Updates.AutoDownload}" />
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
             <!-- ============ About ============ -->
             <TextBlock Text="{DynamicResource Settings.About}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
             <Border Style="{StaticResource Card}" Padding="24,22">

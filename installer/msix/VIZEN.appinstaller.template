@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  NOT IN USE. Template for a future direct-download MSIX channel (outside the Microsoft Store), updated by Windows App
+  Installer. It needs an MSIX signed with a code-signing certificate that Windows trusts (a paid certificate, or
+  Microsoft's Trusted Signing service); an unsigned or self-signed MSIX cannot be installed by users.
+  When used: host this file at https://vizen.ro/download/VIZEN.appinstaller with the signed
+  https://vizen.ro/download/VIZEN-<version>-x64.msix, using the same Identity as the package. VIZEN detects such an
+  installation (UpdateChannel.AppInstaller) and leaves updating to Windows.
+-->
+<AppInstaller xmlns="http://schemas.microsoft.com/appx/appinstaller/2021"
+              Uri="https://vizen.ro/download/VIZEN.appinstaller"
+              Version="$Version$">
+  <MainPackage Name="$IdentityName$"
+               Publisher="$Publisher$"
+               Version="$Version$"
+               ProcessorArchitecture="x64"
+               Uri="https://vizen.ro/download/VIZEN-$Version$-x64.msix" />
+  <UpdateSettings>
+    <OnLaunch HoursBetweenUpdateChecks="12" ShowPrompt="true" UpdateBlocksActivation="false" />
+    <AutomaticBackgroundTask />
+  </UpdateSettings>
+</AppInstaller>

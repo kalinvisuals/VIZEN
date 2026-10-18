@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
 using VIZEN.App.Capture;
@@ -93,7 +93,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         Mixer = new AudioMixerViewModel(_audio, mixerPresenter, Activity);
         BrowserExtension = new BrowserExtensionViewModel(new BrowserBridgeService(),
             new BrowserHostRegistration(new CurrentUserHostRegistry(), JsonStore.DataDirectory), Activity,
-            Environment.ProcessPath ?? string.Empty, System.IO.Path.Combine(AppContext.BaseDirectory, "browser-extension"));
+            PackagedApp.LaunchPath, PackagedApp.ExtensionFolder(JsonStore.DataDirectory));
         Sources.BrowserTabs = BrowserExtension;
         Browsers.Extension = BrowserExtension;
         Mixer.BrowserTabs = BrowserExtension;
@@ -119,6 +119,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         Schedules = new SchedulesViewModel(Media, _hotkeys, Activity);
 
         Settings = new SettingsViewModel(_settings, _hotkeys, Activity);
+        var updateHttp = UpdateChecker.CreateHttpClient();
+        Updates = new UpdatesViewModel(_settings, Activity, new UpdateChecker(updateHttp),
+            new UpdateDownloader(updateHttp, System.IO.Path.Combine(JsonStore.DataDirectory, "updates")), UpdateChannels.Detect(),
+            SettingsViewModel.AppVersion, () => Overlays.Count + Outputs.Count, () => (System.Windows.Application.Current as App)?.ExitForUpdate());
+        Settings.Updates = Updates;
+        Updates.Start();
         _settings.PropertyChanged += (_, e) =>
         {
             switch (e.PropertyName)
@@ -237,6 +243,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public DashboardViewModel Dashboard { get; }
     public WindowSourcesViewModel Sources { get; }
     public OverlaysViewModel Overlays { get; }
+
+    public UpdatesViewModel Updates { get; }
     public OutputsViewModel Outputs { get; }
     public CallsViewModel Calls { get; }
     public StudioViewModel Studio { get; }
@@ -452,6 +460,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public void Dispose()
     {
+        Updates.Dispose();
         Sources.IsActive = false;
         (CurrentPage as RegionEditorViewModel)?.Dispose();
         Overlays.CloseAll();

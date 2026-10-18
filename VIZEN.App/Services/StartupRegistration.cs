@@ -12,7 +12,8 @@ public static class StartupRegistration
     private const string ValueName = "VIZEN";
     public const string TrayArgument = "--tray";
 
-    private static string Command => $"\"{Environment.ProcessPath}\" {TrayArgument}";
+    // A Store (MSIX) VIZEN is started through its app execution alias; the package folder is not for other programs.
+    private static string Command => $"\"{PackagedApp.LaunchPath}\" {TrayArgument}";
 
     /// <summary>True when Windows will start this VIZEN executable at sign-in.</summary>
     public static bool IsEnabled
@@ -23,7 +24,7 @@ public static class StartupRegistration
             {
                 using var key = Registry.CurrentUser.OpenSubKey(RunKey);
                 return key?.GetValue(ValueName) is string value
-                       && value.Contains(Environment.ProcessPath ?? "\0", StringComparison.OrdinalIgnoreCase);
+                       && value.Contains(PackagedApp.LaunchPath is { Length: > 0 } path ? path : "\0", StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException)
             {

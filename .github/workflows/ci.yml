@@ -1,0 +1,22 @@
+# Build and test every push and pull request to main.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet build VIZEN.App/VIZEN.App.csproj -c Release
+      - run: dotnet test VIZEN.Tests/VIZEN.Tests.csproj -c Release

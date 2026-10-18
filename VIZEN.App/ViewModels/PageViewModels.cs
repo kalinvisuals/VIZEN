@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -163,6 +163,9 @@ public sealed class SettingsViewModel : ObservableObject
             }
         }
     }
+
+    /// <summary>Settings → Updates.</summary>
+    public UpdatesViewModel? Updates { get; set; }
 
     public static string AppVersion { get; } =
         Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows;
 using VIZEN.App.Localization;
 using VIZEN.App.Services;
@@ -144,6 +144,9 @@ public partial class App : Application
         _window.Activate();
         _tray!.Visible = _viewModel?.Settings.Settings.RunInTray == true;
     }
+
+    /// <summary>Closes VIZEN for an update the user confirmed (same clean exit as Exit in the tray menu).</summary>
+    public void ExitForUpdate() => Dispatcher.BeginInvoke(ExitFromTray);
 
     private void ExitFromTray()
     {

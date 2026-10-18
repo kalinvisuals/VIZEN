@@ -213,7 +213,8 @@ public class BrowserTabsTests
     [Fact]
     public void HostRelaysTabsToVizenAndCommandsBack()
     {
-        var exe = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\VIZEN.App\bin\Debug\net10.0-windows10.0.22621.0\VIZEN.App.exe"));
+        var configuration = AppContext.BaseDirectory.Contains(@"\Release\", StringComparison.OrdinalIgnoreCase) ? "Release" : "Debug";
+        var exe = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, $@"..\..\..\..\VIZEN.App\bin\{configuration}\net10.0-windows10.0.22621.0\VIZEN.App.exe"));
         Assert.True(File.Exists(exe), exe);
 
         BrowserBridgeService? bridge = null;
