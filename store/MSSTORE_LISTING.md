@@ -13,7 +13,7 @@ with the values from Product management → Product identity.
 - Privacy policy URL: `https://github.com/kalinvisuals/VIZEN/blob/main/PRIVACY.md`
 - Website: `https://github.com/kalinvisuals/VIZEN` (later `https://www.vizen.ro`)
 - Support contact: `https://github.com/kalinvisuals/VIZEN/issues` (or `hi@vizen.ro` once it receives mail)
-- System requirements: Windows 10 version 2004 or later, 64-bit; DirectX 11 graphics; 4 GB RAM minimum, 8 GB recommended
+- System requirements: Windows 10 version 2004 or later, 64-bit; DirectX 11 graphics; Memory: minimum 8 GB, recommended 16 GB
 - Product declarations: none of the special cases apply (no in-app purchases, no ads)
 
 ## Age ratings (IARC questionnaire)

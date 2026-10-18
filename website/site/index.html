@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VIZEN — Free overlays for Windows</title>
+  <meta name="description" content="VIZEN turns any window into a live overlay: video calls, chats, videos or part of a game, on top of your game, in OBS or in a composition. Free and open source for Windows 10/11.">
+  <meta property="og:title" content="VIZEN — Free overlays for Windows">
+  <meta property="og:description" content="Any window or region on top of your game, in OBS or in a composition. Free, open source, no injection.">
+  <meta property="og:image" content="https://vizen.ro/assets/img/og.png">
+  <meta property="og:url" content="https://vizen.ro/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#07090f">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="canonical" href="https://vizen.ro/">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<div class="backdrop" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="VIZEN">
+      <span class="badge"><img src="/assets/img/mark.svg" alt=""></span>
+      <img class="wordmark" src="/assets/img/wordmark.svg" alt="VIZEN" style="filter: invert(1)">
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#tour" data-i18n="nav.tour">Tour</a>
+      <a href="#safety" data-i18n="nav.safety">Game safety</a>
+      <a href="#download" data-i18n="nav.download">Download</a>
+      <a href="/help/" data-i18n="nav.help">Help</a>
+      <a href="https://github.com/kalinvisuals/VIZEN" rel="noopener">GitHub</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="ro" aria-pressed="false">RO</button>
+      </div>
+      <a class="btn btn-primary btn-sm" href="#download" data-i18n="nav.get">Get VIZEN</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ============ hero ============ -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="pill"><b data-i18n="hero.pillTag">Free · Open source</b><span data-i18n="hero.pill">Overlays for Windows 10 and 11</span></span>
+      <h1><span data-i18n="hero.title1">Every window.</span><br><span class="grad" data-i18n="hero.title2">On top of your game.</span></h1>
+      <p class="lead" data-i18n="hero.lead">Pick a video call, a live chat, a video or part of a game, crop what you need and keep it live on top of your game, in a clean window for OBS, or in a composition.</p>
+      <div class="cta">
+        <a class="btn btn-accent" href="https://github.com/kalinvisuals/VIZEN/releases/latest/download/VIZEN-Setup-x64.exe" data-i18n="hero.download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/></svg>Download for Windows</a>
+        <a class="btn btn-ghost" href="#tour" data-i18n="hero.tour">See it in action</a>
+      </div>
+      <p class="meta"><span data-i18n="hero.meta1">Windows 10 / 11, 64-bit</span><span data-i18n="hero.meta2">No account</span><span data-i18n="hero.meta3">GPL-3.0</span><span class="mono" data-release-version>v0.4.5</span></p>
+      <div class="shot-hero reveal">
+        <div class="frame"><img src="/assets/img/gaming.png" width="1920" height="1008" alt="VIZEN Gaming mode with a live overlay of a game, showing 53 frames per second and no dropped frames" data-i18n-alt="hero.alt"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ features ============ -->
+  <section id="features">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="overline" data-i18n="features.over">01 — What it does</span>
+        <h2 data-i18n="features.title">One app. Every overlay you need.</h2>
+        <p data-i18n="features.lead">Built on the same capture technology as the Windows Snipping Tool and OBS, measured frame by frame.</p>
+      </div>
+      <div class="grid">
+        <article class="card reveal"><span class="num mono">01</span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M7 12h3M8.5 10.5v3M15 11h.01M17 13h.01"/></svg></div>
+          <h3 data-i18n="f.gaming.t">Gaming overlays</h3>
+          <p data-i18n="f.gaming.d">Any window or cropped region, always on top of windowed and borderless games. Click-through and one-key show / hide.</p></article>
+        <article class="card reveal"><span class="num mono">02</span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></div>
+          <h3 data-i18n="f.calls.t">Calls mode</h3>
+          <p data-i18n="f.calls.d">Discord, Zoom, Teams, WhatsApp and browser calls found automatically. Mirror the call or crop each person.</p></article>
+        <article class="card reveal"><span class="num mono">03</span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3"/></svg></div>
+          <h3 data-i18n="f.obs.t">Studio / OBS</h3>
+          <p data-i18n="f.obs.d">Clean windows for OBS Window Capture, exact sizes, chroma key, and compositions with logos, GIFs and videos.</p></article>
+        <article class="card reveal"><span class="num mono">04</span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="m18 2 4 4-9 9H9v-4z"/></svg></div>
+          <h3 data-i18n="f.draw.t">Smart Draw &amp; Notes</h3>
+          <p data-i18n="f.draw.d">Draw arrows, shapes and text over anything. Notes and checklists that float over your desktop and games.</p></article>
+        <article class="card reveal"><span class="num mono">05</span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></div>
+          <h3 data-i18n="f.audio.t">Smart Audio Mixer</h3>
+          <p data-i18n="f.audio.d">A volume for every app, profiles, a floating mixer, and Smart Audio Focus that lowers your music while friends talk.</p></article>
+        <article class="card reveal"><span class="num mono">06</span>
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M2 9h20M7 4v5"/></svg></div>
+          <h3 data-i18n="f.tabs.t">Every browser tab</h3>
+          <p data-i18n="f.tabs.d">With the free VIZEN Connector for Edge and Chrome, each tab is its own source: switch, mute, pop out or mirror it live.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ tour ============ -->
+  <section id="tour">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="overline" data-i18n="tour.over">02 — Tour</span>
+        <h2 data-i18n="tour.title">Made for the way you play and stream.</h2>
+      </div>
+      <div class="rows">
+        <div class="row reveal">
+          <div class="txt"><span class="overline" data-i18n="r1.over">Sources</span>
+            <h3 data-i18n="r1.t">Everything that is open, sorted for you.</h3>
+            <p data-i18n="r1.d">Windows are grouped into Browsers, Calls, Media, Cameras and Other, with a live preview of the one you pick.</p>
+            <ul><li data-i18n="r1.l1">One click to an overlay or an OBS window</li><li data-i18n="r1.l2">Crop several regions from one window</li><li data-i18n="r1.l3">Browser tabs appear on their own</li></ul></div>
+          <div class="frame"><img src="/assets/img/sources.png" width="1920" height="1008" loading="lazy" alt="VIZEN Sources page with demo windows, a live preview and browser tabs" data-i18n-alt="r1.alt"></div>
+        </div>
+        <div class="row reveal">
+          <div class="txt"><span class="overline" data-i18n="r2.over">Smart Audio Mixer</span>
+            <h3 data-i18n="r2.t">Your mix, on top of your game.</h3>
+            <p data-i18n="r2.d">Set every app's volume, save mixes for gaming, streaming or meetings, and control them from a small floating mixer.</p>
+            <ul><li data-i18n="r2.l1">Smart Audio Focus lowers music while friends talk</li><li data-i18n="r2.l2">Mute single browser tabs</li><li data-i18n="r2.l3">Follows the Windows volume</li></ul></div>
+          <div class="frame"><img src="/assets/img/audio-mixer.png" width="1920" height="1008" loading="lazy" alt="VIZEN Smart Audio Mixer with per-app volumes and browser tabs" data-i18n-alt="r2.alt"></div>
+        </div>
+        <div class="row reveal">
+          <div class="txt"><span class="overline" data-i18n="r3.over">Performance</span>
+            <h3 data-i18n="r3.t">Measured, not guessed.</h3>
+            <p data-i18n="r3.d">Source and display frame rate, dropped frames, latency and frame pacing for every capture, plus the CPU, GPU and memory VIZEN uses.</p>
+            <ul><li data-i18n="r3.l1">Auto Performance explains dropped frames</li><li data-i18n="r3.l2">GPU path: frames stay on the graphics card</li><li data-i18n="r3.l3">Test pattern to check your own PC</li></ul></div>
+          <div class="frame"><img src="/assets/img/performance.png" width="1920" height="1008" loading="lazy" alt="VIZEN Performance page with measured frame rates" data-i18n-alt="r3.alt"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ gallery ============ -->
+  <section class="gallery" aria-labelledby="gallery-title">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="overline" data-i18n="gal.over">03 — Every page</span>
+        <h2 id="gallery-title" data-i18n="gal.title">Take a closer look.</h2>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Screenshots">
+        <button role="tab" aria-selected="true" data-shot="dashboard" data-i18n="gal.dashboard">Dashboard</button>
+        <button role="tab" aria-selected="false" data-shot="calls" data-i18n="gal.calls">Calls</button>
+        <button role="tab" aria-selected="false" data-shot="studio-obs">Studio / OBS</button>
+        <button role="tab" aria-selected="false" data-shot="smart-draw">Smart Draw</button>
+        <button role="tab" aria-selected="false" data-shot="smart-notes">Smart Notes</button>
+        <button role="tab" aria-selected="false" data-shot="audio-focus">Audio Focus</button>
+        <button role="tab" aria-selected="false" data-shot="browser-tabs" data-i18n="gal.tabs">Browser tabs</button>
+        <button role="tab" aria-selected="false" data-shot="media">Media</button>
+        <button role="tab" aria-selected="false" data-shot="settings" data-i18n="gal.settings">Settings</button>
+      </div>
+      <figure class="reveal" style="margin:0">
+        <div class="frame"><img id="gallery-img" src="/assets/img/dashboard.png" width="1920" height="1008" loading="lazy" alt="VIZEN screenshot"></div>
+        <figcaption data-i18n="gal.caption">Screenshots use demo content.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ safety ============ -->
+  <section id="safety">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="overline" data-i18n="safe.over">04 — Game safety</span>
+        <h2 data-i18n="safe.title">Overlays without touching your game.</h2>
+        <p data-i18n="safe.lead">VIZEN's overlays are ordinary always-on-top windows, like the ones Discord, Steam or NVIDIA show.</p>
+      </div>
+      <div class="split">
+        <div class="card reveal"><h3 data-i18n="safe.yes">What VIZEN uses</h3><br>
+          <ul class="check">
+            <li data-i18n="safe.y1">Windows Graphics Capture, the public API of the Snipping Tool and OBS</li>
+            <li data-i18n="safe.y2">Ordinary topmost windows for overlays</li>
+            <li data-i18n="safe.y3">Windows audio sessions for per-app volume</li>
+            <li data-i18n="safe.y4">Registered hotkeys, no keyboard hooks</li>
+          </ul></div>
+        <div class="card reveal"><h3 data-i18n="safe.no">What VIZEN never does</h3><br>
+          <ul class="check no">
+            <li data-i18n="safe.n1">Inject code or DLLs into games</li>
+            <li data-i18n="safe.n2">Read or write game memory</li>
+            <li data-i18n="safe.n3">Bypass anti-cheat or DRM</li>
+            <li data-i18n="safe.n4">Automate input or send data anywhere</li>
+          </ul></div>
+      </div>
+      <p class="small" style="text-align:center;margin-top:20px" data-i18n="safe.note">Run games in windowed or borderless mode. No one can promise how every anti-cheat decides; VIZEN does none of the things they ban for.</p>
+    </div>
+  </section>
+
+  <!-- ============ open source ============ -->
+  <section>
+    <div class="wrap">
+      <div class="band reveal">
+        <span class="overline" data-i18n="os.over">Free and open source</span>
+        <h2 data-i18n="os.title">No ads. No account. No tracking.</h2>
+        <p data-i18n="os.lead">VIZEN is free software under the GNU GPL v3. Anyone can read the code, check what it does and help make it better.</p>
+        <div class="cta" style="margin-top:0">
+          <a class="btn btn-primary" href="https://github.com/kalinvisuals/VIZEN" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2"/></svg>
+            <span data-i18n="os.github">View on GitHub</span></a>
+          <a class="btn btn-ghost" href="/privacy/" data-i18n="os.privacy">Privacy policy</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ download ============ -->
+  <section id="download">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="overline" data-i18n="dl.over">05 — Download</span>
+        <h2 data-i18n="dl.title">Get VIZEN for free.</h2>
+        <p data-i18n="dl.lead">Windows 10 (2004 or later) or Windows 11, 64-bit, with DirectX 11 graphics.</p>
+      </div>
+      <div class="dl">
+        <div class="card reveal">
+          <span class="tag" data-i18n="dl.ready">Available</span>
+          <h3 data-i18n="dl.direct.t">Installer</h3>
+          <p data-i18n="dl.direct.d">The latest version from GitHub. VIZEN checks for updates itself, verifies them and installs them only when you say so.</p>
+          <div class="spacer"></div>
+          <a class="btn btn-accent" href="https://github.com/kalinvisuals/VIZEN/releases/latest/download/VIZEN-Setup-x64.exe" data-i18n="dl.direct.b">Download VIZEN-Setup-x64.exe</a>
+          <p class="small"><span data-i18n="dl.version">Version</span> <span class="mono" data-release-version>0.4.5</span> · <span data-release-size>56 MB</span> · <a href="https://github.com/kalinvisuals/VIZEN/releases/latest" style="text-decoration:underline" data-i18n="dl.notes">release notes &amp; SHA-256</a></p>
+          <p class="small" data-i18n="dl.smartscreen">The installer is not code-signed yet: if Windows shows "Windows protected your PC", choose More info → Run anyway.</p>
+        </div>
+        <div class="card reveal">
+          <span class="tag soon" data-i18n="dl.review">In review</span>
+          <h3>Microsoft Store</h3>
+          <p data-i18n="dl.store.d">Signed by Microsoft, installs in one click and updates automatically.</p>
+          <div class="spacer"></div>
+          <a class="store-badge" href="https://apps.microsoft.com/detail/9P7K298JRBK2?mode=direct" rel="noopener"><img src="https://get.microsoft.com/images/en-us%20dark.svg" data-src-ro="https://get.microsoft.com/images/ro%20dark.svg" alt="Get it from Microsoft" width="200" height="72"></a>
+        </div>
+        <div class="card reveal">
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag" data-i18n="dl.edgeReady">Edge: available</span><span class="tag soon" data-i18n="dl.chromeReview">Chrome: in review</span></div>
+          <h3>VIZEN Connector</h3>
+          <p data-i18n="dl.ext.d">Optional browser extension: every Edge, Chrome or Brave tab as its own source. Shares only tab titles and site names, only with VIZEN on your PC.</p>
+          <div class="spacer"></div>
+          <a class="btn btn-primary btn-sm" href="https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl" rel="noopener" data-i18n="dl.edgeGet">Get it for Microsoft Edge</a>
+          <a class="btn btn-ghost btn-sm" href="https://chromewebstore.google.com/detail/eifpggcoejhihbdighpghkacpghehnjb" rel="noopener">Chrome Web Store</a>
+        </div>
+      </div>
+      <div class="req reveal" id="requirements">
+        <h3 data-i18n="req.title">System requirements</h3>
+        <div class="req-scroll">
+        <table>
+          <thead><tr><th></th><th data-i18n="req.min">Minimum</th><th data-i18n="req.rec">Recommended</th></tr></thead>
+          <tbody>
+            <tr><th>Windows</th><td data-i18n="req.os.min">Windows 10 version 2004 (build 19041) or Windows 11, 64-bit</td><td data-i18n="req.os.rec">Windows 11, 64-bit</td></tr>
+            <tr><th data-i18n="req.cpu">Processor</th><td data-i18n="req.cpu.min">Intel Core i3-6100 / i3-8130U, AMD Ryzen 3 2200G or newer (4 threads)</td><td data-i18n="req.cpu.rec">Intel Core i5-10400 / i5-8250U, AMD Ryzen 5 3600 / 5500U or newer (8 threads or more)</td></tr>
+            <tr><th data-i18n="req.ram">Memory</th><td>8 GB RAM</td><td>16 GB RAM</td></tr>
+            <tr><th data-i18n="req.gpu">Graphics</th><td data-i18n="req.gpu.min">DirectX 11 with hardware acceleration (integrated is fine)</td><td data-i18n="req.gpu.rec">Dedicated graphics card, or a recent integrated one</td></tr>
+            <tr><th data-i18n="req.disk">Disk space</th><td>250 MB</td><td>250 MB</td></tr>
+            <tr><th data-i18n="req.expect">What to expect</th><td data-i18n="req.expect.min">One or two overlays at 720p, 30 fps</td><td data-i18n="req.expect.rec">Several 1080p sources at 60 fps</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="small" data-i18n="req.note">Browser sources use Microsoft Edge WebView2 (built into Windows 11 and most Windows 10 PCs). VIZEN Connector needs Edge, Chrome or Brave 116 or later. The Performance page in VIZEN measures your own PC.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ faq ============ -->  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head reveal"><span class="overline">FAQ</span><h2 data-i18n="faq.title">Questions</h2></div>
+      <div class="faq">
+        <details><summary data-i18n="q1">Is VIZEN really free?</summary><p data-i18n="a1">Yes. VIZEN is free and open source (GNU GPL v3), with no ads, no account and no paid features.</p></details>
+        <details><summary data-i18n="q2">Does it work with fullscreen games?</summary><p data-i18n="a2">It works with windowed and borderless (fullscreen windowed) games. Exclusive fullscreen draws directly to the screen, so no window can appear over it without injecting into the game, which VIZEN never does. VIZEN tells you when it detects exclusive fullscreen.</p></details>
+        <details><summary data-i18n="q3">Can it get me banned?</summary><p data-i18n="a3">VIZEN never touches the game: no injection, no memory access, no input automation. Its overlays are normal windows, like Discord's or Steam's. Nobody can guarantee every anti-cheat decision, but VIZEN does none of the things they are known to ban for.</p></details>
+        <details><summary data-i18n="q4">Does VIZEN collect my data?</summary><p data-i18n="a4">No. There is no telemetry and no account; settings stay in your user folder. See the privacy policy.</p></details>
+        <details><summary data-i18n="q5">How do updates work?</summary><p data-i18n="a5">The Microsoft Store version updates through the Store. The installer version checks vizen.ro and GitHub, verifies the digital signature and the file, and installs only after you confirm.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 kalinvisuals · <span data-i18n="foot.license">Free software under the GNU GPL v3</span></div>
+    <nav aria-label="Footer">
+      <a href="/help/" data-i18n="foot.help">Help</a>
+      <a href="/changelog/" data-i18n="foot.changelog">What's new</a>
+      <a href="/privacy/" data-i18n="foot.privacy">Privacy</a>
+      <a href="https://github.com/kalinvisuals/VIZEN" rel="noopener">GitHub</a>
+      <a href="https://github.com/kalinvisuals/VIZEN/issues" rel="noopener" data-i18n="foot.support">Support</a>
+      <a href="mailto:hi@vizen.ro">hi@vizen.ro</a>
+    </nav>
+  </div>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

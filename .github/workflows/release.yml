@@ -58,10 +58,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $notes = if (Test-Path "docs/release-notes/$env:VERSION.en.txt") { "docs/release-notes/$env:VERSION.en.txt" } else { $null }
-          $args = @('release', 'create', $env:GITHUB_REF_NAME, '--draft', '--title', "VIZEN $env:VERSION",
+          $ghArgs = @('release', 'create', $env:GITHUB_REF_NAME, '--draft', '--title', "VIZEN $env:VERSION",
             'artifacts/installer/VIZEN-Setup-x64.exe', 'artifacts/update/latest.json', 'artifacts/update/latest.json.sig')
-          if ($notes) { $args += @('--notes-file', $notes) } else { $args += @('--notes', "VIZEN $env:VERSION") }
-          gh @args
+          if ($notes) { $ghArgs += @('--notes-file', $notes) } else { $ghArgs += @('--notes', "VIZEN $env:VERSION") }
+          gh @ghArgs
 
       - name: Build the Microsoft Store package
         if: ${{ vars.MSIX_IDENTITY_NAME != '' && vars.MSIX_PUBLISHER != '' }}

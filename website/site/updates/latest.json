@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "product": "VIZEN",
+  "channel": "stable",
+  "version": "0.4.5",
+  "releaseDate": "2026-10-18",
+  "notes": { "en": "VIZEN Connector can now be installed from the Chrome Web Store and Microsoft Edge Add-ons; VIZEN accepts all builds and updates an existing connection automatically.", "ro": "VIZEN Connector se poate instala acum din Chrome Web Store și Microsoft Edge Add-ons; VIZEN acceptă toate variantele și actualizează automat o conexiune existentă." },
+  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.5",
+  "installer": {
+    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.5/VIZEN-Setup-x64.exe",
+    "mirrors": [],
+    "size": 58731034,
+    "sha256": "dcdc725934d7147d2c9d154a86dfe5cd1518196b1741ac1529dc0e6d41914159"
+  }
+}

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help — VIZEN</title>
+  <meta name="description" content="How to use VIZEN: your first overlay, borderless games, OBS, calls, the browser extension, updates and fixes for common problems.">
+  <meta name="theme-color" content="#07090f">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="canonical" href="https://vizen.ro/help/">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="VIZEN">
+      <span class="badge"><img src="/assets/img/mark.svg" alt=""></span>
+      <img class="wordmark" src="/assets/img/wordmark.svg" alt="VIZEN" style="filter: invert(1)">
+    </a>
+    <nav class="nav-links" aria-label="Pages">
+      <a href="/" data-lang-only="en">Home</a><a href="/" data-lang-only="ro">Acasă</a>
+      <a href="/help/" aria-current="page" data-lang-only="en">Help</a><a href="/help/" aria-current="page" data-lang-only="ro">Ghid</a>
+      <a href="/changelog/" data-lang-only="en">What's new</a><a href="/changelog/" data-lang-only="ro">Noutăți</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="ro" aria-pressed="false">RO</button>
+      </div>
+      <a class="btn btn-primary btn-sm" href="/#download"><span data-lang-only="en">Get VIZEN</span><span data-lang-only="ro">Ia VIZEN</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="doc help">
+<!-- ======================= English ======================= -->
+<div data-lang-only="en">
+  <span class="overline">Help</span>
+  <h1>Using VIZEN</h1>
+  <p>Short answers for the things people ask most. The full guide is in the <a href="https://github.com/kalinvisuals/VIZEN#readme">README on GitHub</a>.</p>
+
+  <nav class="toc" aria-label="On this page">
+    <a href="#first">Your first overlay</a><a href="#borderless">Games and borderless mode</a><a href="#obs">Use it in OBS</a>
+    <a href="#calls">Video calls</a><a href="#tabs">Browser tabs</a><a href="#audio">Audio mixer</a><a href="#hotkeys">Keyboard shortcuts</a>
+    <a href="#updates">Updates</a><a href="#problems">Fixing problems</a><a href="#remove">Uninstalling</a>
+  </nav>
+
+  <h2 id="first">Your first overlay</h2>
+  <ol>
+    <li>Open the window you want to see over your game: a video call, a chat, a video, a web page.</li>
+    <li>In VIZEN, open <strong>Sources</strong> and select that window. A live preview appears on the right.</li>
+    <li>Press <strong>Create overlay</strong>. A live copy appears on top of everything.</li>
+    <li>Drag it to move it, drag its edges to resize it, double-click it to remove black bars.</li>
+    <li>Only need part of the window? Press <strong>Regions…</strong>, draw one or more rectangles and open each as its own overlay.</li>
+  </ol>
+  <figure><div class="frame"><img src="/assets/img/sources.png" width="1920" height="1008" loading="lazy" alt="The Sources page with a selected window and its live preview"></div></figure>
+
+  <h2 id="borderless">Games and borderless mode</h2>
+  <p>Overlays appear over games that run <strong>windowed</strong> or <strong>borderless</strong> (also called "fullscreen windowed"). In the game's video or display settings, set the display mode to one of these.</p>
+  <p><strong>Exclusive fullscreen</strong> draws directly to the screen, so no window can appear over it without injecting into the game, which VIZEN never does. VIZEN shows a hint when it detects exclusive fullscreen.</p>
+  <p>Press <kbd>Ctrl+Shift+F9</kbd> to make overlays click-through (clicks go to the game) and <kbd>Ctrl+Shift+F10</kbd> to hide or show them all.</p>
+
+  <h2 id="obs">Use it in OBS</h2>
+  <ol>
+    <li>In VIZEN, select a source and press <strong>OBS output</strong> (or create one for a region in the region editor).</li>
+    <li>In OBS, add a <strong>Window Capture</strong> source and pick <code>[VIZEN.App.exe]: VIZEN Output · …</code>.</li>
+    <li>Set the capture method to <strong>Windows 10 (1903 and up)</strong>.</li>
+  </ol>
+  <p>Output windows show only the content, at an exact size, with an optional chroma-key background. <strong>Compositions</strong> (Studio / OBS) put several captures, logos, GIFs and videos into one window, so OBS needs a single source.</p>
+
+  <h2 id="calls">Video calls</h2>
+  <p>Discord, Zoom, Teams, WhatsApp, Skype and browser calls (Google Meet, Messenger and others) appear under <strong>Calls</strong>. Press <strong>Mirror as overlay</strong> for the whole call, or <strong>Crop participants</strong> to draw one region per person and give each one an overlay or an OBS window. VIZEN does not find participants by itself: you choose the regions.</p>
+
+  <h2 id="tabs">Browser tabs (VIZEN Connector)</h2>
+  <ol>
+    <li>In VIZEN, open <strong>Browser</strong> and press <strong>Connect</strong> (once).</li>
+    <li>Microsoft Edge: install <a href="https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl">VIZEN Connector from Edge Add-ons</a>.<br>
+      Chrome or Brave (until the Chrome Web Store listing is live): open <code>chrome://extensions</code>, turn on <strong>Developer mode</strong>, press <strong>Load unpacked</strong> and choose the folder VIZEN shows on its Browser page.</li>
+    <li>Within 30 seconds VIZEN shows "Connected" and lists every tab under Sources, where you can switch to a tab, mute it or move it to its own window.</li>
+  </ol>
+  <p><strong>Capture one tab alone:</strong> click the VIZEN icon in the browser and choose <strong>Mirror this tab live</strong>. A small window shows the tab even in the background; select it in Sources like any window. Press <strong>Keep live</strong> once so it keeps working while covered by other windows. Minimizing the mirror sends it behind the browser instead, because Windows cannot capture minimized windows.</p>
+
+  <h2 id="audio">Audio mixer</h2>
+  <p><strong>Smart Audio Mixer</strong> sets the volume of every app separately and saves mixes as profiles. <kbd>Ctrl+Shift+F3</kbd> shows a small floating mixer on top of your game. <strong>Smart Audio Focus</strong> lowers the apps you choose (music, game) while your priority app (for example Discord) is heard, then brings them back. It reacts to how loud the sound is, not to words. Browsers have no volume per tab, so single tabs can be muted but not turned down.</p>
+
+  <h2 id="hotkeys">Keyboard shortcuts</h2>
+  <table class="keys">
+    <tr><td><kbd>Ctrl+Shift+F9</kbd></td><td>Overlays: click-through on / off</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F10</kbd></td><td>Overlays: show / hide all</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F11</kbd></td><td>Smart Notes: show / hide</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F8</kbd></td><td>Smart Notes: edit mode on / off</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F7</kbd></td><td>Smart Draw: on / off</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F6</kbd></td><td>Smart Draw: draw / pass-through</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F5</kbd></td><td>Smart Draw: show / hide drawings</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F4</kbd></td><td>Smart Draw: clear drawings (press twice to confirm)</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F3</kbd></td><td>Floating audio mixer: show / hide</td></tr>
+  </table>
+  <p>All of them work while a game is in front and can be changed in <strong>Settings → Hotkeys</strong>.</p>
+
+  <h2 id="updates">Updates</h2>
+  <p><strong>Microsoft Store version:</strong> the Store updates it.</p>
+  <p><strong>Installer version:</strong> VIZEN checks vizen.ro (and GitHub if the site cannot be reached), verifies the digital signature of the release information and the installer file, and installs only after you press <strong>Restart and install</strong>. Your settings, notes, drawings and profiles are kept. Settings → Updates also has <strong>Check for updates</strong>.</p>
+
+  <h2 id="problems">Fixing problems</h2>
+  <details><summary>An overlay is black or frozen</summary>
+    <ul>
+      <li>The source window is minimized: Windows does not draw minimized windows. Restore it; it can stay behind other windows.</li>
+      <li>The source is a Chrome or Edge window that is completely covered: browsers stop drawing covered windows. Use the extension's <strong>Mirror this tab live</strong> instead.</li>
+      <li>The game runs in exclusive fullscreen: switch it to borderless.</li>
+      <li>Still black on this PC: on the Performance page, turn off <strong>GPU rendering</strong> and open the overlay again.</li>
+    </ul></details>
+  <details><summary>Windows says "Windows protected your PC"</summary>
+    <p>The installer is not code-signed yet. Choose <strong>More info → Run anyway</strong>, or install VIZEN from the Microsoft Store, which is signed by Microsoft.</p></details>
+  <details><summary>The extension says "VIZEN not connected"</summary>
+    <ul><li>Start VIZEN and press <strong>Connect</strong> on its Browser page.</li><li>Wait 30 seconds or restart the browser.</li><li>If you moved or reinstalled VIZEN, press Connect again.</li></ul></details>
+  <details><summary>A shortcut does nothing</summary>
+    <p>Another program may use the same keys. Settings → Hotkeys shows each shortcut's status and lets you pick another combination.</p></details>
+  <details><summary>The overlay drops frames</summary>
+    <p>Open the Performance page: it measures every capture and Auto Performance names the likely cause (busy GPU, busy processor or a slow copy). Lowering the game's graphics settings, or allowing VIZEN to lower a struggling overlay to 30 fps, helps on integrated graphics.</p></details>
+
+  <h2 id="remove">Uninstalling</h2>
+  <p>Remove VIZEN from <em>Settings → Apps → Installed apps</em>. Your settings stay in <code>%LOCALAPPDATA%\VIZEN</code>; delete that folder if you no longer need them. Remove the extension from your browser's extensions page.</p>
+
+  <p class="small" style="margin-top:48px">Still stuck? Write to <a href="mailto:hi@vizen.ro">hi@vizen.ro</a> or open an issue on <a href="https://github.com/kalinvisuals/VIZEN/issues">GitHub</a>.</p>
+</div>
+
+<!-- ======================= Română ======================= -->
+<div data-lang-only="ro">
+  <span class="overline">Ghid</span>
+  <h1>Cum folosești VIZEN</h1>
+  <p>Răspunsuri scurte la ce întreabă oamenii cel mai des. Ghidul complet e în <a href="https://github.com/kalinvisuals/VIZEN#readme">README-ul de pe GitHub</a> (în engleză).</p>
+
+  <nav class="toc" aria-label="Pe această pagină">
+    <a href="#first-ro">Primul overlay</a><a href="#borderless-ro">Jocuri și modul fără margini</a><a href="#obs-ro">În OBS</a>
+    <a href="#calls-ro">Apeluri video</a><a href="#tabs-ro">Taburi din browser</a><a href="#audio-ro">Mixer audio</a><a href="#hotkeys-ro">Scurtături</a>
+    <a href="#updates-ro">Actualizări</a><a href="#problems-ro">Probleme</a><a href="#remove-ro">Dezinstalare</a>
+  </nav>
+
+  <h2 id="first-ro">Primul overlay</h2>
+  <ol>
+    <li>Deschide fereastra pe care vrei s-o vezi peste joc: un apel video, un chat, un video, o pagină web.</li>
+    <li>În VIZEN, deschide <strong>Surse</strong> și selectează fereastra. În dreapta apare o previzualizare live.</li>
+    <li>Apasă <strong>Creează overlay</strong>. O copie live apare deasupra tuturor ferestrelor.</li>
+    <li>O muți trăgând de ea, o redimensionezi din margini, iar dublu-click elimină benzile negre.</li>
+    <li>Ai nevoie doar de o parte din fereastră? Apasă <strong>Regiuni…</strong>, desenează unul sau mai multe dreptunghiuri și deschide-le pe fiecare ca overlay separat.</li>
+  </ol>
+  <figure><div class="frame"><img src="/assets/img/sources.png" width="1920" height="1008" loading="lazy" alt="Pagina Surse cu o fereastră selectată și previzualizarea ei live"></div></figure>
+
+  <h2 id="borderless-ro">Jocuri și modul fără margini</h2>
+  <p>Overlay-urile apar peste jocurile care rulează <strong>în fereastră</strong> sau <strong>fără margini</strong> (numit și „fullscreen windowed” sau „borderless”). Alege unul dintre aceste moduri din setările video ale jocului.</p>
+  <p><strong>Ecranul complet exclusiv</strong> desenează direct pe ecran, așa că nicio fereastră nu poate apărea peste el fără injecție în joc, pe care VIZEN nu o face niciodată. VIZEN te anunță când detectează acest mod.</p>
+  <p><kbd>Ctrl+Shift+F9</kbd> face overlay-urile transparente la click (clickurile ajung în joc), iar <kbd>Ctrl+Shift+F10</kbd> le ascunde sau le afișează pe toate.</p>
+
+  <h2 id="obs-ro">În OBS</h2>
+  <ol>
+    <li>În VIZEN, selectează o sursă și apasă <strong>Ieșire OBS</strong> (sau creează una pentru o regiune, din editorul de regiuni).</li>
+    <li>În OBS, adaugă o sursă <strong>Window Capture</strong> și alege <code>[VIZEN.App.exe]: VIZEN Output · …</code>.</li>
+    <li>Setează metoda de captură la <strong>Windows 10 (1903 and up)</strong>.</li>
+  </ol>
+  <p>Ferestrele de ieșire arată doar conținutul, la o dimensiune exactă, cu fundal chroma-key opțional. <strong>Compozițiile</strong> (Studio / OBS) pun mai multe capturi, logo-uri, GIF-uri și video într-o singură fereastră, deci în OBS ai nevoie de o singură sursă.</p>
+
+  <h2 id="calls-ro">Apeluri video</h2>
+  <p>Apelurile din Discord, Zoom, Teams, WhatsApp, Skype și browser (Google Meet, Messenger și altele) apar la <strong>Apeluri</strong>. Apasă <strong>Oglindește ca overlay</strong> pentru tot apelul sau <strong>Decupează participanți</strong> ca să desenezi câte o regiune pentru fiecare persoană, cu overlay sau fereastră OBS separată. VIZEN nu găsește singur participanții: tu alegi regiunile.</p>
+
+  <h2 id="tabs-ro">Taburi din browser (VIZEN Connector)</h2>
+  <ol>
+    <li>În VIZEN, deschide <strong>Browser</strong> și apasă <strong>Conectează</strong> (o singură dată).</li>
+    <li>Microsoft Edge: instalează <a href="https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl">VIZEN Connector din Edge Add-ons</a>.<br>
+      Chrome sau Brave (până apare în Chrome Web Store): deschide <code>chrome://extensions</code>, pornește <strong>Modul dezvoltator</strong>, apasă <strong>Încarcă extensia neîmpachetată</strong> și alege folderul arătat de VIZEN pe pagina Browser.</li>
+    <li>În cel mult 30 de secunde VIZEN arată „Conectat” și listează fiecare tab la Surse, unde poți trece la un tab, îl poți pune pe mute sau îl poți muta într-o fereastră proprie.</li>
+  </ol>
+  <p><strong>Ca să capturezi un singur tab:</strong> apasă iconița VIZEN din browser și alege <strong>Oglindește live acest tab</strong>. O fereastră mică arată tabul chiar și în fundal; o selectezi la Surse ca pe orice fereastră. Apasă o dată <strong>Păstrează live</strong>, ca să meargă și când e acoperită de alte ferestre. Dacă o minimizezi, trece în spatele browserului, pentru că Windows nu poate captura ferestre minimizate.</p>
+
+  <h2 id="audio-ro">Mixer audio</h2>
+  <p><strong>Smart Audio Mixer</strong> setează volumul fiecărei aplicații separat și salvează mixurile ca profiluri. <kbd>Ctrl+Shift+F3</kbd> afișează un mixer mic, plutitor, peste joc. <strong>Smart Audio Focus</strong> coboară aplicațiile alese (muzica, jocul) cât timp se aude aplicația prioritară (de exemplu Discord), apoi le readuce. Reacționează la cât de tare e sunetul, nu la cuvinte. Browserele nu au volum pe tab, deci taburile pot fi puse pe mute, dar nu date mai încet.</p>
+
+  <h2 id="hotkeys-ro">Scurtături de tastatură</h2>
+  <table class="keys">
+    <tr><td><kbd>Ctrl+Shift+F9</kbd></td><td>Overlay-uri: click-through pornit / oprit</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F10</kbd></td><td>Overlay-uri: afișează / ascunde toate</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F11</kbd></td><td>Smart Notes: afișează / ascunde</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F8</kbd></td><td>Smart Notes: mod editare pornit / oprit</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F7</kbd></td><td>Smart Draw: pornit / oprit</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F6</kbd></td><td>Smart Draw: desen / clickuri prin desen</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F5</kbd></td><td>Smart Draw: afișează / ascunde desenele</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F4</kbd></td><td>Smart Draw: șterge desenele (apasă de două ori ca să confirmi)</td></tr>
+    <tr><td><kbd>Ctrl+Shift+F3</kbd></td><td>Mixer audio plutitor: afișează / ascunde</td></tr>
+  </table>
+  <p>Toate merg și când jocul e în față și se pot schimba din <strong>Setări → Scurtături</strong>.</p>
+
+  <h2 id="updates-ro">Actualizări</h2>
+  <p><strong>Versiunea din Microsoft Store:</strong> o actualizează Store-ul.</p>
+  <p><strong>Versiunea cu installer:</strong> VIZEN verifică vizen.ro (și GitHub, dacă site-ul nu răspunde), verifică semnătura digitală a informațiilor despre versiune și fișierul installerului și instalează doar după ce apeși <strong>Repornește și instalează</strong>. Setările, notițele, desenele și profilurile se păstrează. Din Setări → Actualizări poți și <strong>căuta actualizări</strong> manual.</p>
+
+  <h2 id="problems-ro">Probleme și soluții</h2>
+  <details><summary>Un overlay e negru sau înghețat</summary>
+    <ul>
+      <li>Fereastra sursă e minimizată: Windows nu desenează ferestrele minimizate. Restaureaz-o; poate rămâne în spatele altor ferestre.</li>
+      <li>Sursa e o fereastră Chrome sau Edge acoperită complet: browserele nu mai desenează ferestrele acoperite. Folosește în schimb <strong>Oglindește live acest tab</strong> din extensie.</li>
+      <li>Jocul rulează în ecran complet exclusiv: trece-l pe fără margini.</li>
+      <li>Tot negru pe acest PC: pe pagina Performanță, oprește <strong>Randare pe GPU</strong> și deschide din nou overlay-ul.</li>
+    </ul></details>
+  <details><summary>Windows spune „Windows a protejat PC-ul”</summary>
+    <p>Installerul nu are încă semnătură digitală. Alege <strong>Mai multe informații → Rulează oricum</strong> sau instalează VIZEN din Microsoft Store, unde e semnat de Microsoft.</p></details>
+  <details><summary>Extensia spune „VIZEN nu e conectat”</summary>
+    <ul><li>Pornește VIZEN și apasă <strong>Conectează</strong> pe pagina Browser.</li><li>Așteaptă 30 de secunde sau repornește browserul.</li><li>Dacă ai mutat sau reinstalat VIZEN, apasă din nou Conectează.</li></ul></details>
+  <details><summary>O scurtătură nu face nimic</summary>
+    <p>Poate altă aplicație folosește aceleași taste. Setări → Scurtături arată starea fiecărei scurtături și te lasă să alegi altă combinație.</p></details>
+  <details><summary>Overlay-ul pierde cadre</summary>
+    <p>Deschide pagina Performanță: măsoară fiecare captură, iar Auto Performance spune cauza probabilă (placa video ocupată, procesorul ocupat sau o copiere lentă). Pe plăcile video integrate ajută setări grafice mai mici în joc sau permisiunea ca VIZEN să coboare un overlay la 30 fps.</p></details>
+
+  <h2 id="remove-ro">Dezinstalare</h2>
+  <p>Elimină VIZEN din <em>Setări → Aplicații → Aplicații instalate</em>. Setările rămân în <code>%LOCALAPPDATA%\VIZEN</code>; șterge folderul dacă nu mai ai nevoie de ele. Extensia o elimini din pagina de extensii a browserului.</p>
+
+  <p class="small" style="margin-top:48px">Tot nu merge? Scrie-ne la <a href="mailto:hi@vizen.ro">hi@vizen.ro</a> sau deschide o problemă pe <a href="https://github.com/kalinvisuals/VIZEN/issues">GitHub</a>.</p>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 kalinvisuals</div>
+    <nav aria-label="Footer"><a href="/">VIZEN</a><a href="/changelog/"><span data-lang-only="en">What's new</span><span data-lang-only="ro">Noutăți</span></a><a href="/privacy/"><span data-lang-only="en">Privacy</span><span data-lang-only="ro">Confidențialitate</span></a><a href="https://github.com/kalinvisuals/VIZEN" rel="noopener">GitHub</a><a href="mailto:hi@vizen.ro">hi@vizen.ro</a></nav>
+  </div>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

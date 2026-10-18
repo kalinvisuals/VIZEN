@@ -34,6 +34,10 @@ VIZEN has no account, no telemetry and no analytics. Your settings, notes, drawi
 are saved only on your PC, in `%LOCALAPPDATA%\VIZEN`. Web pages that you open yourself in a VIZEN browser source load
 from the internet like in any browser.
 
+**Update checks.** If "Check for updates automatically" is on, VIZEN downloads the public release information from
+vizen.ro and GitHub (a small file describing the latest version). Like any web request, these servers can see your IP
+address; VIZEN sends no other information about you or your PC.
+
 ## Removing your data
 
 Uninstall the extension from your browser and VIZEN from *Settings → Apps*. To remove VIZEN's saved settings, delete

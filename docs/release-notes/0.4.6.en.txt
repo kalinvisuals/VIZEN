@@ -1,0 +1,1 @@
+Automatic updates: VIZEN checks vizen.ro and GitHub for new versions, verifies the digital signature and the installer file, and installs an update only after you confirm (Settings > Updates). Your settings and data are kept. Ready for the Microsoft Store: a Store copy is updated by the Store. From this version on, updates arrive automatically; install 0.4.6 once by hand.

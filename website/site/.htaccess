@@ -1,0 +1,34 @@
+# VIZEN website (Apache / cPanel hosting).
+
+# Always HTTPS, and vizen.ro without www.
+RewriteEngine On
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://vizen.ro%{REQUEST_URI} [L,R=301]
+
+# Types
+AddType application/json .json
+AddType text/plain .sig
+AddType image/svg+xml .svg
+AddDefaultCharset utf-8
+
+# Update files: read by VIZEN, refreshed within minutes of a release
+<IfModule mod_headers.c>
+  <FilesMatch "^latest\.json(\.sig)?$">
+    Header set Cache-Control "public, max-age=300"
+    Header set X-Content-Type-Options "nosniff"
+  </FilesMatch>
+  <FilesMatch "\.(png|svg|css|js)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+Options -Indexes
+ErrorDocument 404 /

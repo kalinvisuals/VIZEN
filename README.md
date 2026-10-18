@@ -30,9 +30,18 @@ Website: [www.vizen.ro](https://www.vizen.ro) · Contact: [hi@vizen.ro](mailto:h
 
 ## Requirements
 
-- Windows 10 (version 2004 or later) or Windows 11, 64-bit.
-- A graphics card with DirectX 11 (any integrated or dedicated GPU from the last ten years).
+|  | Minimum | Recommended |
+|---|---|---|
+| Windows | Windows 10 version 2004 (build 19041) or Windows 11, 64-bit | Windows 11, 64-bit |
+| Processor | Intel Core i3-6100 / i3-8130U, AMD Ryzen 3 2200G or newer (4 threads) | Intel Core i5-10400 / i5-8250U, AMD Ryzen 5 3600 / 5500U or newer (8 threads or more) |
+| Memory | 8 GB RAM | 16 GB RAM |
+| Graphics | DirectX 11 graphics card with hardware acceleration (integrated is fine) | Dedicated graphics card, or a recent integrated one |
+| Disk space | 250 MB | 250 MB |
+| What to expect | One or two overlays at 720p, 30 fps | Several 1080p sources at 60 fps |
+
 - Microsoft Edge WebView2 Runtime for browser sources (already installed on Windows 11 and on most Windows 10 PCs).
+- VIZEN Connector (optional): Microsoft Edge, Google Chrome or Brave, version 116 or later.
+- The Performance page in VIZEN measures your own PC and shows which level it reaches.
 
 ## Install
 
@@ -107,8 +116,9 @@ Edge WebView2 with its own profile.
 
 ![Browser tabs](docs/screenshots/browser-tabs.png)
 
-Windows can only capture windows, not tabs. The optional **VIZEN Connector** extension (Chrome, Edge, Brave) lets
-VIZEN see every tab on its own:
+Windows can only capture windows, not tabs. The optional **VIZEN Connector** extension lets VIZEN see every tab on its own. Get it from
+[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl) (Chrome Web
+Store: in review; Chrome and Brave can also load it from the `browser-extension` folder):
 
 - every tab appears under **Sources** with its title, site and category;
 - **Switch to tab**, **Mute / Unmute** and **Separate window** (moves the tab into its own window, only when you ask);
@@ -119,8 +129,10 @@ VIZEN see every tab on its own:
 
 Set it up once:
 1. In VIZEN, open **Browser** and press **Connect**.
-2. Open `chrome://extensions` (or `edge://extensions`) and turn on **Developer mode**.
-3. Press **Load unpacked** and choose the folder shown in VIZEN (`browser-extension` in the VIZEN folder).
+2. Microsoft Edge: install VIZEN Connector from
+   [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl).
+   Chrome / Brave (until the Chrome Web Store listing is live): open `chrome://extensions`, turn on **Developer mode**,
+   press **Load unpacked** and choose the folder shown in VIZEN (`browser-extension` in the VIZEN folder).
 
 The extension sends only tab titles and site names (never full addresses or page content) to VIZEN on your PC.
 Incognito tabs are never shared. **Disconnect** removes everything VIZEN registered.

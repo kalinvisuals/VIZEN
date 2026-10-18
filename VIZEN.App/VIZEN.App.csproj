@@ -21,7 +21,7 @@
     <Company>kalinvisuals</Company>
     <Authors>kalinvisuals</Authors>
     <Copyright>Copyright (C) 2026 kalinvisuals. Licensed under GPL-3.0.</Copyright>
-    <Version>0.4.5</Version>
+    <Version>0.4.6</Version>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- Program.Main: the browser extension's native host runs without WPF; otherwise the App starts as before. -->
     <StartupObject>VIZEN.App.Program</StartupObject>
