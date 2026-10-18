@@ -2,14 +2,14 @@
   "schema": 1,
   "product": "VIZEN",
   "channel": "stable",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "releaseDate": "2026-10-18",
-  "notes": { "en": "VIZEN Connector can now be installed from the Chrome Web Store and Microsoft Edge Add-ons; VIZEN accepts all builds and updates an existing connection automatically.", "ro": "VIZEN Connector se poate instala acum din Chrome Web Store și Microsoft Edge Add-ons; VIZEN acceptă toate variantele și actualizează automat o conexiune existentă." },
-  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.5",
+  "notes": { "en": "Automatic updates: VIZEN checks vizen.ro and GitHub for new versions, verifies the digital signature and the installer file, and installs an update only after you confirm (Settings \u003e Updates). Your settings and data are kept. Ready for the Microsoft Store: a Store copy is updated by the Store. From this version on, updates arrive automatically; install 0.4.6 once by hand.", "ro": "Actualizări automate: VIZEN verifică vizen.ro și GitHub pentru versiuni noi, verifică semnătura digitală și fișierul installerului și instalează o actualizare doar după ce confirmi (Setări \u003e Actualizări). Setările și datele se păstrează. Pregătit pentru Microsoft Store: o copie din Store e actualizată de Store. De la această versiune, actualizările vin automat; instalează o dată manual versiunea 0.4.6." },
+  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.6",
   "installer": {
-    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.5/VIZEN-Setup-x64.exe",
+    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.6/VIZEN-Setup-x64.exe",
     "mirrors": [],
-    "size": 58731034,
-    "sha256": "dcdc725934d7147d2c9d154a86dfe5cd1518196b1741ac1529dc0e6d41914159"
+    "size": 58794338,
+    "sha256": "b5d251f9854cf1ef7f9226fe95f2c4d22ab01bb5f40c9d16501c93a46a8f1fb9"
   }
 }
