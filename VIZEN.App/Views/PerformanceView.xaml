@@ -1,0 +1,474 @@
+<UserControl x:Class="VIZEN.App.Views.PerformanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+             xmlns:svc="clr-namespace:VIZEN.App.Services"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:PerformanceViewModel}"
+             d:DesignWidth="1000" d:DesignHeight="1200"
+             Loaded="OnLoaded">
+
+    <UserControl.Resources>
+        <Style x:Key="TileValue" TargetType="TextBlock" BasedOn="{StaticResource Text.Metric}">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="Margin" Value="0,6,0,0" />
+        </Style>
+        <Style x:Key="Tile" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Margin" Value="0,0,12,12" />
+            <Setter Property="Width" Value="250" />
+            <Setter Property="Padding" Value="16,14" />
+        </Style>
+        <Style x:Key="Cell" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+        </Style>
+        <Style x:Key="Head" TargetType="TextBlock" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="Margin" Value="0,0,12,0" />
+        </Style>
+        <Style x:Key="SettingTitle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
+        </Style>
+        <Style x:Key="SettingDescription" TargetType="TextBlock" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+        </Style>
+        <!-- Plain-words level of a resource tile (Low / Medium / High); hidden while there is no value. -->
+        <SolidColorBrush x:Key="LevelHighSoft" Color="{StaticResource Color.Danger}" Opacity="0.14" />
+        <Style x:Key="LevelChip" TargetType="Border" BasedOn="{StaticResource Badge}">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="{x:Static vm:ResourceLevel.None}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="{x:Static vm:ResourceLevel.Low}">
+                    <Setter Property="Background" Value="{DynamicResource Brush.SuccessSoft}" />
+                    <Setter Property="TextElement.Foreground" Value="{DynamicResource Brush.Success}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="{x:Static vm:ResourceLevel.Medium}">
+                    <Setter Property="Background" Value="{DynamicResource Brush.WarningSoft}" />
+                    <Setter Property="TextElement.Foreground" Value="{DynamicResource Brush.Warning}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="{x:Static vm:ResourceLevel.High}">
+                    <Setter Property="Background" Value="{StaticResource LevelHighSoft}" />
+                    <Setter Property="TextElement.Foreground" Value="{DynamicResource Brush.Danger}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TileHelp" TargetType="TextBlock" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,8,0,0" />
+            <Setter Property="LineHeight" Value="17" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="36,4,36,36" Style="{StaticResource Page.Root}">
+
+            <TextBlock Text="{DynamicResource Perf.Title}" Style="{StaticResource Text.PageTitle}" />
+            <TextBlock Style="{StaticResource Text.Body}" Margin="0,6,0,0" TextWrapping="Wrap" MaxWidth="880" HorizontalAlignment="Left"
+                       Text="{DynamicResource Perf.Subtitle}" />
+
+            <!-- ============ Resources (measured, once a second), in plain words ============ -->
+            <TextBlock Text="{DynamicResource Perf.Resources}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <UniformGrid Rows="1" Columns="4" Margin="0,0,-12,0">
+                <Border Style="{StaticResource Tile}" Width="NaN">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="{DynamicResource Perf.VizenCpu}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,0,64,0" />
+                            <Border Style="{StaticResource LevelChip}" Tag="{Binding Resources.VizenCpuLevel}">
+                                <TextBlock Text="{Binding Resources.VizenCpuLevelText}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Resources.VizenCpu}" Style="{StaticResource TileValue}" />
+                        <TextBlock Text="{DynamicResource Perf.VizenCpuHelp}" Style="{StaticResource TileHelp}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}" Width="NaN">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="{DynamicResource Perf.SystemCpu}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,0,64,0" />
+                            <Border Style="{StaticResource LevelChip}" Tag="{Binding Resources.SystemCpuLevel}">
+                                <TextBlock Text="{Binding Resources.SystemCpuLevelText}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Resources.SystemCpu}" Style="{StaticResource TileValue}" />
+                        <TextBlock Text="{DynamicResource Perf.SystemCpuHelp}" Style="{StaticResource TileHelp}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}" Width="NaN">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="{DynamicResource Perf.Gpu}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,0,64,0" />
+                            <Border Style="{StaticResource LevelChip}" Tag="{Binding Resources.GpuLevel}">
+                                <TextBlock Text="{Binding Resources.GpuLevelText}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Resources.Gpu}" Style="{StaticResource TileValue}" />
+                        <TextBlock Text="{Binding Resources.VizenGpu}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                        <TextBlock Text="{DynamicResource Perf.GpuHelp}" Style="{StaticResource TileHelp}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}" Width="NaN" ToolTip="{Binding Resources.MemoryDetail}">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="{DynamicResource Perf.Memory}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,0,64,0" />
+                            <Border Style="{StaticResource LevelChip}" Tag="{Binding Resources.MemoryLevel}">
+                                <TextBlock Text="{Binding Resources.MemoryLevelText}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Resources.Memory}" Style="{StaticResource TileValue}" />
+                        <TextBlock Text="{Binding Resources.MemoryShare}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                        <TextBlock Text="{Binding Resources.GpuMemory}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" TextWrapping="Wrap" />
+                        <TextBlock Text="{DynamicResource Perf.MemoryHelp}" Style="{StaticResource TileHelp}" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+            <TextBlock Text="{DynamicResource Perf.ResourcesNote}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" MaxWidth="880" HorizontalAlignment="Left" />
+
+            <!-- ============ Active captures ============ -->
+            <Grid Margin="0,28,0,10">
+                <TextBlock Text="{DynamicResource Perf.Captures}" Style="{StaticResource Text.Overline}" VerticalAlignment="Center" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource Button.Secondary}" Padding="12,5" Command="{Binding ExportDiagnosticsCommand}"
+                        ToolTip="{DynamicResource Perf.ExportDescription}" AutomationProperties.Name="{DynamicResource Perf.Export}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE896;" FontSize="12" />
+                        <TextBlock Text="{DynamicResource Perf.Export}" Margin="8,0,0,0" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Perf.NoCaptures}" Style="{StaticResource Text.Body}" TextWrapping="Wrap"
+                               Visibility="{Binding HasCaptures, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                    <ItemsControl ItemsSource="{Binding Captures}" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:CaptureRowViewModel}">
+                                <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="0,10">
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource Brush.TextPrimary}" ToolTip="{Binding Name}" />
+                                                <TextBlock Style="{StaticResource Text.Caption}" Margin="0,2,0,0">
+                                                    <Run Text="{Binding App, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding ConsumersText, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding SizeText, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{Binding CapText, Mode=OneWay}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Border Grid.Column="1" VerticalAlignment="Top">
+                                                <Border.Style>
+                                                    <Style TargetType="Border" BasedOn="{StaticResource Badge.Success}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Health}" Value="CaptureLimited">
+                                                                <Setter Property="Background" Value="#33E5484D" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="ProcessingLimited">
+                                                                <Setter Property="Background" Value="#33E5484D" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="RenderLimited">
+                                                                <Setter Property="Background" Value="#33E5484D" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="PresentationLimited">
+                                                                <Setter Property="Background" Value="#33E5484D" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="Unknown">
+                                                                <Setter Property="Background" Value="#33F5A524" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="NoNewFrames">
+                                                                <Setter Property="Background" Value="#33F5A524" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="Paused">
+                                                                <Setter Property="Background" Value="#33F5A524" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="SourceLimited">
+                                                                <Setter Property="Background" Value="#336EA8FE" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Health}" Value="Capped">
+                                                                <Setter Property="Background" Value="#336EA8FE" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding HealthText}" />
+                                            </Border>
+                                        </Grid>
+                                        <WrapPanel Margin="0,8,0,0">
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Source}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding SourceFpsText}" Style="{StaticResource Cell}" FontWeight="SemiBold" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Shown}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding PresentedFpsText}" Style="{StaticResource Cell}" FontWeight="SemiBold" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Dropped}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding DroppedText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Latency}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding LatencyText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Jitter}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding JitterText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Work}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding WorkText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                        </WrapPanel>
+                                        <WrapPanel Margin="0,4,0,0">
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.CaptureBusy}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding CaptureBusyText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.UiDelay}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding UiDelayText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4">
+                                                <TextBlock Text="{DynamicResource Perf.Col.DisplayLoop}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding DisplayLoopText}" Style="{StaticResource Cell}" />
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,24,4" Visibility="{Binding HasMarker, Converter={StaticResource BoolToVisibility}}">
+                                                <TextBlock Text="{DynamicResource Perf.Col.Marker}" Style="{StaticResource Head}" />
+                                                <TextBlock Text="{Binding MarkerText}" Style="{StaticResource Cell}" FontWeight="SemiBold" />
+                                            </StackPanel>
+                                        </WrapPanel>
+                                        <TextBlock Style="{StaticResource Text.Caption}" Margin="0,2,0,0" TextWrapping="Wrap">
+                                            <Run Text="{DynamicResource Perf.Col.Pipeline}" /><Run Text=": " /><Run Text="{Binding PipelineText, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="{DynamicResource Perf.CapturesNote}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,12,0,0"
+                               Visibility="{Binding HasCaptures, Converter={StaticResource BoolToVisibility}}" />
+                    <TextBlock Text="{DynamicResource Perf.HealthNote}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,8,0,0"
+                               Visibility="{Binding HasCaptures, Converter={StaticResource BoolToVisibility}}" />
+                </StackPanel>
+            </Border>
+
+            <!-- ============ Performance tests (no game needed) ============ -->
+            <TextBlock Text="{DynamicResource Perf.Test}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Perf.TestPattern}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Perf.TestPatternDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding OpenTestPatternCommand}" CommandParameter="30"
+                                    Content="{DynamicResource Perf.Open30}" Margin="0,0,8,0" AutomationProperties.Name="Test pattern 30 fps" />
+                            <Button Style="{StaticResource Button.Primary}" Command="{Binding OpenTestPatternCommand}" CommandParameter="60"
+                                    Content="{DynamicResource Perf.Open60}" AutomationProperties.Name="Test pattern 60 fps" />
+                        </StackPanel>
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource Brush.Border}" Margin="0,16" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Perf.Synthetic}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Perf.SyntheticDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding StartSyntheticCommand}" CommandParameter="30"
+                                    Content="{DynamicResource Perf.Open30}" Margin="0,0,8,0" AutomationProperties.Name="Synthetic 30 fps" />
+                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding StartSyntheticCommand}" CommandParameter="60"
+                                    Content="{DynamicResource Perf.Open60}" AutomationProperties.Name="Synthetic 60 fps" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ============ Auto Performance ============ -->
+            <TextBlock Text="{DynamicResource Perf.Auto}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Perf.AutoEnabled}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Perf.AutoEnabledDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Settings.AutoPerformance}"
+                                  AutomationProperties.Name="{DynamicResource Perf.AutoEnabled}" />
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource Brush.Border}" Margin="0,16" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Perf.GpuRendering}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Perf.GpuRenderingDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Settings.GpuRendering}"
+                                  AutomationProperties.Name="{DynamicResource Perf.GpuRendering}" />
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource Brush.Border}" Margin="0,16" />
+                    <Grid IsEnabled="{Binding Settings.AutoPerformance}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Perf.AllowReduce}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Perf.AllowReduceDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Settings.AllowFpsReduction}"
+                                  AutomationProperties.Name="{DynamicResource Perf.AllowReduce}" />
+                    </Grid>
+                    <Border Height="1" Background="{DynamicResource Brush.Border}" Margin="0,16" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Perf.AutoLog}" Style="{StaticResource SettingTitle}" VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Style="{StaticResource Button.Secondary}" Command="{Binding RemoveCapsCommand}"
+                                Content="{DynamicResource Perf.RemoveCaps}" AutomationProperties.Name="{DynamicResource Perf.RemoveCaps}" />
+                    </Grid>
+                    <TextBlock Text="{DynamicResource Perf.AutoLogEmpty}" Style="{StaticResource Text.Caption}" Margin="0,10,0,0" TextWrapping="Wrap"
+                               Visibility="{Binding Auto.Log.Count, Converter={StaticResource ZeroToVisibility}}" />
+                    <ItemsControl ItemsSource="{Binding Auto.Log}" Margin="0,8,0,0" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type svc:ActivityEntry}">
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding TimeText}" Style="{StaticResource Text.Caption}" FontFamily="{StaticResource Font.Mono}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Detail}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.TextSecondary}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- ============ This PC ============ -->
+            <Grid Margin="0,28,0,10">
+                <TextBlock Text="{DynamicResource Perf.System}" Style="{StaticResource Text.Overline}" VerticalAlignment="Center" />
+                <Button HorizontalAlignment="Right" Style="{StaticResource Button.Ghost}" Padding="10,4" Command="{Binding RefreshSystemCommand}"
+                        Content="{DynamicResource Perf.Redetect}" AutomationProperties.Name="{DynamicResource Perf.Redetect}" />
+            </Grid>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{DynamicResource Perf.TierLabel}" Style="{StaticResource SettingTitle}" VerticalAlignment="Center" />
+                        <Border Style="{StaticResource Badge.Info}" Margin="10,0,0,0">
+                            <TextBlock Text="{Binding TierName}" />
+                        </Border>
+                        <Border Style="{StaticResource Badge.Warning}" Margin="8,0,0,0">
+                            <TextBlock Text="{DynamicResource Perf.Estimate}" />
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="{Binding TierDescription}" Style="{StaticResource SettingDescription}" />
+                    <TextBlock Text="{DynamicResource Perf.TierNote}" Style="{StaticResource SettingDescription}" />
+
+                    <Border Height="1" Background="{DynamicResource Brush.Border}" Margin="0,16" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{DynamicResource Perf.Sys.CpuLabel}" Style="{StaticResource Head}" Margin="0,4" />
+                        <TextBlock Grid.Column="1" Text="{Binding CpuText}" Style="{StaticResource Cell}" TextWrapping="Wrap" Margin="0,4" />
+                        <TextBlock Grid.Row="1" Text="{DynamicResource Perf.Sys.MemoryLabel}" Style="{StaticResource Head}" Margin="0,4" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding MemoryText}" Style="{StaticResource Cell}" Margin="0,4" />
+                        <TextBlock Grid.Row="2" Text="{DynamicResource Perf.Sys.GpuLabel}" Style="{StaticResource Head}" Margin="0,4" />
+                        <ItemsControl Grid.Row="2" Grid.Column="1" ItemsSource="{Binding GpuLines}" Margin="0,4" Focusable="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Style="{StaticResource Cell}" TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Grid.Row="3" Text="{DynamicResource Perf.Sys.DisplayLabel}" Style="{StaticResource Head}" Margin="0,4" />
+                        <ItemsControl Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DisplayLines}" Margin="0,4" Focusable="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Style="{StaticResource Cell}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Grid.Row="4" Text="{DynamicResource Perf.Sys.WindowsLabel}" Style="{StaticResource Head}" Margin="0,4" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding WindowsText}" Style="{StaticResource Cell}" Margin="0,4" />
+                        <TextBlock Grid.Row="5" Text="{DynamicResource Perf.Sys.FeaturesLabel}" Style="{StaticResource Head}" Margin="0,4" />
+                        <ItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Features}" Margin="0,4" Focusable="False">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:FeatureLine}">
+                                    <StackPanel Orientation="Horizontal" Margin="0,1">
+                                        <TextBlock FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="11" VerticalAlignment="Center" Width="18">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="&#xE711;" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Danger}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsAvailable}" Value="True">
+                                                            <Setter Property="Text" Value="&#xE73E;" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource Brush.Success}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource Cell}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+
+                    <Border Height="1" Background="{DynamicResource Brush.Border}" Margin="0,16" />
+                    <TextBlock Text="{DynamicResource Perf.Recommendations}" Style="{StaticResource SettingTitle}" />
+                    <ItemsControl ItemsSource="{Binding Recommendations}" Margin="0,6,0,0" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="18" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="•" Foreground="{DynamicResource Brush.Accent}" />
+                                    <TextBlock Grid.Column="1" Text="{Binding}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.TextSecondary}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

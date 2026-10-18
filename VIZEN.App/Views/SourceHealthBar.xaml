@@ -1,0 +1,39 @@
+<UserControl x:Class="VIZEN.App.Views.SourceHealthBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="{Binding Converter={StaticResource NullToVisibility}}">
+    <!-- DataContext: a LiveCapture. Measured performance line, then recovery actions for window sources (hidden for cameras). -->
+    <StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="0,0,0,8" ToolTip="{DynamicResource Perf.LineTip}">
+        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xEC4A;" FontSize="11" VerticalAlignment="Center"
+                   Foreground="{DynamicResource Brush.TextTertiary}" />
+        <TextBlock Text="{Binding PerformanceText}" Margin="8,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center"
+                   Foreground="{DynamicResource Brush.TextSecondary}" FontSize="12" />
+    </StackPanel>
+    <WrapPanel Visibility="{Binding SupportsWindowActions, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}">
+        <StackPanel Orientation="Horizontal" Margin="0,0,20,6" VerticalAlignment="Center" Background="Transparent"
+                    ToolTip="{DynamicResource Capture.KeepActiveTip}">
+            <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding KeepSourceActive}"
+                      AutomationProperties.Name="{DynamicResource Capture.KeepActive}" />
+            <TextBlock Text="{DynamicResource Capture.KeepActive}" Margin="10,0,0,0" VerticalAlignment="Center" />
+        </StackPanel>
+        <Button Style="{StaticResource Button.Secondary}" Margin="0,0,8,6" Padding="12,6"
+                Command="{Binding RestoreSourceCommand}" ToolTip="{DynamicResource Capture.RestoreSourceTip}"
+                AutomationProperties.Name="{DynamicResource Capture.RestoreSource}"
+                Visibility="{Binding IsSourceMinimized, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE923;" FontSize="11" />
+                <TextBlock Text="{DynamicResource Capture.RestoreSource}" Margin="8,0,0,0" />
+            </StackPanel>
+        </Button>
+        <Button Style="{StaticResource Button.Ghost}" Margin="0,0,0,6" Padding="12,6"
+                Command="{Binding ShowSourceCommand}" ToolTip="{DynamicResource Capture.ShowSourceTip}"
+                AutomationProperties.Name="{DynamicResource Capture.ShowSource}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8A7;" FontSize="11" />
+                <TextBlock Text="{DynamicResource Capture.ShowSource}" Margin="8,0,0,0" />
+            </StackPanel>
+        </Button>
+    </WrapPanel>
+    </StackPanel>
+</UserControl>

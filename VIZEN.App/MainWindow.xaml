@@ -1,0 +1,343 @@
+﻿<Window x:Class="VIZEN.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        Title="VIZEN"
+        Width="1320" Height="830" MinWidth="960" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None" ResizeMode="CanResize"
+        Background="{DynamicResource Brush.Background}"
+        Foreground="{DynamicResource Brush.TextPrimary}"
+        FontFamily="{StaticResource Font.UI}" FontSize="13"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <!-- Sidebar list: in compact mode a scrollbar would take most of the 52 px left for the icons, so it is hidden
+             (the mouse wheel still scrolls) and the side margins shrink. -->
+        <Style x:Key="NavList" TargetType="ListBox" BasedOn="{StaticResource ListBox.Plain}">
+            <Setter Property="Margin" Value="12,0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSidebarCompact}" Value="True">
+                    <Setter Property="Margin" Value="10,0" />
+                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="EngineDot" TargetType="Ellipse" BasedOn="{StaticResource StatusDot}">
+            <Setter Property="Fill" Value="{DynamicResource Brush.Warning}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCaptureSupported}" Value="True">
+                    <Setter Property="Fill" Value="{DynamicResource Brush.Success}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="48" ResizeBorderThickness="6" CornerRadius="0"
+                      GlassFrameThickness="0,0,0,1" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Border x:Name="RootBorder" Background="{DynamicResource Brush.Background}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ============================ Sidebar ============================ -->
+            <Border Grid.Column="0" Background="{DynamicResource Brush.Sidebar}"
+                    BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Width" Value="244" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSidebarCompact}" Value="True">
+                                <Setter Property="Width" Value="76" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="96" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Brand: badge, same design as the app icon (circle with the V inside) -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,6,0,0">
+                        <Grid Width="44" Height="44">
+                            <Ellipse Fill="{DynamicResource Brush.AccentGradient}">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#FF354E" BlurRadius="16" ShadowDepth="0" Opacity="0.4" />
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <Path Data="{StaticResource Geo.LogoMark}" Stretch="Uniform" Width="29"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0" Fill="White" />
+                        </Grid>
+                        <StackPanel Margin="14,0,0,0" VerticalAlignment="Center"
+                                    Visibility="{Binding IsSidebarCompact, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                            <!-- Wordmark drawn about 22% taller than the SVG (5:1 instead of 6.1:1) -->
+                            <Path Data="{StaticResource Geo.LogoWordmark}" Fill="{DynamicResource Brush.TextPrimary}" Stretch="Fill"
+                                  Width="100" Height="20" HorizontalAlignment="Left" Margin="0,0,0,7"
+                                  AutomationProperties.Name="VIZEN" />
+                            <TextBlock Text="{DynamicResource Shell.Tagline}" Style="{StaticResource Text.Caption}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Navigation, grouped into Workspace / Modes / Library -->
+                    <ListBox Grid.Row="2" Style="{StaticResource NavList}"
+                             ScrollViewer.CanContentScroll="False"
+                             ItemContainerStyle="{StaticResource ListBoxItem.Nav}"
+                             ItemsSource="{Binding NavigationView}"
+                             SelectedItem="{Binding SelectedNavigationItem, Mode=TwoWay}"
+                             KeyboardNavigation.DirectionalNavigation="Cycle">
+                        <ListBox.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,12,0,4">
+                                            <TextBlock Text="{Binding Items[0].Section}" Style="{StaticResource Text.Overline}" Margin="16,0,0,0"
+                                                       Visibility="{Binding DataContext.IsSidebarCompact, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                                            <Border Height="1" Margin="10,6" Background="{DynamicResource Brush.Border}"
+                                                    Visibility="{Binding DataContext.IsSidebarCompact, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListBox.GroupStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:NavigationItem}">
+                                <StackPanel Orientation="Horizontal" ToolTip="{Binding Title}"
+                                            ToolTipService.InitialShowDelay="600">
+                                    <TextBlock x:Name="Glyph" Text="{Binding Glyph}" Style="{StaticResource Text.Icon}"
+                                               Width="20" FontSize="16" />
+                                    <TextBlock Text="{Binding Title}" Margin="14,0,0,0" VerticalAlignment="Center"
+                                               Visibility="{Binding DataContext.IsSidebarCompact, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                                </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                        <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Footer: brand card (a warning appears only if this PC cannot capture windows) -->
+                    <Border Grid.Row="3" Height="1" VerticalAlignment="Top" Margin="16,6,16,0" Background="{DynamicResource Brush.Border}" />
+                    <Border Grid.Row="3" Margin="16,19,16,18" Padding="12,11" CornerRadius="14"
+                            Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                            Visibility="{Binding IsSidebarCompact, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="32" Height="32">
+                                    <Ellipse Fill="{DynamicResource Brush.AccentGradient}" />
+                                    <Path Data="{StaticResource Geo.LogoMark}" Stretch="Uniform" Width="20"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0" Fill="White" />
+                                </Grid>
+                                <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{DynamicResource Shell.FooterTitle}" FontWeight="SemiBold" FontSize="13"
+                                               Foreground="{DynamicResource Brush.TextPrimary}" />
+                                    <TextBlock Text="{Binding VersionText}" Style="{StaticResource Text.Caption}" Margin="0,1,0,0" />
+                                </StackPanel>
+                                <Ellipse Grid.Column="2" Style="{StaticResource EngineDot}" VerticalAlignment="Center" Margin="8,0,2,0"
+                                         ToolTip="{Binding CaptureStatusText}" />
+                            </Grid>
+                            <TextBlock Text="{Binding CaptureStatusText}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource Brush.Warning}" Margin="0,10,0,0"
+                                       Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                        </StackPanel>
+                    </Border>
+                    <!-- Compact footer: the same brand badge, with the capture status as a small dot on its corner -->
+                    <Grid Grid.Row="3" Width="36" Height="36" Margin="0,19,0,20" HorizontalAlignment="Center"
+                          Visibility="{Binding IsSidebarCompact, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ToolTip>
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Shell.FooterTitle}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding VersionText}" />
+                                <TextBlock Text="{Binding CaptureStatusText}" />
+                            </StackPanel>
+                        </Grid.ToolTip>
+                        <Ellipse Fill="{DynamicResource Brush.AccentGradient}" />
+                        <Path Data="{StaticResource Geo.LogoMark}" Stretch="Uniform" Width="22"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0" Fill="White" />
+                        <Border Width="13" Height="13" CornerRadius="6.5" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                Margin="0,0,-2,-2" Background="{DynamicResource Brush.Sidebar}">
+                            <Ellipse Style="{StaticResource EngineDot}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ============================ Main area ============================ -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Exclusive-fullscreen hint. Its own row, not over the page: native video previews would cover it. -->
+                <Border Grid.Row="1" Margin="28,4,28,12" Padding="18,16,10,16" CornerRadius="16" BorderThickness="1"
+                        Background="{DynamicResource Brush.SurfaceRaised}" BorderBrush="{DynamicResource Brush.BorderStrong}"
+                        Visibility="{Binding IsFullscreenTipVisible, Converter={StaticResource BoolToVisibility}}"
+                        AutomationProperties.Name="{DynamicResource Shell.FullscreenTipTitle}" RenderTransformOrigin="0.5,0">
+                    <Border.RenderTransform>
+                        <TranslateTransform />
+                    </Border.RenderTransform>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsFullscreenTipVisible}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.28" />
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="-12" To="0" Duration="0:0:0.32">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Warning-coloured stripe + game controller icon -->
+                        <Border Width="44" Height="44" CornerRadius="12" VerticalAlignment="Top" Background="{DynamicResource Brush.WarningSoft}">
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE7FC;" FontSize="20" Foreground="{DynamicResource Brush.Warning}" />
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="16,0,12,0">
+                            <TextBlock Text="{DynamicResource Shell.FullscreenTipTitle}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource Brush.TextPrimary}" />
+                            <TextBlock Text="{DynamicResource Shell.FullscreenTipBody}" Margin="0,4,0,0" TextWrapping="Wrap" LineHeight="19"
+                                       Foreground="{DynamicResource Brush.TextSecondary}" />
+                            <Border Style="{StaticResource Badge.Warning}" Margin="0,10,0,0" Padding="10,5" CornerRadius="8">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE713;" FontSize="12" Margin="0,0,8,0" />
+                                    <TextBlock Text="{DynamicResource Shell.FullscreenTipWhere}" FontSize="12" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72E;" FontSize="12" Margin="0,0,6,0"
+                                           Foreground="{DynamicResource Brush.Success}" />
+                                <TextBlock Text="{DynamicResource Shell.FullscreenTipSafe}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <WrapPanel Margin="0,14,0,0">
+                                <Button Style="{StaticResource Button.Primary}" Content="{DynamicResource Shell.FullscreenTipGotIt}"
+                                        Command="{Binding CloseFullscreenTipCommand}" Margin="0,0,8,0" />
+                                <Button Style="{StaticResource Button.Ghost}" Content="{DynamicResource Shell.FullscreenTipNever}"
+                                        Command="{Binding NeverShowFullscreenTipCommand}" />
+                            </WrapPanel>
+                        </StackPanel>
+
+                        <Button Grid.Column="2" Style="{StaticResource Button.Icon}" Width="30" Height="30" FontSize="10"
+                                Content="&#xE711;" Command="{Binding CloseFullscreenTipCommand}" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Common.Close}" AutomationProperties.Name="{DynamicResource Common.Close}" />
+                    </Grid>
+                </Border>
+
+                <!-- Title bar -->
+                <Grid Grid.Row="0" Panel.ZIndex="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Toast: the latest action is confirmed in the title bar's empty space, where it covers nothing and moves
+                         nothing; a new one replaces it. The whole text is shown: it wraps, and only a long text reaches a little
+                         below the title bar (negative bottom margin = room to grow). Stays while the pointer is over it. -->
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Toasts.Toasts}" Focusable="False"
+                                  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="16,4,12,-200">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:ToastViewModel}">
+                                <Border Padding="4,3,4,3" CornerRadius="14" MouseEnter="OnToastMouseEnter" MouseLeave="OnToastMouseLeave"
+                                        Background="{DynamicResource Brush.SurfaceRaised}" BorderBrush="{DynamicResource Brush.BorderStrong}"
+                                        BorderThickness="1" Style="{StaticResource Page.Root}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="3" Opacity="0.35" />
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="22" Height="22" CornerRadius="11" Margin="0,4,0,0" VerticalAlignment="Top" Background="{DynamicResource Brush.AccentSoft}">
+                                            <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding Entry.Glyph}" FontSize="11"
+                                                       Foreground="{DynamicResource Brush.Accent}" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Margin="9,4,2,4" FontSize="12" LineHeight="16" LineStackingStrategy="BlockLineHeight" TextWrapping="Wrap"
+                                                   VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextSecondary}"
+                                                   AutomationProperties.AutomationId="ToastText">
+                                            <Run Text="{Binding Entry.Title, Mode=OneWay}" FontWeight="SemiBold" Foreground="{DynamicResource Brush.TextPrimary}" />
+                                            <Run Text="  " /><Run Text="{Binding Entry.Detail, Mode=OneWay}" />
+                                        </TextBlock>
+                                        <Button Grid.Column="2" Style="{StaticResource Button.Icon}" Width="24" Height="24" MinHeight="0" Padding="0"
+                                                FontSize="9" Margin="6,3,0,0" VerticalAlignment="Top" Content="&#xE711;" Command="{Binding DismissCommand}"
+                                                ToolTip="{DynamicResource Common.Close}" AutomationProperties.Name="{DynamicResource Common.Close}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0,0,0">
+                        <Button Style="{StaticResource Button.Icon}" Content="&#xE700;"
+                                Command="{Binding ToggleSidebarCommand}" ToolTip="{DynamicResource Shell.ToggleSidebar}" AutomationProperties.Name="{DynamicResource Shell.ToggleSidebar}"
+                                WindowChrome.IsHitTestVisibleInChrome="True" />
+                        <TextBlock Text="VIZEN" Margin="10,0,0,0" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.TextTertiary}" />
+                        <TextBlock Text="/" Margin="8,0" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.TextTertiary}" />
+                        <TextBlock Text="{Binding CurrentTitle}" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.TextSecondary}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <Button Style="{StaticResource Button.Caption}" ToolTip="{DynamicResource Shell.Minimize}" AutomationProperties.Name="{DynamicResource Shell.Minimize}"
+                                Click="OnMinimizeClick" WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Path Style="{StaticResource CaptionIcon}" Data="{StaticResource Geo.CaptionMinimize}" />
+                        </Button>
+                        <Button x:Name="MaxRestoreButton" Style="{StaticResource Button.Caption}"
+                                ToolTip="{DynamicResource Shell.Maximize}" AutomationProperties.Name="{DynamicResource Shell.Maximize}" Click="OnMaximizeRestoreClick" WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Path x:Name="MaxRestoreIcon" Style="{StaticResource CaptionIcon}" Data="{StaticResource Geo.CaptionMaximize}" />
+                        </Button>
+                        <Button Style="{StaticResource Button.CaptionClose}" ToolTip="{DynamicResource Shell.Close}" AutomationProperties.Name="{DynamicResource Shell.Close}"
+                                Click="OnCloseClick" WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Path Style="{StaticResource CaptionIcon}" Data="{StaticResource Geo.CaptionClose}" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Page host -->
+                <ContentControl Grid.Row="2" Content="{Binding CurrentPage}" Focusable="False" />
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

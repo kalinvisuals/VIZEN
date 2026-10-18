@@ -1,0 +1,377 @@
+﻿<UserControl x:Class="VIZEN.App.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+             xmlns:svc="clr-namespace:VIZEN.App.Services"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:DashboardViewModel}"
+             d:DesignWidth="1000" d:DesignHeight="800">
+
+    <UserControl.Resources>
+        <!-- One "system status" row: dot, label, value -->
+        <Style x:Key="StatusRow" TargetType="Grid">
+            <Setter Property="Margin" Value="0,0,0,14" />
+        </Style>
+        <!-- Mode card -->
+        <Style x:Key="ModeCard" TargetType="Border" BasedOn="{StaticResource Card}">
+            <Setter Property="Padding" Value="20" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="36,4,36,36" Style="{StaticResource Page.Root}">
+
+            <!-- ============ Hero ============ -->
+            <Grid>
+                <Grid.OpacityMask>
+                    <VisualBrush Visual="{Binding ElementName=HeroMask}" />
+                </Grid.OpacityMask>
+                <Border x:Name="HeroMask" CornerRadius="20" Background="Black" />
+                <Border CornerRadius="20" Background="{DynamicResource Brush.HeroGradient}" />
+                <Ellipse Width="460" Height="460" HorizontalAlignment="Right" VerticalAlignment="Top"
+                         Margin="0,-230,-120,0" Fill="{DynamicResource Brush.GlowBlue}" IsHitTestVisible="False" />
+                <Ellipse Width="380" Height="380" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                         Margin="0,0,220,-260" Fill="{DynamicResource Brush.GlowViolet}" IsHitTestVisible="False" />
+                <Border CornerRadius="20" BorderBrush="#22FFFFFF" BorderThickness="1" />
+
+                <StackPanel Margin="36,32,36,34">
+                    <TextBlock Text="{Binding Greeting}" Foreground="{DynamicResource Brush.Accent}" FontWeight="SemiBold" />
+                    <TextBlock Text="{DynamicResource Dashboard.Welcome}" Style="{StaticResource Text.Display}" Margin="0,6,0,0" />
+                    <TextBlock Style="{StaticResource Text.Body}" MaxWidth="580" HorizontalAlignment="Left" Margin="0,8,0,0"
+                               Text="{DynamicResource Dashboard.HeroText}" />
+                    <WrapPanel Margin="0,22,0,0">
+                        <Button Style="{StaticResource Button.Primary}" Command="{Binding CreateOverlayCommand}" Margin="0,0,10,0"
+                                ToolTip="{DynamicResource Dashboard.CreateOverlayTip}" AutomationProperties.Name="{DynamicResource Common.CreateOverlay}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE710;" FontSize="12" Foreground="White" />
+                                <TextBlock Text="{DynamicResource Common.CreateOverlay}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding ScanCommand}" AutomationProperties.Name="{DynamicResource Dashboard.ScanWindows}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72C;" FontSize="12" />
+                                <TextBlock Text="{DynamicResource Dashboard.ScanWindows}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Grid>
+
+            <!-- ============ Metrics ============ -->
+            <Grid Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Border Style="{StaticResource IconChip}" HorizontalAlignment="Left">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE7F4;" />
+                            </Border>
+                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right">
+                                <TextBlock Text="{DynamicResource Badge.Live}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Sources.TotalCount}" Style="{StaticResource Text.Metric}" Margin="0,16,0,0" />
+                        <TextBlock Text="{DynamicResource Dashboard.AvailableSources}" Foreground="{DynamicResource Brush.TextSecondary}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding Sources.LastRefreshedText}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" />
+                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewSourcesCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.BrowseSources}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Dashboard.BrowseSources}" />
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72A;" FontSize="11" Margin="6,1,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Border Style="{StaticResource IconChip}" HorizontalAlignment="Left" Background="{DynamicResource Brush.VioletSoft}"
+                                    TextElement.Foreground="{DynamicResource Brush.AccentViolet}">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE81E;" />
+                            </Border>
+                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right"
+                                    Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}}">
+                                <TextBlock Text="{DynamicResource Badge.Live}" />
+                            </Border>
+                            <Border Style="{StaticResource Badge.Warning}" HorizontalAlignment="Right"
+                                    Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                <TextBlock Text="{DynamicResource Badge.Unsupported}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Overlays.Count}" Style="{StaticResource Text.Metric}" Margin="0,16,0,0" />
+                        <TextBlock Text="{DynamicResource Dashboard.ActiveOverlays}" Foreground="{DynamicResource Brush.TextSecondary}" FontWeight="SemiBold" />
+                        <TextBlock Text="{DynamicResource Dashboard.ActiveOverlaysCaption}"
+                                   Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewOverlaysCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.ManageOverlays}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Dashboard.ManageOverlays}" />
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72A;" FontSize="11" Margin="6,1,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="4" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Border Style="{StaticResource IconChip}" HorizontalAlignment="Left">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8F1;" />
+                            </Border>
+                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right">
+                                <TextBlock Text="{DynamicResource Badge.Saved}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{Binding Profiles.Count}" Style="{StaticResource Text.Metric}" Margin="0,16,0,0" />
+                        <TextBlock Text="{DynamicResource Dashboard.SavedProfiles}" Foreground="{DynamicResource Brush.TextSecondary}" FontWeight="SemiBold" />
+                        <TextBlock Text="{DynamicResource Dashboard.SavedProfilesCaption}"
+                                   Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewProfilesCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.OpenProfiles}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Dashboard.OpenProfiles}" />
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72A;" FontSize="11" Margin="6,1,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ============ Modes ============ -->
+            <TextBlock Text="{DynamicResource Dashboard.ModesTitle}" Style="{StaticResource Text.Overline}" Margin="0,26,0,12" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource ModeCard}">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE7FC;" FontSize="20" HorizontalAlignment="Left" Foreground="{DynamicResource Brush.Accent}" />
+                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right">
+                                <TextBlock Text="{DynamicResource Badge.Ready}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{DynamicResource Nav.Gaming}" Style="{StaticResource Text.Title}" Margin="0,12,0,4" />
+                        <TextBlock Text="{DynamicResource Dashboard.GamingCaption}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" />
+                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewOverlaysCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.OpenMode}">
+                            <TextBlock Text="{DynamicResource Dashboard.OpenMode}" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource ModeCard}">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE717;" FontSize="20" HorizontalAlignment="Left" Foreground="{DynamicResource Brush.AccentViolet}" />
+                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right">
+                                <TextBlock Text="{DynamicResource Badge.Ready}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{DynamicResource Nav.Calls}" Style="{StaticResource Text.Title}" Margin="0,12,0,4" />
+                        <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap">
+                            <Run Text="{Binding Calls.CallCount, Mode=OneWay}" /><Run Text="{DynamicResource Dashboard.CallsCaption}" />
+                        </TextBlock>
+                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewCallsCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.OpenMode}">
+                            <TextBlock Text="{DynamicResource Dashboard.OpenMode}" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="4" Style="{StaticResource ModeCard}">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE714;" FontSize="20" HorizontalAlignment="Left" Foreground="{DynamicResource Brush.Accent}" />
+                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right">
+                                <TextBlock Text="{DynamicResource Badge.Ready}" />
+                            </Border>
+                        </Grid>
+                        <TextBlock Text="{DynamicResource Nav.Studio}" Style="{StaticResource Text.Title}" Margin="0,12,0,4" />
+                        <TextBlock Text="{DynamicResource Dashboard.StudioCaption}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" />
+                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewStudioCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.OpenMode}">
+                            <TextBlock Text="{DynamicResource Dashboard.OpenMode}" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ============ Activity + status ============ -->
+            <Grid Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Card}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Dashboard.RecentActivity}" Style="{StaticResource Text.Title}" />
+                            <TextBlock Text="{DynamicResource Dashboard.RecentActivityCaption}"
+                                       Style="{StaticResource Text.Caption}" Margin="0,4,0,14" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="1" MaxHeight="300" VerticalScrollBarVisibility="Auto" Focusable="False"
+                                      Visibility="{Binding Activity.Entries.Count, Converter={StaticResource ZeroToVisibility}, ConverterParameter=Invert}">
+                            <ItemsControl ItemsSource="{Binding Activity.Entries}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type svc:ActivityEntry}">
+                                        <Grid Margin="0,0,8,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="32" Height="32" CornerRadius="9" Background="{DynamicResource Brush.SurfaceHover}"
+                                                    VerticalAlignment="Top">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding Glyph}" FontSize="13"
+                                                           Foreground="{DynamicResource Brush.Accent}" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="12,0,12,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="{DynamicResource Brush.TextPrimary}" />
+                                                <TextBlock Text="{Binding Detail}" Style="{StaticResource Text.Caption}" TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource Brush.TextSecondary}" Margin="0,2,0,0" ToolTip="{Binding Detail}" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="2" Text="{Binding TimeText}" Style="{StaticResource Text.Caption}"
+                                                       VerticalAlignment="Top" Margin="0,2,0,0" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,24"
+                                    Visibility="{Binding Activity.Entries.Count, Converter={StaticResource ZeroToVisibility}}">
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE81C;" FontSize="26"
+                                       Foreground="{DynamicResource Brush.TextTertiary}" />
+                            <TextBlock Text="{DynamicResource Dashboard.NoActivity}" HorizontalAlignment="Center" Margin="0,10,0,0" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Dashboard.SystemStatus}" Style="{StaticResource Text.Title}" />
+                        <TextBlock Text="{DynamicResource Dashboard.SystemStatusCaption}" Style="{StaticResource Text.Caption}" Margin="0,4,0,18" />
+
+                        <Grid Style="{StaticResource StatusRow}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Success}" />
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusDiscovery}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Ready}" Foreground="{DynamicResource Brush.Success}" FontWeight="SemiBold" FontSize="12" />
+                        </Grid>
+                        <Grid Style="{StaticResource StatusRow}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Success}"
+                                     Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}}" />
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Warning}"
+                                     Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusCapture}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Ready}" Foreground="{DynamicResource Brush.Success}" FontWeight="SemiBold" FontSize="12"
+                                       Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}}" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Unsupported}" Foreground="{DynamicResource Brush.Warning}" FontWeight="SemiBold" FontSize="12"
+                                       Visibility="{Binding IsCaptureSupported, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                        </Grid>
+                        <Grid Style="{StaticResource StatusRow}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Success}" />
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusOverlays}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Ready}" Foreground="{DynamicResource Brush.Success}" FontWeight="SemiBold" FontSize="12" />
+                        </Grid>
+                        <Grid Style="{StaticResource StatusRow}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Success}" />
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusProfiles}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Ready}" Foreground="{DynamicResource Brush.Success}" FontWeight="SemiBold" FontSize="12" />
+                        </Grid>
+                        <Grid Style="{StaticResource StatusRow}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse>
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse" BasedOn="{StaticResource StatusDot}">
+                                        <Setter Property="Fill" Value="{DynamicResource Brush.TextTertiary}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Settings.HotkeysEnabled}" Value="True">
+                                                <Setter Property="Fill" Value="{DynamicResource Brush.Success}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusHotkeys}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" FontWeight="SemiBold" FontSize="12">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="{DynamicResource Common.Off}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource Brush.TextTertiary}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Settings.HotkeysEnabled}" Value="True">
+                                                <Setter Property="Text" Value="{DynamicResource Common.On}" />
+                                                <Setter Property="Foreground" Value="{DynamicResource Brush.Success}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <Grid Style="{StaticResource StatusRow}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Success}" />
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusCrop}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Ready}" Foreground="{DynamicResource Brush.Success}" FontWeight="SemiBold" FontSize="12" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Ellipse Style="{StaticResource StatusDot}" Fill="{DynamicResource Brush.Success}" />
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Dashboard.StatusObsOutput}" Margin="12,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Badge.Ready}" Foreground="{DynamicResource Brush.Success}" FontWeight="SemiBold" FontSize="12" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

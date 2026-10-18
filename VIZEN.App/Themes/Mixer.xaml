@@ -1,0 +1,374 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+                    xmlns:views="clr-namespace:VIZEN.App.Views"
+                    xmlns:conv="clr-namespace:VIZEN.App.Converters"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- Smart Audio Mixer: neutral monochrome "pro" style (near-black, hairlines, white actions, monospace numbers).
+         Colours come from the Brush.Mx.* palette (ThemeManager), so the light theme gets the same look in white.
+         Shared by the mixer page and the floating mixer. Static vector content: only the knob position, the level
+         line and a few state triggers change; nothing animates on its own. -->
+
+    <conv:BoolToVisibilityConverter x:Key="Mixer.BoolToVisibility" />
+    <conv:ChannelNumberConverter x:Key="Mixer.ChannelNumber" />
+    <sys:Boolean x:Key="Mixer.True">True</sys:Boolean>
+    <FontFamily x:Key="Mixer.Mono">Cascadia Mono, Consolas</FontFamily>
+
+    <!-- ===== Volume slider: thin track, white fill and knob; Tag = level 0..1 drawn as a line under the track ===== -->
+    <Style x:Key="Mixer.TrackFill" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Grid Background="Transparent">
+                        <Border Height="6" CornerRadius="3" VerticalAlignment="Center" Margin="11,0,-11,0" Background="{DynamicResource Brush.Mx.Invert}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Mixer.TrackRest" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Grid Background="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Mixer.Knob" TargetType="Thumb">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Grid Width="22" Height="22" Background="Transparent">
+                        <Ellipse x:Name="Ring" Width="19" Height="19" Fill="{DynamicResource Brush.Mx.Invert}"
+                                 Stroke="{DynamicResource Brush.Mx.Panel}" StrokeThickness="3" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Ring" Property="Width" Value="22" />
+                            <Setter TargetName="Ring" Property="Height" Value="22" />
+                        </Trigger>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter TargetName="Ring" Property="Width" Value="22" />
+                            <Setter TargetName="Ring" Property="Height" Value="22" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Mixer.Volume" TargetType="Slider">
+        <Setter Property="Minimum" Value="0" />
+        <Setter Property="Maximum" Value="100" />
+        <Setter Property="SmallChange" Value="5" />
+        <Setter Property="LargeChange" Value="10" />
+        <Setter Property="IsMoveToPointEnabled" Value="True" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid x:Name="Root" Background="Transparent">
+                        <Border Height="6" CornerRadius="3" VerticalAlignment="Center" Margin="11,0" Background="{DynamicResource Brush.Mx.Line}" />
+                        <!-- Level line under the track (the app's current loudness) -->
+                        <Border Height="2" CornerRadius="1" VerticalAlignment="Center" Margin="11,16,11,0" IsHitTestVisible="False"
+                                Background="{DynamicResource Brush.Success}" RenderTransformOrigin="0,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Border.RenderTransform>
+                        </Border>
+                        <Track x:Name="PART_Track">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource Mixer.TrackFill}" Command="Slider.DecreaseLarge" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Style="{StaticResource Mixer.TrackRest}" Command="Slider.IncreaseLarge" />
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource Mixer.Knob}" />
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Root" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Round icon button with a hairline: Tag = True for the on / muted state (inverted) ===== -->
+    <Style x:Key="Mixer.IconButton" TargetType="Button">
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.Muted}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Ellipse x:Name="Bg" Fill="Transparent" Stroke="{DynamicResource Brush.Mx.Line}" StrokeThickness="1" />
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Brush.Mx.Raised}" />
+                            <Setter TargetName="Bg" Property="Stroke" Value="{DynamicResource Brush.Mx.LineStrong}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.Text}" />
+                        </Trigger>
+                        <Trigger Property="Tag" Value="{StaticResource Mixer.True}">
+                            <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Brush.Mx.Invert}" />
+                            <Setter TargetName="Bg" Property="Stroke" Value="{DynamicResource Brush.Mx.Invert}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.InvertText}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Pill button: Tag = True for the primary (white) style ===== -->
+    <Style x:Key="Mixer.PillButton" TargetType="Button">
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.Text}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bg" CornerRadius="19" Padding="{TemplateBinding Padding}" BorderThickness="1"
+                            Background="Transparent" BorderBrush="{DynamicResource Brush.Mx.Line}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.Mx.Raised}" />
+                            <Setter TargetName="Bg" Property="BorderBrush" Value="{DynamicResource Brush.Mx.LineStrong}" />
+                        </Trigger>
+                        <Trigger Property="Tag" Value="{StaticResource Mixer.True}">
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.Mx.Invert}" />
+                            <Setter TargetName="Bg" Property="BorderBrush" Value="{DynamicResource Brush.Mx.Invert}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.InvertText}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bg" Property="Opacity" Value="0.35" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== Segment of a segmented control (profiles): Tag = True for the selected segment ===== -->
+    <Style x:Key="Mixer.Segment" TargetType="Button">
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="14,0" />
+        <Setter Property="Margin" Value="0,0,2,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.Muted}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bg" CornerRadius="16" Padding="{TemplateBinding Padding}" Background="Transparent">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.Text}" />
+                        </Trigger>
+                        <Trigger Property="Tag" Value="{StaticResource Mixer.True}">
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.Mx.Invert}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.InvertText}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Mixer.SegmentBar" TargetType="Border">
+        <Setter Property="CornerRadius" Value="19" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource Brush.Mx.Raised}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Mx.Line}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <!-- ===== Composer-style text input: no box of its own (the surrounding pill is the box), centred placeholder ===== -->
+    <Style x:Key="Mixer.Input" TargetType="TextBox">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Mx.Text}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource Brush.Mx.Text}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource Brush.Mx.Muted}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Grid Background="Transparent">
+                        <TextBlock x:Name="Placeholder" Text="{TemplateBinding Tag}" IsHitTestVisible="False" Visibility="Collapsed"
+                                   VerticalAlignment="Center" Margin="2,0,0,0" Foreground="{DynamicResource Brush.Mx.Faint}" />
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False" VerticalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ===== App icon tile with a live dot ===== -->
+    <DataTemplate x:Key="Mixer.Icon" DataType="{x:Type vm:MixerAppViewModel}">
+        <Grid Width="40" Height="40">
+            <Border CornerRadius="12" BorderThickness="1" Background="{DynamicResource Brush.Mx.Raised}" BorderBrush="{DynamicResource Brush.Mx.Line}">
+                <Grid>
+                    <Image Source="{Binding Icon}" Width="22" Height="22" RenderOptions.BitmapScalingMode="HighQuality"
+                           Visibility="{Binding HasIcon, Converter={StaticResource Mixer.BoolToVisibility}}" />
+                    <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE7F5;" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource Brush.Mx.Muted}"
+                               Visibility="{Binding HasIcon, Converter={StaticResource Mixer.BoolToVisibility}, ConverterParameter=Invert}" />
+                </Grid>
+            </Border>
+            <Ellipse Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-2,-2"
+                     Fill="{DynamicResource Brush.Success}" Stroke="{DynamicResource Brush.Mx.Panel}" StrokeThickness="2"
+                     Visibility="{Binding IsPlaying, Converter={StaticResource Mixer.BoolToVisibility}}" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- ===== App row (page): channel number, icon, name, volume, %, mute ===== -->
+    <DataTemplate x:Key="Mixer.Row" DataType="{x:Type vm:MixerAppViewModel}">
+        <StackPanel Margin="0,10">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="34" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="210" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="56" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ContentPresenter}, Converter={StaticResource Mixer.ChannelNumber}}"
+                       FontFamily="{StaticResource Mixer.Mono}" FontSize="12" Foreground="{DynamicResource Brush.Mx.Faint}" VerticalAlignment="Center" />
+            <ContentPresenter Grid.Column="1" Content="{Binding}" ContentTemplate="{StaticResource Mixer.Icon}" VerticalAlignment="Center" />
+            <StackPanel Grid.Column="2" Margin="14,0,18,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Mx.Text}"
+                           TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" />
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                    <TextBlock Text="{Binding ShortStatusText}" FontSize="12" Foreground="{DynamicResource Brush.Mx.Muted}" />
+                    <TextBlock Text="{Binding SessionsText}" FontSize="12" Margin="8,0,0,0" Foreground="{DynamicResource Brush.Mx.Faint}"
+                               ToolTip="{DynamicResource Mixer.SessionsTip}"
+                               Visibility="{Binding HasSeveralSessions, Converter={StaticResource Mixer.BoolToVisibility}}" />
+                    <Border CornerRadius="8" Padding="7,0" Margin="8,0,0,0" VerticalAlignment="Center" Background="{DynamicResource Brush.AccentSoft}"
+                            ToolTip="{DynamicResource Focus.LoweredTip}" Visibility="{Binding IsFocusLowered, Converter={StaticResource Mixer.BoolToVisibility}}">
+                        <TextBlock Text="{DynamicResource Focus.LoweredChip}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Accent}" />
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+            <Slider x:Name="Volume" Grid.Column="3" Style="{StaticResource Mixer.Volume}" Value="{Binding VolumePercent}" Tag="{Binding Peak}"
+                    VerticalAlignment="Center" AutomationProperties.Name="{Binding VolumeName}" ToolTip="{DynamicResource Audio.VolumeTip}" />
+            <TextBlock Grid.Column="4" Text="{Binding VolumeText}" FontFamily="{StaticResource Mixer.Mono}" FontSize="13" TextAlignment="Right"
+                       VerticalAlignment="Center" Foreground="{DynamicResource Brush.Mx.Text}" />
+            <Button Grid.Column="5" Style="{StaticResource Mixer.IconButton}" Tag="{Binding Muted}" Command="{Binding ToggleMuteCommand}" Margin="16,0,0,0"
+                    VerticalAlignment="Center" ToolTip="{DynamicResource Audio.MuteTip}" AutomationProperties.Name="{Binding MuteName}">
+                <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding MuteGlyph}" FontSize="14" />
+            </Button>
+        </Grid>
+        <!-- Browser: its tabs with sound (mute per tab; Chrome has no per-tab volume) -->
+        <ItemsControl ItemsSource="{Binding Tabs}" Margin="88,6,0,0" Focusable="False"
+                      Visibility="{Binding HasTabs, Converter={StaticResource Mixer.BoolToVisibility}}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:BrowserTabViewModel}">
+                    <Grid Margin="0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="3" Height="18" CornerRadius="1.5" Background="{DynamicResource Brush.Mx.Line}" VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="12,0,12,0" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding Glyph}" FontSize="11" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Mx.Muted}" />
+                            <TextBlock Text="{Binding Title}" FontSize="12" Margin="8,0,0,0" TextTrimming="CharacterEllipsis" MaxWidth="420" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource Brush.Mx.Text}" ToolTip="{Binding Detail}" />
+                            <TextBlock Text="{Binding Tab.Site}" FontSize="11" Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Mx.Faint}" />
+                        </StackPanel>
+                        <Button Grid.Column="2" Style="{StaticResource Mixer.IconButton}" Width="28" Height="28" Tag="{Binding Muted}" Command="{Binding ToggleMuteCommand}"
+                                ToolTip="{DynamicResource Tabs.MuteTip}" AutomationProperties.Name="{Binding MuteName}">
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding MuteGlyph}" FontSize="11" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        </StackPanel>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Muted}" Value="True">
+                <Setter TargetName="Volume" Property="Opacity" Value="0.35" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <!-- ===== App row (floating mixer, compact) ===== -->
+    <DataTemplate x:Key="Mixer.RowCompact" DataType="{x:Type vm:MixerAppViewModel}">
+        <Grid Margin="0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="44" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.RowSpan="2" Width="32" Height="32" Margin="0,0,10,0" VerticalAlignment="Center">
+                <Border CornerRadius="10" Background="{DynamicResource Brush.Mx.Raised}">
+                    <Grid>
+                        <Image Source="{Binding Icon}" Width="18" Height="18" RenderOptions.BitmapScalingMode="HighQuality"
+                               Visibility="{Binding HasIcon, Converter={StaticResource Mixer.BoolToVisibility}}" />
+                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE7F5;" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Brush.Mx.Muted}"
+                                   Visibility="{Binding HasIcon, Converter={StaticResource Mixer.BoolToVisibility}, ConverterParameter=Invert}" />
+                    </Grid>
+                </Border>
+                <Ellipse Width="8" Height="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-1,-1"
+                         Fill="{DynamicResource Brush.Success}" Stroke="{DynamicResource Brush.Mx.Bg}" StrokeThickness="1.5"
+                         Visibility="{Binding IsPlaying, Converter={StaticResource Mixer.BoolToVisibility}}" />
+            </Grid>
+            <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,-2"
+                       Foreground="{DynamicResource Brush.Mx.Text}" TextTrimming="CharacterEllipsis" />
+            <Slider x:Name="Volume" Grid.Row="1" Grid.Column="1" Style="{StaticResource Mixer.Volume}" Height="26" Margin="-11,0,0,0" views:FaderWheel.IsEnabled="True"
+                    Value="{Binding VolumePercent}" Tag="{Binding Peak}" Focusable="False"
+                    AutomationProperties.Name="{Binding VolumeName}" ToolTip="{Binding Name}" />
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding VolumeText}" FontFamily="{StaticResource Mixer.Mono}" FontSize="11"
+                       TextAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Mx.Muted}" />
+            <Button Grid.RowSpan="2" Grid.Column="3" Style="{StaticResource Mixer.IconButton}" Width="32" Height="32" Margin="10,0,0,0"
+                    Tag="{Binding Muted}" Command="{Binding ToggleMuteCommand}" VerticalAlignment="Center"
+                    ToolTip="{DynamicResource Audio.MuteTip}" AutomationProperties.Name="{Binding MuteName}">
+                <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding MuteGlyph}" FontSize="12" />
+            </Button>
+        </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Muted}" Value="True">
+                <Setter TargetName="Volume" Property="Opacity" Value="0.35" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+</ResourceDictionary>

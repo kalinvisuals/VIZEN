@@ -1,0 +1,29 @@
+<Window x:Class="VIZEN.App.Views.OutputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:OutputViewModel}"
+        Title="{Binding WindowTitle}"
+        Width="640" Height="360" MinWidth="64" MinHeight="36"
+        WindowStyle="None" ResizeMode="CanResize" ShowActivated="False"
+        Background="{Binding BackgroundBrush}" UseLayoutRounding="True">
+
+    <!-- Clean output: no title bar, no border, no controls — only content. Edges stay resizable (invisible). -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid Background="Transparent" MouseLeftButtonDown="OnContentMouseLeftButtonDown">
+        <!-- Source frame cropped to the region on the GPU; Stretch follows the chosen fit mode -->
+        <Rectangle RenderOptions.BitmapScalingMode="HighQuality">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="{Binding Capture.Frame}" Viewbox="{Binding Viewbox}"
+                            ViewboxUnits="RelativeToBoundingBox" Stretch="{Binding Stretch}" />
+            </Rectangle.Fill>
+        </Rectangle>
+    </Grid>
+</Window>

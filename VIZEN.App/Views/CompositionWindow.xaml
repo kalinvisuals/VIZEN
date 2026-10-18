@@ -1,0 +1,85 @@
+<Window x:Class="VIZEN.App.Views.CompositionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+        xmlns:views="clr-namespace:VIZEN.App.Views"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:CompositionViewModel}"
+        Title="{Binding WindowTitle}"
+        Width="960" Height="540" MinWidth="160" MinHeight="90"
+        WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="True"
+        Background="{Binding BackgroundBrush}" Foreground="White"
+        FontFamily="{StaticResource Font.UI}" UseLayoutRounding="True">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid Background="Transparent" MouseLeftButtonDown="OnBackgroundMouseDown">
+        <Viewbox Stretch="Uniform">
+            <Grid Width="{Binding CanvasWidth}" Height="{Binding CanvasHeight}" Background="{Binding BackgroundBrush}" ClipToBounds="True">
+                <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding PixelX}" />
+                            <Setter Property="Canvas.Top" Value="{Binding PixelY}" />
+                            <Setter Property="Width" Value="{Binding PixelWidth}" />
+                            <Setter Property="Height" Value="{Binding PixelHeight}" />
+                            <Setter Property="Panel.ZIndex" Value="{Binding ZIndex}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:CompositionItemViewModel}">
+                            <Grid>
+                                <!-- Content -->
+                                <Grid Opacity="{Binding Opacity}">
+                                    <Rectangle Visibility="{Binding Capture, Converter={StaticResource NullToVisibility}}" RenderOptions.BitmapScalingMode="Linear">
+                                        <Rectangle.Fill>
+                                            <ImageBrush ImageSource="{Binding Capture.Frame}" Viewbox="{Binding Viewbox}"
+                                                        ViewboxUnits="RelativeToBoundingBox" Stretch="Uniform" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <views:CompositionMediaHost Visibility="{Binding IsMedia, Converter={StaticResource BoolToVisibility}}" />
+                                </Grid>
+
+                                <!-- Edit handles (only in edit mode; OBS would capture them) -->
+                                <Grid Visibility="{Binding DataContext.IsEditing, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}">
+                                    <Rectangle Stroke="#FFFF354E" StrokeThickness="4" StrokeDashArray="3 2" Fill="#22FF354E" />
+                                    <Thumb Cursor="SizeAll" DragDelta="OnMoveDelta">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="Transparent" />
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                    <Border HorizontalAlignment="Left" VerticalAlignment="Top" Background="#E00A0D14" Padding="10,6" IsHitTestVisible="False">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontSize="26" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding BoundsText}" FontSize="20" Foreground="#FFB8C2D6" />
+                                            <TextBlock Text="{Binding MissingText}" FontSize="20" Foreground="#FFF5B547" TextWrapping="Wrap" MaxWidth="600"
+                                                       Visibility="{Binding MissingText, Converter={StaticResource NullToVisibility}}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <Thumb Width="44" Height="44" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" DragDelta="OnResizeDelta">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="#FFFF354E" BorderBrush="White" BorderThickness="3" />
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</Window>

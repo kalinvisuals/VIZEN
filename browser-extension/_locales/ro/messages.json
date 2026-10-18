@@ -1,0 +1,14 @@
+{
+  "extName": { "message": "VIZEN Connector" },
+  "extDescription": { "message": "Arată taburile tale în aplicația VIZEN de pe acest PC: treci la un tab, pune-l pe mute, deschide-l în fereastră separată sau oglindește-l live pentru captură. Nimic nu pleacă de pe calculator." },
+  "popupIntro": { "message": "Taburile tale apar în VIZEN (doar numele site-ului și titlul; taburile incognito nu se trimit niciodată)." },
+  "popupConnected": { "message": "Conectat" },
+  "popupNotConnected": { "message": "VIZEN nu e conectat" },
+  "popupMirror": { "message": "Oglindește live acest tab pentru VIZEN" },
+  "popupMirrorHint": { "message": "Deschide o fereastră mică ce arată acest tab live, chiar dacă tabul e în fundal. În VIZEN, alege fereastra (VIZEN Tab · …) ca sursă. Dacă o minimizezi, trece în spatele browserului (Windows nu poate captura ferestre minimizate). Închide-o ca să oprești." },
+  "popupMirrorFailed": { "message": "Tabul nu a putut fi oglindit:" },
+  "mirrorEnded": { "message": "Tabul a fost închis sau nu mai e partajat. Poți închide această fereastră." },
+  "mirrorFailed": { "message": "Tabul nu a putut fi afișat:" },
+  "mirrorKeepText": { "message": "Chrome oprește această fereastră când e acoperită complet de alte ferestre. Permite o dată ca să rămână live în VIZEN chiar și în spatele altor ferestre." },
+  "mirrorKeepButton": { "message": "Păstrează live" }
+}

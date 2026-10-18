@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- Windows SDK suffix provides the WinRT projections for Windows.Graphics.Capture. Still .NET 10 WPF. -->
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms only for the notification-area icon (NotifyIcon); its namespaces are not imported globally. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets\vizen.ico</ApplicationIcon>
+    <!-- DPI awareness comes from app.manifest (WPF); WinForms only provides the tray icon. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>VIZEN.App</AssemblyName>
+    <RootNamespace>VIZEN.App</RootNamespace>
+    <Product>VIZEN</Product>
+    <AssemblyTitle>VIZEN</AssemblyTitle>
+    <Company>kalinvisuals</Company>
+    <Authors>kalinvisuals</Authors>
+    <Copyright>Copyright (C) 2026 kalinvisuals. Licensed under GPL-3.0.</Copyright>
+    <Version>0.4.4</Version>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Program.Main: the browser extension's native host runs without WPF; otherwise the App starts as before. -->
+    <StartupObject>VIZEN.App.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Resource Include="Assets\vizen.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The VIZEN Connector browser extension ships next to the app (the user adds it to Chrome / Edge / Brave). -->
+    <None Include="..\browser-extension\**\*" LinkBase="browser-extension" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <!-- GPL-3.0: the licence text ships next to the program (and so in the installer). -->
+    <None Include="..\LICENSE" Link="LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+    <PackageReference Include="NAudio" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,86 @@
+﻿<Window x:Class="VIZEN.App.Views.MediaLayerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+        xmlns:views="clr-namespace:VIZEN.App.Views"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MediaLayerViewModel}"
+        Title="{Binding WindowTitle}"
+        Width="320" Height="180" MinWidth="24" MinHeight="24"
+        WindowStyle="None" ResizeMode="CanResize" Topmost="True"
+        ShowInTaskbar="False" ShowActivated="False"
+        Background="Black" Foreground="{DynamicResource Brush.TextPrimary}"
+        FontFamily="{StaticResource Font.UI}" FontSize="12"
+        UseLayoutRounding="True">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <!-- Nearly-invisible fill keeps the whole rectangle draggable on transparent layers. -->
+    <Grid x:Name="Root" Background="#01000000" MouseLeftButtonDown="OnRootMouseLeftButtonDown">
+        <Grid x:Name="Stage" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="StageScale" />
+                    <TranslateTransform x:Name="StageShift" />
+                </TransformGroup>
+            </Grid.RenderTransform>
+            <views:MediaContentView x:Name="Media" />
+        </Grid>
+
+        <!-- Error / loading text (only when there is nothing to show) -->
+        <TextBlock x:Name="Message" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="12"
+                   TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.TextSecondary}" Visibility="Collapsed" />
+
+        <!-- Hover chrome (overlays only, never on OBS outputs) -->
+        <Grid x:Name="HoverChrome">
+            <Border IsHitTestVisible="False" BorderThickness="1" BorderBrush="{DynamicResource Brush.Accent}">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Opacity" Value="0" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMouseOver, ElementName=Root}" Value="True">
+                                <Setter Property="Opacity" Value="0.9" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            <Border VerticalAlignment="Top" Height="28" Background="#E00A0D14">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, ElementName=Root}" Value="True" />
+                                    <Condition Binding="{Binding ActualHeight, ElementName=Root, Converter={StaticResource AtLeast}, ConverterParameter=60}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Visible" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Name}" Margin="10,0,8,0" VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" FontWeight="SemiBold" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource Text.Icon}" Text="&#xE72E;" FontSize="11" Margin="0,0,8,0"
+                               Foreground="{DynamicResource Brush.TextTertiary}" ToolTip="{DynamicResource Media.Locked}"
+                               Visibility="{Binding Locked, Converter={StaticResource BoolToVisibility}}" />
+                    <Button Grid.Column="2" Style="{StaticResource Button.CaptionClose}" Width="32" Height="28"
+                            Content="&#xE8BB;" ToolTip="{DynamicResource Media.HideLayer}" AutomationProperties.Name="{DynamicResource Media.HideLayer}"
+                            Click="OnHideClick" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

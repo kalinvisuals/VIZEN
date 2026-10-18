@@ -1,0 +1,254 @@
+<UserControl x:Class="VIZEN.App.Views.NotesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:NotesViewModel}"
+             d:DesignWidth="1000" d:DesignHeight="800">
+
+    <UserControl.Resources>
+        <Style x:Key="ToggleRow" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Margin" Value="0,0,22,8" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style x:Key="SmallIconButton" TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="36,4,36,36" Style="{StaticResource Page.Root}">
+
+            <!-- Header -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{DynamicResource Notes.Title}" Style="{StaticResource Text.PageTitle}" />
+                <Border Style="{StaticResource Badge.Info}" Margin="14,4,0,0">
+                    <TextBlock Text="{Binding SummaryText}" />
+                </Border>
+            </StackPanel>
+            <TextBlock Style="{StaticResource Text.Body}" Margin="0,6,0,0" Text="{DynamicResource Notes.Subtitle}" TextWrapping="Wrap" MaxWidth="880" HorizontalAlignment="Left" />
+
+            <!-- Actions -->
+            <Border Style="{StaticResource Card}" Margin="0,22,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,24,0" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Notes.CreateHeader}" Style="{StaticResource Text.Title}" />
+                        <TextBlock Text="{DynamicResource Notes.CreateHint}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <WrapPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding ToggleEditModeCommand}" Margin="0,4,10,4"
+                                ToolTip="{DynamicResource Notes.EditModeTip}" AutomationProperties.Name="{DynamicResource Notes.EditMode}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE70F;" FontSize="12" />
+                                <TextBlock Text="{DynamicResource Notes.EditMode}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding HideAllCommand}" Margin="0,4,10,4"
+                                Content="{DynamicResource Notes.HideAll}" AutomationProperties.Name="{DynamicResource Notes.HideAll}" />
+                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding ShowAllCommand}" Margin="0,4,10,4"
+                                Content="{DynamicResource Notes.ShowAll}" AutomationProperties.Name="{DynamicResource Notes.ShowAll}" />
+                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding NewChecklistCommand}" Margin="0,4,10,4"
+                                AutomationProperties.Name="{DynamicResource Notes.NewChecklist}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE9D5;" FontSize="12" />
+                                <TextBlock Text="{DynamicResource Notes.NewChecklist}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Primary}" Command="{Binding NewTextCommand}" Margin="0,4,0,4"
+                                AutomationProperties.Name="{DynamicResource Notes.NewText}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE710;" FontSize="12" />
+                                <TextBlock Text="{DynamicResource Notes.NewText}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+            <TextBlock Text="{DynamicResource Notes.HotkeyHint}" Style="{StaticResource Text.Caption}" Margin="2,10,0,0" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Danger}" Margin="2,8,0,0" TextWrapping="Wrap"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibility}}" />
+
+            <!-- Empty state -->
+            <Border Style="{StaticResource Card}" Margin="0,22,0,0" Padding="28"
+                    Visibility="{Binding HasNotes, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE70B;" FontSize="28" Foreground="{DynamicResource Brush.TextTertiary}" />
+                    <TextBlock Text="{DynamicResource Notes.Empty}" Margin="0,12,0,0" Foreground="{DynamicResource Brush.TextSecondary}"
+                               TextWrapping="Wrap" TextAlignment="Center" MaxWidth="520" />
+                </StackPanel>
+            </Border>
+
+            <!-- Notes -->
+            <ItemsControl ItemsSource="{Binding Notes}" Margin="0,22,0,0" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:NoteViewModel}">
+                        <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12">
+                            <StackPanel>
+                                <!-- Header row: kind, title (rename), show / convert / delete -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource IconChip}" VerticalAlignment="Top">
+                                        <TextBlock FontSize="15">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource Text.Icon}">
+                                                    <Setter Property="Text" Value="&#xE70B;" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsChecklist}" Value="True">
+                                                            <Setter Property="Text" Value="&#xE9D5;" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="14,0,16,0" VerticalAlignment="Center">
+                                        <TextBox Text="{Binding Title, UpdateSourceTrigger=LostFocus}" Style="{StaticResource TextBox.Input}"
+                                                 Height="32" MaxWidth="380" MinWidth="220" HorizontalAlignment="Left" FontWeight="SemiBold"
+                                                 AutomationProperties.Name="{DynamicResource Notes.TitleLabel}" ToolTip="{DynamicResource Notes.TitleTip}" />
+                                        <TextBlock Margin="2,6,0,0" Foreground="{DynamicResource Brush.TextSecondary}" Text="{Binding DetailText}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsConfirmingDelete, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                            <StackPanel Style="{StaticResource ToggleRow}" Margin="0,0,14,0" VerticalAlignment="Center">
+                                                <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding IsShown}"
+                                                          AutomationProperties.Name="{DynamicResource Notes.OnScreen}" />
+                                                <TextBlock Text="{DynamicResource Notes.OnScreen}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding ConvertCommand}" Margin="0,0,4,0"
+                                                    ToolTip="{DynamicResource Notes.ConvertTip}" AutomationProperties.Name="{DynamicResource Notes.Convert}">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8AB;" FontSize="13" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding DeleteCommand}"
+                                                    ToolTip="{DynamicResource Notes.Delete}" AutomationProperties.Name="{DynamicResource Notes.Delete}">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE74D;" FontSize="13" />
+                                            </Button>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsConfirmingDelete, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Text="{DynamicResource Notes.ConfirmDelete}" VerticalAlignment="Center" Margin="0,0,12,0"
+                                                       Foreground="{DynamicResource Brush.TextSecondary}" />
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding CancelDeleteCommand}" Margin="0,0,6,0"
+                                                    AutomationProperties.Name="{DynamicResource Common.Cancel}">
+                                                <TextBlock Text="{DynamicResource Common.Cancel}" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding ConfirmDeleteCommand}"
+                                                    Background="#33E5484D" BorderBrush="#66E5484D" AutomationProperties.Name="{DynamicResource Notes.DeleteConfirm}">
+                                                <TextBlock Text="{DynamicResource Notes.DeleteConfirm}" Foreground="{DynamicResource Brush.Danger}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Window settings -->
+                                <WrapPanel Margin="0,16,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,26,8">
+                                        <TextBlock Text="{DynamicResource Gaming.Opacity}" Foreground="{DynamicResource Brush.TextSecondary}"
+                                                   VerticalAlignment="Center" Margin="0,0,12,0" />
+                                        <Slider Style="{StaticResource Slider.Modern}" Width="150" Minimum="0.2" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                                                Value="{Binding Opacity}" AutomationProperties.Name="{DynamicResource Gaming.Opacity}" />
+                                        <TextBlock Text="{Binding OpacityText}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10,0,0,0" MinWidth="40" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Notes.AlwaysOnTopTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding AlwaysOnTop}" AutomationProperties.Name="{DynamicResource Notes.AlwaysOnTop}" />
+                                        <TextBlock Text="{DynamicResource Notes.AlwaysOnTop}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Notes.LockTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Locked}" AutomationProperties.Name="{DynamicResource Notes.Lock}" />
+                                        <TextBlock Text="{DynamicResource Notes.Lock}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Notes.ClickThroughTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding ClickThrough}" AutomationProperties.Name="{DynamicResource Gaming.ClickThrough}" />
+                                        <TextBlock Text="{DynamicResource Gaming.ClickThrough}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </WrapPanel>
+
+                                <!-- Text note editor -->
+                                <TextBox Style="{StaticResource TextBox.Bare}" Margin="0,8,0,0" Padding="10,8" MinHeight="90" MaxHeight="260"
+                                         Background="{DynamicResource Brush.Background}"
+                                         Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Notes.TextPlaceholder}"
+                                         AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="False"
+                                         AutomationProperties.Name="{DynamicResource Notes.TextLabel}"
+                                         Visibility="{Binding IsText, Converter={StaticResource BoolToVisibility}}" />
+
+                                <!-- Checklist editor -->
+                                <StackPanel Margin="0,8,0,0" Visibility="{Binding IsChecklist, Converter={StaticResource BoolToVisibility}}">
+                                    <ItemsControl ItemsSource="{Binding Items}" Focusable="False">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type vm:ChecklistItemViewModel}">
+                                                <Grid Margin="0,1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <CheckBox Style="{StaticResource CheckBox.Tick}" IsChecked="{Binding Done}" Margin="4,0,0,0"
+                                                              AutomationProperties.Name="{Binding Text}" />
+                                                    <TextBox x:Name="ItemText" Grid.Column="1" Style="{StaticResource TextBox.Bare}" Margin="8,0,8,0" Padding="6,4"
+                                                             Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" />
+                                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                        <Button Style="{StaticResource SmallIconButton}" Command="{Binding MoveUpCommand}" FontSize="10"
+                                                                Content="&#xE70E;" ToolTip="{DynamicResource Notes.MoveUp}" AutomationProperties.Name="{DynamicResource Notes.MoveUp}" />
+                                                        <Button Style="{StaticResource SmallIconButton}" Command="{Binding MoveDownCommand}" FontSize="10"
+                                                                Content="&#xE70D;" ToolTip="{DynamicResource Notes.MoveDown}" AutomationProperties.Name="{DynamicResource Notes.MoveDown}" />
+                                                        <Button Style="{StaticResource SmallIconButton}" Command="{Binding RemoveCommand}" FontSize="9"
+                                                                Content="&#xE711;" ToolTip="{DynamicResource Notes.RemoveItem}" AutomationProperties.Name="{DynamicResource Notes.RemoveItem}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Done}" Value="True">
+                                                        <Setter TargetName="ItemText" Property="Foreground" Value="{DynamicResource Brush.TextTertiary}" />
+                                                        <Setter TargetName="ItemText" Property="TextDecorations" Value="Strikethrough" />
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Grid Margin="0,6,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Style="{StaticResource TextBox.Input}" Height="34"
+                                                 Text="{Binding NewItemText, UpdateSourceTrigger=PropertyChanged}" Tag="{DynamicResource Notes.AddItemPlaceholder}"
+                                                 AutomationProperties.Name="{DynamicResource Notes.AddItemPlaceholder}">
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Key="Enter" Command="{Binding AddItemCommand}" />
+                                            </TextBox.InputBindings>
+                                        </TextBox>
+                                        <Button Grid.Column="1" Style="{StaticResource Button.Secondary}" Command="{Binding AddItemCommand}" Margin="8,0,0,0" Padding="12,5"
+                                                Content="{DynamicResource Notes.AddItem}" AutomationProperties.Name="{DynamicResource Notes.AddItem}" />
+                                        <Button Grid.Column="2" Style="{StaticResource Button.Ghost}" Command="{Binding ClearDoneCommand}" Margin="4,0,0,0" Padding="10,5"
+                                                Content="{DynamicResource Notes.ClearDone}" AutomationProperties.Name="{DynamicResource Notes.ClearDone}" />
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Style="{StaticResource Text.Caption}" Margin="2,4,0,0" TextWrapping="Wrap"
+                       Visibility="{Binding HasNotes, Converter={StaticResource BoolToVisibility}}">
+                <Run Text="{DynamicResource Notes.StoredIn}" />
+                <Run Text="{Binding StorageLocation, Mode=OneWay}" FontFamily="{StaticResource Font.Mono}" />
+            </TextBlock>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

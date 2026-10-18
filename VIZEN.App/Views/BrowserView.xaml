@@ -1,0 +1,284 @@
+﻿<UserControl x:Class="VIZEN.App.Views.BrowserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:BrowserSourcesViewModel}"
+             d:DesignWidth="1000" d:DesignHeight="800">
+
+    <UserControl.Resources>
+        <Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource Button.Secondary}">
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Margin" Value="0,0,6,8" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="36,4,36,36" Style="{StaticResource Page.Root}">
+            <TextBlock Text="{DynamicResource Browser.Title}" Style="{StaticResource Text.PageTitle}" />
+            <TextBlock Style="{StaticResource Text.Body}" Margin="0,6,0,0" TextWrapping="Wrap" Text="{DynamicResource Browser.Subtitle}" />
+
+            <!-- VIZEN Connector extension: every tab of Chrome / Edge / Brave in VIZEN -->
+            <Border Style="{StaticResource Card}" Margin="0,22,0,0" DataContext="{Binding Extension}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="40" Height="40" CornerRadius="12" Background="{DynamicResource Brush.Mx.Invert}" VerticalAlignment="Top">
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xEA86;" FontSize="17" Foreground="{DynamicResource Brush.Mx.InvertText}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="14,0,16,0">
+                            <TextBlock Text="{DynamicResource Tabs.Title}" Style="{StaticResource Text.Title}" />
+                            <TextBlock Text="{DynamicResource Tabs.Description}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
+                            <Button Style="{StaticResource Mixer.PillButton}" Tag="{StaticResource Mixer.True}" Command="{Binding ConnectCommand}"
+                                    Content="{DynamicResource Tabs.Connect}" AutomationProperties.Name="{DynamicResource Tabs.Connect}"
+                                    Visibility="{Binding IsRegistered, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                            <Button Style="{StaticResource Mixer.PillButton}" Command="{Binding DisconnectCommand}"
+                                    Content="{DynamicResource Tabs.Disconnect}" AutomationProperties.Name="{DynamicResource Tabs.Disconnect}"
+                                    Visibility="{Binding IsRegistered, Converter={StaticResource BoolToVisibility}}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Status -->
+                    <Border CornerRadius="16" BorderThickness="1" Padding="14,8" Margin="0,16,0,0"
+                            Background="{DynamicResource Brush.Mx.Raised}" BorderBrush="{DynamicResource Brush.Mx.Line}">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" VerticalAlignment="Center">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="{DynamicResource Brush.Mx.Faint}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsRegistered}" Value="True">
+                                                <Setter Property="Fill" Value="{DynamicResource Brush.Warning}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsBrowserConnected}" Value="True">
+                                                <Setter Property="Fill" Value="{DynamicResource Brush.Success}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="{Binding StatusText}" Margin="10,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource Brush.Danger}" Margin="2,8,0,0" TextWrapping="Wrap"
+                               Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibility}}" />
+
+                    <!-- Steps -->
+                    <TextBlock Text="{DynamicResource Tabs.HowTo}" FontWeight="SemiBold" Margin="2,18,0,10" />
+                    <Grid Margin="2,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="28" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="01" FontFamily="{StaticResource Mixer.Mono}" FontSize="12" Foreground="{DynamicResource Brush.Mx.Faint}" Margin="0,2,0,10" />
+                        <TextBlock Grid.Column="1" Text="{DynamicResource Tabs.Step1}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                        <TextBlock Grid.Row="1" Text="02" FontFamily="{StaticResource Mixer.Mono}" FontSize="12" Foreground="{DynamicResource Brush.Mx.Faint}" Margin="0,2,0,10" />
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="{DynamicResource Tabs.Step2}" TextWrapping="Wrap" />
+                            <WrapPanel Margin="0,8,0,0">
+                                <Button Style="{StaticResource Mixer.PillButton}" Height="32" Margin="0,0,8,0" Command="{Binding CopyChromeAddressCommand}"
+                                        Content="{DynamicResource Tabs.CopyChrome}" AutomationProperties.Name="{DynamicResource Tabs.CopyChrome}" />
+                                <Button Style="{StaticResource Mixer.PillButton}" Height="32" Command="{Binding CopyEdgeAddressCommand}"
+                                        Content="{DynamicResource Tabs.CopyEdge}" AutomationProperties.Name="{DynamicResource Tabs.CopyEdge}" />
+                            </WrapPanel>
+                        </StackPanel>
+                        <TextBlock Grid.Row="2" Text="03" FontFamily="{StaticResource Mixer.Mono}" FontSize="12" Foreground="{DynamicResource Brush.Mx.Faint}" Margin="0,2,0,10" />
+                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,10">
+                            <TextBlock Text="{DynamicResource Tabs.Step3}" TextWrapping="Wrap" />
+                            <WrapPanel Margin="0,8,0,0">
+                                <Button Style="{StaticResource Mixer.PillButton}" Height="32" Margin="0,0,10,0" Command="{Binding OpenFolderCommand}"
+                                        Content="{DynamicResource Tabs.OpenFolder}" AutomationProperties.Name="{DynamicResource Tabs.OpenFolder}" />
+                                <TextBlock Text="{Binding ExtensionFolder}" FontFamily="{StaticResource Mixer.Mono}" FontSize="11" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Brush.Mx.Faint}" TextTrimming="CharacterEllipsis" />
+                            </WrapPanel>
+                        </StackPanel>
+                        <TextBlock Grid.Row="3" Text="04" FontFamily="{StaticResource Mixer.Mono}" FontSize="12" Foreground="{DynamicResource Brush.Mx.Faint}" Margin="0,2,0,0" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{DynamicResource Tabs.Step4}" TextWrapping="Wrap" />
+                    </Grid>
+                    <TextBlock Text="{DynamicResource Tabs.Privacy}" Style="{StaticResource Text.Caption}" Margin="2,16,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- Add -->
+            <Border Style="{StaticResource Card}" Margin="0,22,0,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Browser.AddHeader}" Style="{StaticResource Text.Title}" />
+                    <TextBlock Text="{DynamicResource Browser.AddHint}" Style="{StaticResource Text.Caption}" Margin="0,4,0,12" TextWrapping="Wrap" />
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource Button.Primary}" Command="{Binding AddCommand}" Margin="10,0,0,0"
+                                AutomationProperties.Name="{DynamicResource Browser.Add}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE710;" FontSize="12" Foreground="White" />
+                                <TextBlock Text="{DynamicResource Browser.Add}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <TextBox Text="{Binding NewAddress, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBox.Input}" Height="34"
+                                 Tag="https://www.youtube.com/watch?v=…" AutomationProperties.Name="{DynamicResource Browser.AddressLabel}">
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding AddCommand}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </DockPanel>
+                    <TextBlock Margin="0,10,0,0" TextWrapping="Wrap" FontSize="12">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource Brush.TextTertiary}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRuntimeAvailable}" Value="False">
+                                        <Setter Property="Foreground" Value="{DynamicResource Brush.Warning}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        <Run Text="{Binding RuntimeText, Mode=OneWay}" /><Run Text="  ·  " /><Run Text="{DynamicResource Browser.ProfileAt}" /><Run Text=" " /><Run Text="{Binding ProfileLocation, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="0,14,0,0" Padding="14,10" CornerRadius="10" Background="#1FE5484D" BorderBrush="#40E5484D" BorderThickness="1"
+                    Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibility}}">
+                <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding Items}" Margin="0,20,0,0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:BrowserSourceViewModel}">
+                        <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=LostFocus}" Style="{StaticResource TextBox.Input}" Height="32"
+                                                 MinWidth="240" MaxWidth="380" HorizontalAlignment="Left" FontWeight="SemiBold"
+                                                 AutomationProperties.Name="{DynamicResource Browser.NameLabel}" />
+                                        <TextBlock Text="{Binding StatusText}" Margin="0,6,0,0" TextWrapping="Wrap">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasError}" Value="True">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Brush.Danger}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBox Text="{Binding WindowTitle, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource TextBox.Input}" Height="30" Margin="0,8,0,0"
+                                                 FontFamily="{StaticResource Font.Mono}" FontSize="12" MaxWidth="460" HorizontalAlignment="Left"
+                                                 ToolTip="{DynamicResource Browser.TitleTip}" AutomationProperties.Name="Window title" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsConfirmingDelete, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                            <Button Style="{StaticResource Button.Primary}" Command="{Binding OpenCommand}" Margin="0,0,6,0" AutomationProperties.Name="{DynamicResource Composition.Open}">
+                                                <TextBlock Text="{DynamicResource Composition.Open}" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding BringToFrontCommand}" Margin="0,0,6,0" AutomationProperties.Name="{DynamicResource Capture.ShowSource}">
+                                                <TextBlock Text="{DynamicResource Capture.ShowSource}" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding CloseCommand}" Margin="0,0,6,0" AutomationProperties.Name="{DynamicResource Common.Close}">
+                                                <TextBlock Text="{DynamicResource Common.Close}" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding DeleteCommand}" ToolTip="{DynamicResource Browser.Delete}" AutomationProperties.Name="{DynamicResource Browser.Delete}">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE74D;" FontSize="13" />
+                                            </Button>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsConfirmingDelete, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Text="{DynamicResource Browser.ConfirmDelete}" VerticalAlignment="Center" Margin="0,0,12,0" Foreground="{DynamicResource Brush.TextSecondary}" />
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding CancelDeleteCommand}" Margin="0,0,6,0" AutomationProperties.Name="{DynamicResource Common.Cancel}">
+                                                <TextBlock Text="{DynamicResource Common.Cancel}" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding ConfirmDeleteCommand}" Background="#33E5484D" BorderBrush="#66E5484D"
+                                                    AutomationProperties.Name="{DynamicResource Common.Delete}">
+                                                <TextBlock Text="{DynamicResource Common.Delete}" Foreground="{DynamicResource Brush.Danger}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Address -->
+                                <DockPanel Margin="0,12,0,0">
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="8,0,0,0">
+                                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding GoCommand}" Margin="0,0,6,0" AutomationProperties.Name="{DynamicResource Browser.Go}">
+                                            <TextBlock Text="{DynamicResource Browser.Go}" />
+                                        </Button>
+                                        <Button Style="{StaticResource Button.Ghost}" Command="{Binding BackCommand}" Padding="8,4" ToolTip="{DynamicResource Browser.Back}" AutomationProperties.Name="{DynamicResource Browser.Back}">
+                                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72B;" FontSize="12" />
+                                        </Button>
+                                        <Button Style="{StaticResource Button.Ghost}" Command="{Binding ReloadCommand}" Padding="8,4" ToolTip="{DynamicResource Browser.Reload}" AutomationProperties.Name="{DynamicResource Browser.Reload}">
+                                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72C;" FontSize="12" />
+                                        </Button>
+                                    </StackPanel>
+                                    <TextBox Text="{Binding AddressText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBox.Input}" Height="32"
+                                             FontFamily="{StaticResource Font.Mono}" FontSize="12" AutomationProperties.Name="{DynamicResource Browser.AddressLabel}">
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding GoCommand}" />
+                                        </TextBox.InputBindings>
+                                    </TextBox>
+                                </DockPanel>
+
+                                <!-- Chat helpers, size, zoom, audio -->
+                                <WrapPanel Margin="0,12,0,0">
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding YouTubeChatCommand}" ToolTip="{DynamicResource Browser.YouTubeChatTip}"
+                                            AutomationProperties.Name="{DynamicResource Browser.YouTubeChat}" Content="{DynamicResource Browser.YouTubeChat}" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding TwitchChatCommand}" Margin="0,0,22,8" ToolTip="{DynamicResource Browser.TwitchChatTip}"
+                                            AutomationProperties.Name="{DynamicResource Browser.TwitchChat}" Content="{DynamicResource Browser.TwitchChat}" />
+                                    <TextBlock Text="{DynamicResource Composition.WindowSize}" Foreground="{DynamicResource Brush.TextSecondary}" VerticalAlignment="Center" Margin="0,0,10,8" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding SizePresetCommand}" CommandParameter="chat" Content="400 × 720" AutomationProperties.Name="400 x 720" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding SizePresetCommand}" CommandParameter="square" Content="720 × 720" AutomationProperties.Name="720 x 720" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding SizePresetCommand}" CommandParameter="720p" Content="1280 × 720" AutomationProperties.Name="1280 x 720" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding SizePresetCommand}" CommandParameter="1080p" Margin="0,0,22,8" Content="1920 × 1080" AutomationProperties.Name="1920 x 1080" />
+                                </WrapPanel>
+                                <WrapPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,22,8">
+                                        <TextBlock Text="{DynamicResource Browser.Zoom}" Foreground="{DynamicResource Brush.TextSecondary}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                        <Slider Style="{StaticResource Slider.Modern}" Width="140" Minimum="0.25" Maximum="3" SmallChange="0.05" LargeChange="0.25"
+                                                Value="{Binding Zoom}" VerticalAlignment="Center" AutomationProperties.Name="{DynamicResource Browser.Zoom}" />
+                                        <TextBlock Text="{Binding ZoomText}" Margin="10,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,22,8" Background="Transparent" ToolTip="{DynamicResource Browser.MuteTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Muted}" AutomationProperties.Name="{DynamicResource Media.Mute}" />
+                                        <TextBlock Text="{DynamicResource Media.Mute}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,22,8" Background="Transparent" ToolTip="{DynamicResource Browser.FramedTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Framed}" AutomationProperties.Name="{DynamicResource Browser.Framed}" />
+                                        <TextBlock Text="{DynamicResource Browser.Framed}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8" Background="Transparent" ToolTip="{DynamicResource Browser.AutoOpenTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding AutoOpen}" AutomationProperties.Name="{DynamicResource Composition.AutoOpen}" />
+                                        <TextBlock Text="{DynamicResource Composition.AutoOpen}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Honest notes -->
+            <TextBlock Text="{DynamicResource Browser.NotesHeader}" Style="{StaticResource Text.Overline}" Margin="0,20,0,10" />
+            <Border Style="{StaticResource Card}">
+                <TextBlock Text="{DynamicResource Browser.Notes}" Style="{StaticResource Text.Body}" TextWrapping="Wrap" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

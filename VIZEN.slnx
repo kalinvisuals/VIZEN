@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="VIZEN.App/VIZEN.App.csproj" />
+  <Project Path="VIZEN.Tests/VIZEN.Tests.csproj" />
+</Solution>

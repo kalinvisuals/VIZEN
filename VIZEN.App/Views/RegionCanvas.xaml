@@ -1,0 +1,17 @@
+<UserControl x:Class="VIZEN.App.Views.RegionCanvas"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Focusable="True" FocusVisualStyle="{x:Null}">
+    <!-- Mouse input is handled on the whole host, so a drag may start in the letterbox margin around the
+         frame; positions are taken relative to Overlay and clamped to the frame. -->
+    <Grid x:Name="Host" Background="Transparent" SizeChanged="OnHostSizeChanged"
+          MouseLeftButtonDown="OnOverlayMouseDown" MouseMove="OnOverlayMouseMove"
+          MouseLeftButtonUp="OnOverlayMouseUp" LostMouseCapture="OnOverlayLostCapture">
+        <!-- Surface is sized and positioned to exactly cover the displayed frame (uniform fit). -->
+        <Grid x:Name="Surface" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed">
+            <Image x:Name="FrameImage" Stretch="Fill" RenderOptions.BitmapScalingMode="Linear" />
+            <Path x:Name="Shade" Fill="#8C05070B" IsHitTestVisible="False" />
+            <Canvas x:Name="Overlay" Background="Transparent" Cursor="Cross" ClipToBounds="True" />
+        </Grid>
+    </Grid>
+</UserControl>

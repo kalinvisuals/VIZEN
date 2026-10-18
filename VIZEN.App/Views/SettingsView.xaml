@@ -1,0 +1,328 @@
+﻿<UserControl x:Class="VIZEN.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+             xmlns:views="clr-namespace:VIZEN.App.Views"
+             xmlns:svc="clr-namespace:VIZEN.App.Services"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
+             d:DesignWidth="1000" d:DesignHeight="900">
+
+    <UserControl.Resources>
+        <Style x:Key="SettingTitle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
+        </Style>
+        <Style x:Key="SettingDescription" TargetType="TextBlock" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+        </Style>
+        <Style x:Key="Divider" TargetType="Border">
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Background" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="Margin" Value="0,16" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="36,4,36,36" MaxWidth="880" HorizontalAlignment="Left" Style="{StaticResource Page.Root}">
+
+            <TextBlock Text="{DynamicResource Settings.Title}" Style="{StaticResource Text.PageTitle}" />
+            <TextBlock Style="{StaticResource Text.Body}" Margin="0,6,0,0" Text="{DynamicResource Settings.Subtitle}" />
+
+            <Border Margin="0,14,0,0" Padding="14,10" CornerRadius="10"
+                    Background="#1FE5484D" BorderBrush="#40E5484D" BorderThickness="1"
+                    Visibility="{Binding Settings.SaveError, Converter={StaticResource NullToVisibility}}">
+                <TextBlock Text="{Binding Settings.SaveError}" TextWrapping="Wrap" />
+            </Border>
+
+            <!-- ============ Appearance ============ -->
+            <TextBlock Text="{DynamicResource Settings.Appearance}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <!-- Language (implemented) -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Settings.Language}" Style="{StaticResource SettingTitle}" />
+                                <Border Style="{StaticResource Badge.Success}" Margin="10,0,0,0">
+                                    <TextBlock Text="{DynamicResource Badge.Saved}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource Settings.LanguageDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <Border Grid.Column="1" CornerRadius="10" Padding="3" VerticalAlignment="Center"
+                                Background="{DynamicResource Brush.Background}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton Style="{StaticResource RadioButton.Segment}" GroupName="Language" Content="English"
+                                             IsChecked="{Binding IsEnglish, Mode=TwoWay}" AutomationProperties.Name="English" />
+                                <RadioButton Style="{StaticResource RadioButton.Segment}" GroupName="Language" Content="Română"
+                                             IsChecked="{Binding IsRomanian, Mode=TwoWay}" AutomationProperties.Name="Română" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border Style="{StaticResource Divider}" />
+
+                    <!-- Theme -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Settings.Theme}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Settings.ThemeDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <Border Grid.Column="1" CornerRadius="10" Padding="3" VerticalAlignment="Center"
+                                Background="{DynamicResource Brush.Background}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton Style="{StaticResource RadioButton.Segment}" GroupName="Theme" Content="{DynamicResource Settings.ThemeDark}"
+                                             IsChecked="{Binding IsThemeDark, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Settings.ThemeDark}" />
+                                <RadioButton Style="{StaticResource RadioButton.Segment}" GroupName="Theme" Content="{DynamicResource Settings.ThemeLight}"
+                                             IsChecked="{Binding IsThemeLight, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Settings.ThemeLight}" />
+                                <RadioButton Style="{StaticResource RadioButton.Segment}" GroupName="Theme" Content="{DynamicResource Settings.ThemeSystem}"
+                                             IsChecked="{Binding IsThemeSystem, Mode=TwoWay}" AutomationProperties.Name="{DynamicResource Settings.ThemeSystem}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border Style="{StaticResource Divider}" />
+
+                    <!-- Accent -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Settings.Accent}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Settings.AccentDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Accents}" VerticalAlignment="Center">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:AccentOption}">
+                                    <Button Command="{Binding SelectCommand}" Margin="8,0,0,0" Cursor="Hand" ToolTip="{Binding DisplayName}"
+                                            AutomationProperties.Name="{Binding DisplayName}">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Width="28" Height="28" CornerRadius="14" Background="{Binding Swatch}" BorderThickness="2">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource Brush.TextPrimary}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>                </StackPanel>
+            </Border>
+
+            <!-- ============ Window sources ============ -->
+            <TextBlock Text="{DynamicResource Settings.Sources}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Settings.AutoRefresh}" Style="{StaticResource SettingTitle}" />
+                                <Border Style="{StaticResource Badge.Success}" Margin="10,0,0,0">
+                                    <TextBlock Text="{DynamicResource Badge.Saved}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource Settings.AutoRefreshDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}"
+                                  IsChecked="{Binding Settings.AutoRefreshSources}" AutomationProperties.Name="Auto-refresh sources" />
+                    </Grid>
+
+                    <Border Style="{StaticResource Divider}" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Settings.HideOwn}" Style="{StaticResource SettingTitle}" />
+                                <Border Style="{StaticResource Badge.Success}" Margin="10,0,0,0">
+                                    <TextBlock Text="{DynamicResource Badge.Saved}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource Settings.HideOwnDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}"
+                                  IsChecked="{Binding Settings.ExcludeOwnWindows}" AutomationProperties.Name="Hide VIZEN's own windows" />
+                    </Grid>
+
+                    <Border Style="{StaticResource Divider}" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Settings.IncludeMinimized}" Style="{StaticResource SettingTitle}" />
+                                <Border Style="{StaticResource Badge.Success}" Margin="10,0,0,0">
+                                    <TextBlock Text="{DynamicResource Badge.Saved}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource Settings.IncludeMinimizedDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}"
+                                  IsChecked="{Binding Settings.IncludeMinimizedWindows}" AutomationProperties.Name="Include minimized windows" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ============ Hotkeys ============ -->
+            <TextBlock Text="{DynamicResource Settings.Hotkeys}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource Settings.GlobalHotkeys}" Style="{StaticResource SettingTitle}" />
+                                <Border Style="{StaticResource Badge.Success}" Margin="10,0,0,0">
+                                    <TextBlock Text="{DynamicResource Badge.Saved}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource Settings.GlobalHotkeysDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}"
+                                  IsChecked="{Binding Settings.HotkeysEnabled}" AutomationProperties.Name="Global hotkeys" />
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding Hotkeys}" Margin="0,16,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:HotkeyRowViewModel}">
+                                <Border Padding="14,10" Margin="0,0,0,8" CornerRadius="10" Background="{DynamicResource Brush.Background}"
+                                        BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="270" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                            <views:HotkeyBox Gesture="{Binding GestureText}" Style="{StaticResource TextBox.Input}" Width="170" Height="30"
+                                                             FontFamily="{StaticResource Font.Mono}" FontSize="12"
+                                                             ToolTip="{DynamicResource Hotkey.ChangeTip}" AutomationProperties.Name="{Binding Name}" />
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding ResetCommand}" Margin="6,0,0,0" Padding="10,4"
+                                                    Content="{DynamicResource Hotkey.Reset}" AutomationProperties.Name="{DynamicResource Hotkey.Reset}" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource Brush.TextPrimary}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding StatusText}" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.TextTertiary}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsRegistered}" Value="True">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Brush.Success}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsConflict}" Value="True">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Brush.Warning}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="{DynamicResource Settings.CustomShortcuts}" Style="{StaticResource Text.Caption}" Margin="0,6,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- ============ General ============ -->
+            <TextBlock Text="{DynamicResource Settings.General}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Settings.LaunchAtSignIn}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Settings.LaunchAtSignInDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding LaunchAtSignIn}"
+                                  AutomationProperties.Name="{DynamicResource Settings.LaunchAtSignIn}" />
+                    </Grid>
+                    <Border Style="{StaticResource Divider}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,24,0">
+                            <TextBlock Text="{DynamicResource Settings.Tray}" Style="{StaticResource SettingTitle}" />
+                            <TextBlock Text="{DynamicResource Settings.TrayDescription}" Style="{StaticResource SettingDescription}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Settings.RunInTray}"
+                                  AutomationProperties.Name="{DynamicResource Settings.Tray}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+            <!-- ============ About ============ -->
+            <TextBlock Text="{DynamicResource Settings.About}" Style="{StaticResource Text.Overline}" Margin="0,28,0,10" />
+            <Border Style="{StaticResource Card}" Padding="24,22">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Width="56" Height="56" VerticalAlignment="Center">
+                        <Ellipse Fill="{DynamicResource Brush.AccentGradient}" />
+                        <Path Data="{StaticResource Geo.LogoMark}" Stretch="Uniform" Width="36"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0" Fill="White" />
+                    </Grid>
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center">
+                        <Path Data="{StaticResource Geo.LogoWordmark}" Fill="{DynamicResource Brush.TextPrimary}" Stretch="Fill"
+                              Width="110" Height="22" HorizontalAlignment="Left" AutomationProperties.Name="VIZEN" />
+                        <TextBlock Margin="0,9,0,0" Foreground="{DynamicResource Brush.TextSecondary}">
+                            <Run Text="{DynamicResource Shell.Tagline}" /><Run Text="  ·  " /><Run Text="{Binding VersionText, Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock Text="{DynamicResource Settings.Copyright}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

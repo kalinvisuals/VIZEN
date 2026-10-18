@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "short_name": "VIZEN",
+  "version": "1.0.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
+  "author": "kalinvisuals",
+  "homepage_url": "https://www.vizen.ro",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3d3p4/toqxb7sK4RsiC15OmXOxR+9/wCToLrxhIdqE/RSfkMXzPJjn8w0qPf2chzHgieH15Xo6k2nq8fzI/W8FgaXV6BNK94pg2Wf6KfRLlNAmVNL2BBOKYWI+iCIw7Q728MJiFsiDBGAxgSSc3mr7UD/K8n9IqN8MlrucLxRyp2uOMtvKQS1+KCG/Inl9Ix8wrQp/5QFn5QHAEpIsa9Em1v3fpNArCt9SR2LafpVXZVzMdxjCvCTKpZdRyyl/1nBpamMb+RP5ZyUq3zB/G/Zrk3HAUELrgTkjk1V9bhDtLwcPQklGbQo0VD0N4ctAO/PjmWrLjgfCzBFI8sKMQFtQIDAQAB",
+  "minimum_chrome_version": "116",
+  "permissions": ["tabs", "nativeMessaging", "tabCapture"],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "VIZEN",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+}

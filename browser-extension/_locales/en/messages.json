@@ -1,0 +1,14 @@
+{
+  "extName": { "message": "VIZEN Connector" },
+  "extDescription": { "message": "Shows your tabs in the VIZEN app on this PC: switch to a tab, mute it, open it in its own window or mirror it live for capture. Nothing leaves your computer." },
+  "popupIntro": { "message": "Your tabs appear in VIZEN (site name and title only; incognito tabs are never shared)." },
+  "popupConnected": { "message": "Connected" },
+  "popupNotConnected": { "message": "VIZEN not connected" },
+  "popupMirror": { "message": "Mirror this tab live for VIZEN" },
+  "popupMirrorHint": { "message": "Opens a small window that shows this tab live, even when the tab is in the background. In VIZEN, pick that window (VIZEN Tab · …) as a source. Minimizing it sends it behind the browser (Windows cannot capture minimized windows). Close it to stop." },
+  "popupMirrorFailed": { "message": "The tab could not be mirrored:" },
+  "mirrorEnded": { "message": "The tab was closed or stopped sharing. You can close this window." },
+  "mirrorFailed": { "message": "The tab could not be shown:" },
+  "mirrorKeepText": { "message": "Chrome pauses this window while it is completely covered by other windows. Allow it once to stay live in VIZEN even behind other windows." },
+  "mirrorKeepButton": { "message": "Keep live" }
+}

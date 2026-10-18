@@ -1,0 +1,390 @@
+﻿<UserControl x:Class="VIZEN.App.Views.MediaView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:MediaLibraryViewModel}"
+             d:DesignWidth="1000" d:DesignHeight="800">
+
+    <UserControl.Resources>
+        <!-- Small labelled toggle used throughout the layer cards -->
+        <Style x:Key="ToggleRow" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Margin" Value="0,0,22,8" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource Button.Secondary}">
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+        </Style>
+        <Style x:Key="SliderLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="96" />
+        </Style>
+        <Style x:Key="SliderValue" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="MinWidth" Value="44" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <StackPanel Margin="36,4,36,36" Style="{StaticResource Page.Root}">
+
+            <!-- Header -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{DynamicResource Media.Title}" Style="{StaticResource Text.PageTitle}" />
+                <Border Style="{StaticResource Badge.Info}" Margin="14,4,0,0">
+                    <TextBlock Text="{Binding SummaryText}" />
+                </Border>
+            </StackPanel>
+            <TextBlock Style="{StaticResource Text.Body}" Margin="0,6,0,0" Text="{DynamicResource Media.Subtitle}" TextWrapping="Wrap" />
+
+            <!-- Import -->
+            <Border Style="{StaticResource Card}" Margin="0,22,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,24,0">
+                        <TextBlock Text="{DynamicResource Media.ImportHeader}" Style="{StaticResource Text.Title}" />
+                        <TextBlock Text="{DynamicResource Media.ImportHint}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Style="{StaticResource Button.Secondary}" Command="{Binding HideAllCommand}" Margin="0,0,10,0"
+                                AutomationProperties.Name="{DynamicResource Media.HideAll}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xED1A;" FontSize="12" />
+                                <TextBlock Text="{DynamicResource Media.HideAll}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource Button.Primary}" Command="{Binding ImportCommand}"
+                                AutomationProperties.Name="{DynamicResource Media.Import}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8B5;" FontSize="12" Foreground="White" />
+                                <TextBlock Text="{DynamicResource Media.Import}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Margin="0,14,0,0" Padding="14,10" CornerRadius="10"
+                    Background="#1FE5484D" BorderBrush="#40E5484D" BorderThickness="1"
+                    Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibility}}">
+                <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
+            </Border>
+
+            <!-- Groups -->
+            <StackPanel Visibility="{Binding HasGroups, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="{DynamicResource Media.GroupsHeader}" Style="{StaticResource Text.Overline}" Margin="0,26,0,12" />
+                <ItemsControl ItemsSource="{Binding Groups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Card}" Padding="18,10" Margin="0,0,0,8">
+                                <DockPanel>
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                        <Button Style="{StaticResource SmallButton}" Margin="0,0,6,0" Content="{DynamicResource Media.Show}"
+                                                AutomationProperties.Name="{DynamicResource Media.Show}" CommandParameter="{Binding}"
+                                                Command="{Binding DataContext.ShowGroupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                        <Button Style="{StaticResource SmallButton}" Margin="0,0,6,0" Content="{DynamicResource Media.Hide}"
+                                                AutomationProperties.Name="{DynamicResource Media.Hide}" CommandParameter="{Binding}"
+                                                Command="{Binding DataContext.HideGroupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                        <Button Style="{StaticResource SmallButton}" Margin="0,0,6,0" Content="{DynamicResource Media.Lock}"
+                                                AutomationProperties.Name="{DynamicResource Media.Lock}" CommandParameter="{Binding}"
+                                                Command="{Binding DataContext.LockGroupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                        <Button Style="{StaticResource SmallButton}" Margin="0" Content="{DynamicResource Media.Unlock}"
+                                                AutomationProperties.Name="{DynamicResource Media.Unlock}" CommandParameter="{Binding}"
+                                                Command="{Binding DataContext.UnlockGroupCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8F1;" FontSize="13" Foreground="{DynamicResource Brush.Accent}" />
+                                        <TextBlock Text="{Binding}" Margin="10,0,0,0" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Layers (front first) -->
+            <TextBlock Text="{DynamicResource Media.LayersHeader}" Style="{StaticResource Text.Overline}" Margin="0,26,0,12"
+                       Visibility="{Binding HasItems, Converter={StaticResource BoolToVisibility}}" />
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:MediaLayerViewModel}">
+                        <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12">
+                            <StackPanel>
+                                <!-- Header row -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="96" Height="64" CornerRadius="8" Background="{DynamicResource Brush.SurfaceRaised}"
+                                            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" ClipToBounds="True">
+                                        <Grid>
+                                            <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding KindGlyph}" FontSize="22"
+                                                       Foreground="{DynamicResource Brush.TextTertiary}" />
+                                            <Image Source="{Binding Thumbnail}" Stretch="Uniform" Margin="4" />
+                                        </Grid>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="16,0,16,0" VerticalAlignment="Center">
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=LostFocus}" Style="{StaticResource TextBox.Input}"
+                                                 Height="32" MaxWidth="360" HorizontalAlignment="Left" MinWidth="220" FontWeight="SemiBold"
+                                                 AutomationProperties.Name="{DynamicResource Media.NameLabel}" ToolTip="{DynamicResource Media.NameTip}" />
+                                        <TextBlock Margin="0,6,0,0" Foreground="{DynamicResource Brush.TextSecondary}" TextTrimming="CharacterEllipsis">
+                                            <Run Text="{Binding KindText, Mode=OneWay}" /><Run Text="  ·  " Foreground="{DynamicResource Brush.TextTertiary}" /><Run Text="{Binding FileName, Mode=OneWay}" /><Run Text="  ·  " Foreground="{DynamicResource Brush.TextTertiary}" /><Run Text="{Binding NaturalSizeText, Mode=OneWay}" /><Run Text=" " /><Run Text="{Binding DurationText, Mode=OneWay}" />
+                                        </TextBlock>
+                                        <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" Text="{Binding StatusText}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Brush.TextTertiary}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasError}" Value="True">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Brush.Danger}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsShown}" Value="True">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Brush.Success}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Top">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsConfirmingRemove, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                            <StackPanel Style="{StaticResource ToggleRow}" Margin="0,0,14,0" VerticalAlignment="Center">
+                                                <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding IsShown}"
+                                                          AutomationProperties.Name="{DynamicResource Media.Shown}" />
+                                                <TextBlock Text="{DynamicResource Media.Shown}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding DuplicateCommand}" Margin="0,0,4,0"
+                                                    ToolTip="{DynamicResource Media.Duplicate}" AutomationProperties.Name="{DynamicResource Media.Duplicate}">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8C8;" FontSize="13" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding RemoveCommand}"
+                                                    ToolTip="{DynamicResource Media.Remove}" AutomationProperties.Name="{DynamicResource Media.Remove}">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE74D;" FontSize="13" />
+                                            </Button>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                                    Visibility="{Binding IsConfirmingRemove, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Text="{DynamicResource Media.ConfirmRemove}" VerticalAlignment="Center" Margin="0,0,12,0"
+                                                       Foreground="{DynamicResource Brush.TextSecondary}" />
+                                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding CancelRemoveCommand}" Margin="0,0,6,0"
+                                                    AutomationProperties.Name="{DynamicResource Common.Cancel}">
+                                                <TextBlock Text="{DynamicResource Common.Cancel}" />
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Secondary}" Command="{Binding ConfirmRemoveCommand}"
+                                                    Background="#33E5484D" BorderBrush="#66E5484D" AutomationProperties.Name="{DynamicResource Media.RemoveConfirm}">
+                                                <TextBlock Text="{DynamicResource Media.RemoveConfirm}" Foreground="{DynamicResource Brush.Danger}" />
+                                            </Button>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding LayerText}" Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" Margin="0,8,0,0" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Target -->
+                                <WrapPanel Margin="0,16,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,22,8">
+                                        <RadioButton Style="{StaticResource RadioButton.Segment}" IsChecked="{Binding IsOverlay, Mode=TwoWay}"
+                                                     Content="{DynamicResource Media.TargetOverlay}" ToolTip="{DynamicResource Media.TargetOverlayTip}" />
+                                        <RadioButton Style="{StaticResource RadioButton.Segment}" IsChecked="{Binding IsOutput, Mode=TwoWay}"
+                                                     Content="{DynamicResource Media.TargetOutput}" ToolTip="{DynamicResource Media.TargetOutputTip}" />
+                                        <RadioButton Style="{StaticResource RadioButton.Segment}" IsChecked="{Binding IsCompositionOnly, Mode=TwoWay}"
+                                                     Content="{DynamicResource Media.TargetComposition}" ToolTip="{DynamicResource Media.TargetCompositionTip}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,22,8"
+                                                Visibility="{Binding IsOutput, Converter={StaticResource BoolToVisibility}}">
+                                        <RadioButton Style="{StaticResource RadioButton.Segment}" IsChecked="{Binding IsGreenBackground, Mode=TwoWay}"
+                                                     Content="{DynamicResource Studio.BgGreen}" ToolTip="{DynamicResource Studio.BgGreenTip}" />
+                                        <RadioButton Style="{StaticResource RadioButton.Segment}" IsChecked="{Binding IsBlackBackground, Mode=TwoWay}"
+                                                     Content="{DynamicResource Studio.BgBlack}" />
+                                    </StackPanel>
+                                    <TextBox Text="{Binding WindowTitle, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource TextBox.Input}" Height="30"
+                                             FontFamily="{StaticResource Font.Mono}" FontSize="12" MinWidth="260" Margin="0,0,0,8"
+                                             ToolTip="{DynamicResource Studio.ObsTitleTip}" AutomationProperties.Name="OBS window title"
+                                             Visibility="{Binding IsOutput, Converter={StaticResource BoolToVisibility}}" />
+                                </WrapPanel>
+
+                                <!-- Common settings -->
+                                <WrapPanel Margin="0,4,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,26,8">
+                                        <TextBlock Text="{DynamicResource Gaming.Opacity}" Style="{StaticResource SliderLabel}" Width="Auto" Margin="0,0,12,0" />
+                                        <Slider Style="{StaticResource Slider.Modern}" Width="160" Minimum="0.05" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                                                Value="{Binding Opacity}" AutomationProperties.Name="{DynamicResource Gaming.Opacity}" />
+                                        <TextBlock Text="{Binding OpacityText}" Style="{StaticResource SliderValue}" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Media.LockTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Locked}" AutomationProperties.Name="{DynamicResource Media.Locked}" />
+                                        <TextBlock Text="{DynamicResource Media.Locked}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Media.BorderTip}"
+                                                Visibility="{Binding IsOverlay, Converter={StaticResource BoolToVisibility}}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding ShowBorder}" AutomationProperties.Name="{DynamicResource Media.Border}" />
+                                        <TextBlock Text="{DynamicResource Media.Border}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Gaming.ClickThroughTip}"
+                                                Visibility="{Binding IsOverlay, Converter={StaticResource BoolToVisibility}}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding ClickThrough}" AutomationProperties.Name="{DynamicResource Gaming.ClickThrough}" />
+                                        <TextBlock Text="{DynamicResource Gaming.ClickThrough}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <TextBlock Text="{DynamicResource Media.Group}" Foreground="{DynamicResource Brush.TextSecondary}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                        <TextBox Text="{Binding Group, UpdateSourceTrigger=LostFocus}" Style="{StaticResource TextBox.Input}" Width="150" Height="30"
+                                                 Tag="{DynamicResource Media.GroupPlaceholder}" AutomationProperties.Name="{DynamicResource Media.Group}"
+                                                 ToolTip="{DynamicResource Media.GroupTip}" />
+                                    </StackPanel>
+                                </WrapPanel>
+
+                                <!-- Playback (GIF / video) -->
+                                <WrapPanel Margin="0,4,0,0" Visibility="{Binding IsAnimated, Converter={StaticResource BoolToVisibility}}">
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PlayCommand}" AutomationProperties.Name="{DynamicResource Media.Play}">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Text.Icon}" Text="&#xE768;" FontSize="11" /><TextBlock Text="{DynamicResource Media.Play}" Margin="6,0,0,0" /></StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PauseCommand}" AutomationProperties.Name="{DynamicResource Media.Pause}"
+                                            Visibility="{Binding IsVideo, Converter={StaticResource BoolToVisibility}}">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Text.Icon}" Text="&#xE769;" FontSize="11" /><TextBlock Text="{DynamicResource Media.Pause}" Margin="6,0,0,0" /></StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding StopCommand}" AutomationProperties.Name="{DynamicResource Media.Stop}">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Text.Icon}" Text="&#xE71A;" FontSize="11" /><TextBlock Text="{DynamicResource Media.Stop}" Margin="6,0,0,0" /></StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding RestartCommand}" Margin="0,0,22,6" AutomationProperties.Name="{DynamicResource Media.Restart}">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Text.Icon}" Text="&#xE72C;" FontSize="11" /><TextBlock Text="{DynamicResource Media.Restart}" Margin="6,0,0,0" /></StackPanel>
+                                    </Button>
+                                    <StackPanel Style="{StaticResource ToggleRow}" ToolTip="{DynamicResource Media.LoopTip}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Loop}" AutomationProperties.Name="{DynamicResource Media.Loop}" />
+                                        <TextBlock Text="{DynamicResource Media.Loop}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Style="{StaticResource ToggleRow}" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVisibility}}">
+                                        <CheckBox Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding Muted}" AutomationProperties.Name="{DynamicResource Media.Mute}" />
+                                        <TextBlock Text="{DynamicResource Media.Mute}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8" Visibility="{Binding IsVideo, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="{DynamicResource Media.Volume}" Style="{StaticResource SliderLabel}" Width="Auto" Margin="0,0,12,0" />
+                                        <Slider Style="{StaticResource Slider.Modern}" Width="140" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                                                Value="{Binding Volume}" AutomationProperties.Name="{DynamicResource Media.Volume}" />
+                                        <TextBlock Text="{Binding VolumeText}" Style="{StaticResource SliderValue}" />
+                                    </StackPanel>
+                                </WrapPanel>
+
+                                <!-- Placement and layer order -->
+                                <WrapPanel Margin="0,4,0,0">
+                                    <TextBlock Text="{DynamicResource Media.Place}" Foreground="{DynamicResource Brush.TextSecondary}" VerticalAlignment="Center" Margin="0,0,10,6" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PlaceCommand}" CommandParameter="TopLeft"
+                                            ToolTip="{DynamicResource Media.PlaceTopLeft}" AutomationProperties.Name="{DynamicResource Media.PlaceTopLeft}" Content="↖" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PlaceCommand}" CommandParameter="TopRight"
+                                            ToolTip="{DynamicResource Media.PlaceTopRight}" AutomationProperties.Name="{DynamicResource Media.PlaceTopRight}" Content="↗" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PlaceCommand}" CommandParameter="Center"
+                                            ToolTip="{DynamicResource Media.PlaceCenter}" AutomationProperties.Name="{DynamicResource Media.PlaceCenter}" Content="◎" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PlaceCommand}" CommandParameter="BottomLeft"
+                                            ToolTip="{DynamicResource Media.PlaceBottomLeft}" AutomationProperties.Name="{DynamicResource Media.PlaceBottomLeft}" Content="↙" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding PlaceCommand}" CommandParameter="BottomRight" Margin="0,0,10,6"
+                                            ToolTip="{DynamicResource Media.PlaceBottomRight}" AutomationProperties.Name="{DynamicResource Media.PlaceBottomRight}" Content="↘" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding SmallerCommand}" Content="−"
+                                            ToolTip="{DynamicResource Media.Smaller}" AutomationProperties.Name="{DynamicResource Media.Smaller}" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding LargerCommand}" Content="+"
+                                            ToolTip="{DynamicResource Media.Larger}" AutomationProperties.Name="{DynamicResource Media.Larger}" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding FitCommand}" Margin="0,0,22,6"
+                                            ToolTip="{DynamicResource Media.FitTip}" AutomationProperties.Name="{DynamicResource Media.Fit}" Content="{DynamicResource Media.Fit}" />
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding BringForwardCommand}"
+                                            ToolTip="{DynamicResource Media.ForwardTip}" AutomationProperties.Name="{DynamicResource Media.Forward}">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Text.Icon}" Text="&#xE70E;" FontSize="11" /><TextBlock Text="{DynamicResource Media.Forward}" Margin="6,0,0,0" /></StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource SmallButton}" Command="{Binding SendBackwardCommand}"
+                                            ToolTip="{DynamicResource Media.BackwardTip}" AutomationProperties.Name="{DynamicResource Media.Backward}">
+                                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource Text.Icon}" Text="&#xE70D;" FontSize="11" /><TextBlock Text="{DynamicResource Media.Backward}" Margin="6,0,0,0" /></StackPanel>
+                                    </Button>
+                                    <Button Style="{StaticResource Button.Link}" Command="{Binding ToggleExpandedCommand}" Margin="12,0,0,6" VerticalAlignment="Center"
+                                            AutomationProperties.Name="{DynamicResource Media.MoreSettings}" Content="{DynamicResource Media.MoreSettings}" />
+                                </WrapPanel>
+
+                                <!-- Advanced: rotation, crop, transitions -->
+                                <Border Margin="0,10,0,0" Padding="16,12" CornerRadius="10" Background="{DynamicResource Brush.SurfaceRaised}"
+                                        Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="{DynamicResource Media.Rotation}" Style="{StaticResource SliderLabel}" />
+                                            <Slider Style="{StaticResource Slider.Modern}" Width="200" Minimum="-180" Maximum="180" SmallChange="1" LargeChange="15"
+                                                    Value="{Binding Rotation}" AutomationProperties.Name="{DynamicResource Media.Rotation}" />
+                                            <TextBlock Text="{Binding RotationText}" Style="{StaticResource SliderValue}" />
+                                            <Button Style="{StaticResource SmallButton}" Command="{Binding RotateLeftCommand}" Margin="10,0,6,0" Content="⟲ 90°"
+                                                    AutomationProperties.Name="{DynamicResource Media.RotateLeft}" ToolTip="{DynamicResource Media.RotateLeft}" />
+                                            <Button Style="{StaticResource SmallButton}" Command="{Binding RotateRightCommand}" Margin="0" Content="⟳ 90°"
+                                                    AutomationProperties.Name="{DynamicResource Media.RotateRight}" ToolTip="{DynamicResource Media.RotateRight}" />
+                                        </StackPanel>
+
+                                        <TextBlock Margin="0,6,0,6" Foreground="{DynamicResource Brush.TextSecondary}">
+                                            <Run Text="{DynamicResource Media.Crop}" /><Run Text=": " /><Run Text="{Binding CropText, Mode=OneWay}" />
+                                        </TextBlock>
+                                        <UniformGrid Columns="2">
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,16,6">
+                                                <TextBlock Text="{DynamicResource Media.CropLeft}" Style="{StaticResource SliderLabel}" />
+                                                <Slider Style="{StaticResource Slider.Modern}" Width="150" Minimum="0" Maximum="95" Value="{Binding CropLeft}" AutomationProperties.Name="{DynamicResource Media.CropLeft}" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="{DynamicResource Media.CropRight}" Style="{StaticResource SliderLabel}" />
+                                                <Slider Style="{StaticResource Slider.Modern}" Width="150" Minimum="0" Maximum="95" Value="{Binding CropRight}" AutomationProperties.Name="{DynamicResource Media.CropRight}" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,16,6">
+                                                <TextBlock Text="{DynamicResource Media.CropTop}" Style="{StaticResource SliderLabel}" />
+                                                <Slider Style="{StaticResource Slider.Modern}" Width="150" Minimum="0" Maximum="95" Value="{Binding CropTop}" AutomationProperties.Name="{DynamicResource Media.CropTop}" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <TextBlock Text="{DynamicResource Media.CropBottom}" Style="{StaticResource SliderLabel}" />
+                                                <Slider Style="{StaticResource Slider.Modern}" Width="150" Minimum="0" Maximum="95" Value="{Binding CropBottom}" AutomationProperties.Name="{DynamicResource Media.CropBottom}" />
+                                            </StackPanel>
+                                        </UniformGrid>
+                                        <Button Style="{StaticResource SmallButton}" Command="{Binding ResetCropCommand}" HorizontalAlignment="Left"
+                                                AutomationProperties.Name="{DynamicResource Media.ResetCrop}" Content="{DynamicResource Media.ResetCrop}" />
+
+                                        <WrapPanel Margin="0,10,0,0">
+                                            <Button Style="{StaticResource SmallButton}" Command="{Binding NextTransitionInCommand}" Content="{Binding TransitionInText}"
+                                                    ToolTip="{DynamicResource Media.TransitionTip}" AutomationProperties.Name="{Binding TransitionInText}" />
+                                            <Button Style="{StaticResource SmallButton}" Command="{Binding NextTransitionOutCommand}" Content="{Binding TransitionOutText}" Margin="0,0,16,6"
+                                                    ToolTip="{DynamicResource Media.TransitionTip}" AutomationProperties.Name="{Binding TransitionOutText}" />
+                                            <TextBlock Text="{DynamicResource Media.TransitionDuration}" Foreground="{DynamicResource Brush.TextSecondary}" VerticalAlignment="Center" Margin="0,0,10,6" />
+                                            <Slider Style="{StaticResource Slider.Modern}" Width="120" Minimum="0" Maximum="3" SmallChange="0.1" LargeChange="0.5"
+                                                    Value="{Binding TransitionSeconds}" VerticalAlignment="Center" Margin="0,0,0,6"
+                                                    AutomationProperties.Name="{DynamicResource Media.TransitionDuration}" />
+                                            <TextBlock Text="{Binding TransitionSecondsText}" Style="{StaticResource SliderValue}" Margin="10,0,0,6" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Empty state -->
+            <Border Style="{StaticResource Card}" Padding="40,40" Margin="0,24,0,0"
+                    Visibility="{Binding HasItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                <StackPanel HorizontalAlignment="Center" MaxWidth="460">
+                    <Border Width="64" Height="64" CornerRadius="18" Background="{DynamicResource Brush.SurfaceRaised}"
+                            BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8B9;" FontSize="24" Foreground="{DynamicResource Brush.TextTertiary}" />
+                    </Border>
+                    <TextBlock Text="{DynamicResource Media.EmptyTitle}" Style="{StaticResource Text.Title}" HorizontalAlignment="Center" Margin="0,16,0,0" />
+                    <TextBlock Style="{StaticResource Text.Body}" TextAlignment="Center" Margin="0,6,0,0" TextWrapping="Wrap" Text="{DynamicResource Media.EmptyText}" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Style="{StaticResource Text.Caption}" Margin="0,18,0,0" TextWrapping="Wrap">
+                <Run Text="{DynamicResource Media.StoredAt}" />
+                <Run Text="{Binding StorageLocation, Mode=OneWay}" Foreground="{DynamicResource Brush.TextSecondary}" />
+            </TextBlock>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

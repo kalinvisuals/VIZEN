@@ -1,0 +1,332 @@
+<Window x:Class="VIZEN.App.Views.DrawToolbarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:VIZEN.App.ViewModels"
+        xmlns:m="clr-namespace:VIZEN.App.Models"
+        xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:SmartDrawViewModel}"
+        Title="VIZEN Smart Draw — toolbar"
+        SizeToContent="WidthAndHeight" WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" ShowInTaskbar="False" ShowActivated="False" Topmost="True"
+        Foreground="{DynamicResource Brush.TextPrimary}" FontFamily="{StaticResource Font.UI}" FontSize="12"
+        UseLayoutRounding="True">
+
+    <Window.Resources>
+        <sys:Boolean x:Key="BoolTrue">True</sys:Boolean>
+        <!-- Square icon button; Tag=True marks the selected tool / active state. -->
+        <Style x:Key="Tb" TargetType="Button">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Margin" Value="1,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" CornerRadius="9" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.SurfaceHover}" />
+                                <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
+                            </Trigger>
+                            <Trigger Property="Tag" Value="{StaticResource BoolTrue}">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.AccentSoft}" />
+                                <Setter Property="Foreground" Value="{DynamicResource Brush.Accent}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.35" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Glyph" TargetType="TextBlock" BasedOn="{StaticResource Text.Icon}">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+        </Style>
+        <Style x:Key="Line" TargetType="Path">
+            <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+            <Setter Property="StrokeThickness" Value="1.8" />
+            <Setter Property="StrokeStartLineCap" Value="Round" />
+            <Setter Property="StrokeEndLineCap" Value="Round" />
+            <Setter Property="StrokeLineJoin" Value="Round" />
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Stretch" Value="Uniform" />
+        </Style>
+        <Style x:Key="Sep" TargetType="Border">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Margin" Value="6,6" />
+            <Setter Property="Background" Value="{DynamicResource Brush.Border}" />
+        </Style>
+    </Window.Resources>
+
+    <Border Margin="6" Padding="6" CornerRadius="14" BorderThickness="1"
+            Background="{DynamicResource Brush.SurfaceRaised}" BorderBrush="{DynamicResource Brush.BorderStrong}">
+        <StackPanel Orientation="Horizontal">
+            <!-- Grip: drag the toolbar -->
+            <Border Width="18" Background="Transparent" Cursor="SizeAll" MouseLeftButtonDown="OnGripMouseDown"
+                    ToolTip="{DynamicResource Draw.MoveToolbar}">
+                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE76F;" FontSize="12" Foreground="{DynamicResource Brush.TextTertiary}" />
+            </Border>
+
+            <!-- Mode badge -->
+            <Border CornerRadius="8" Padding="8,0" Margin="4,4,6,4" VerticalAlignment="Stretch">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceHover}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDrawMode}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush.AccentGradient}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding ModeText}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="11" Foreground="White" />
+            </Border>
+
+            <!-- Tools -->
+            <Button Style="{StaticResource Tb}" Command="{Binding SetToolCommand}" CommandParameter="{x:Static m:DrawTool.Pen}"
+                    Tag="{Binding Tool, Converter={StaticResource EnumEquals}, ConverterParameter=Pen}"
+                    ToolTip="{DynamicResource Draw.Tool.Pen}" AutomationProperties.Name="{DynamicResource Draw.Tool.Pen}">
+                <Path Style="{StaticResource Line}" Data="M3,21 L3,17 L15,5 L19,9 L7,21 Z M13,7 L17,11" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding SetToolCommand}" CommandParameter="{x:Static m:DrawTool.Arrow}"
+                    Tag="{Binding Tool, Converter={StaticResource EnumEquals}, ConverterParameter=Arrow}"
+                    ToolTip="{DynamicResource Draw.Tool.Arrow}" AutomationProperties.Name="{DynamicResource Draw.Tool.Arrow}">
+                <Path Style="{StaticResource Line}" Data="M4,20 L19,5 M10,5 L19,5 L19,14" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding SetToolCommand}" CommandParameter="{x:Static m:DrawTool.Rectangle}"
+                    Tag="{Binding Tool, Converter={StaticResource EnumEquals}, ConverterParameter=Rectangle}"
+                    ToolTip="{DynamicResource Draw.Tool.Rectangle}" AutomationProperties.Name="{DynamicResource Draw.Tool.Rectangle}">
+                <Path Style="{StaticResource Line}" Data="M3,6 L21,6 L21,18 L3,18 Z" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding SetToolCommand}" CommandParameter="{x:Static m:DrawTool.Ellipse}"
+                    Tag="{Binding Tool, Converter={StaticResource EnumEquals}, ConverterParameter=Ellipse}"
+                    ToolTip="{DynamicResource Draw.Tool.Ellipse}" AutomationProperties.Name="{DynamicResource Draw.Tool.Ellipse}">
+                <Path Style="{StaticResource Line}" Data="M3,12 A9,7 0 1 1 21,12 A9,7 0 1 1 3,12 Z" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding SetToolCommand}" CommandParameter="{x:Static m:DrawTool.Text}"
+                    Tag="{Binding Tool, Converter={StaticResource EnumEquals}, ConverterParameter=Text}"
+                    ToolTip="{DynamicResource Draw.Tool.Text}" AutomationProperties.Name="{DynamicResource Draw.Tool.Text}">
+                <TextBlock Text="T" FontSize="16" FontWeight="SemiBold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding SetToolCommand}" CommandParameter="{x:Static m:DrawTool.Eraser}"
+                    Tag="{Binding Tool, Converter={StaticResource EnumEquals}, ConverterParameter=Eraser}"
+                    ToolTip="{DynamicResource Draw.Tool.Eraser}" AutomationProperties.Name="{DynamicResource Draw.Tool.Eraser}">
+                <Path Style="{StaticResource Line}" Data="M9,20 L21,20 M4,15 L13,6 L20,13 L13,20 L9,20 Z M8.5,10.5 L15.5,17.5" />
+            </Button>
+
+            <Border Style="{StaticResource Sep}" />
+
+            <!-- Colour, thickness, text size, arrow head -->
+            <Grid>
+                <ToggleButton x:Name="ColorToggle" Width="34" Height="34" Focusable="False" Cursor="Hand"
+                              ToolTip="{DynamicResource Draw.Color}" AutomationProperties.Name="{DynamicResource Draw.Color}">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Bg" CornerRadius="9" Background="Transparent">
+                                <Ellipse Width="18" Height="18" Fill="{Binding Color}" Stroke="{DynamicResource Brush.BorderStrong}" StrokeThickness="1" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.SurfaceHover}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+                <Popup IsOpen="{Binding IsChecked, ElementName=ColorToggle}" PlacementTarget="{Binding ElementName=ColorToggle}" Placement="Bottom"
+                       StaysOpen="False" AllowsTransparency="True" Closed="OnColorPopupClosed">
+                    <Border Margin="4" Padding="6" CornerRadius="12" BorderThickness="1"
+                            Background="{DynamicResource Brush.SurfaceRaised}" BorderBrush="{DynamicResource Brush.BorderStrong}">
+                        <ItemsControl ItemsSource="{x:Static vm:SmartDrawViewModel.Palette}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type vm:DrawColor}">
+                                    <Button Style="{StaticResource Tb}" Click="OnColorPicked" CommandParameter="{Binding Hex}"
+                                            Command="{Binding DataContext.SetColorCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            ToolTip="{Binding Name}" AutomationProperties.Name="{Binding Name}">
+                                        <Ellipse Width="20" Height="20" Fill="{Binding Hex}" Stroke="{DynamicResource Brush.BorderStrong}" StrokeThickness="1" />
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </Popup>
+            </Grid>
+            <Button Style="{StaticResource Tb}" Command="{Binding NextThicknessCommand}"
+                    ToolTip="{DynamicResource Draw.Thickness}" AutomationProperties.Name="{DynamicResource Draw.Thickness}">
+                <Ellipse Width="{Binding Thickness}" Height="{Binding Thickness}" MaxWidth="16" MaxHeight="16" MinWidth="3" MinHeight="3"
+                         Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+            </Button>
+            <Button Command="{Binding NextFontSizeCommand}" ToolTip="{DynamicResource Draw.TextSize}" AutomationProperties.Name="{DynamicResource Draw.TextSize}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource Tb}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Tool}" Value="{x:Static m:DrawTool.Text}">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <TextBlock Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontWeight="SemiBold">
+                    <Run Text="A" FontSize="15" /><Run Text="{Binding FontSize, Mode=OneWay, StringFormat={}{0:0}}" FontSize="9" />
+                </TextBlock>
+            </Button>
+            <Button Command="{Binding ToggleArrowHeadCommand}" ToolTip="{DynamicResource Draw.ArrowHead}" AutomationProperties.Name="{DynamicResource Draw.ArrowHead}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource Tb}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Tool}" Value="{x:Static m:DrawTool.Arrow}">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Grid>
+                    <Path Data="M6,6 L18,12 L6,18 Z" Width="14" Height="14" Stretch="Uniform"
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ArrowHead}" Value="{x:Static m:ArrowHead.Open}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                    <Path Data="M6,6 L18,12 L6,18" Width="14" Height="14" Stretch="Uniform" StrokeThickness="2"
+                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ArrowHead}" Value="{x:Static m:ArrowHead.Filled}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                </Grid>
+            </Button>
+
+            <!-- Eraser: mode and diameter (only while the eraser is selected) -->
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Tool}" Value="{x:Static m:DrawTool.Eraser}">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <Button Style="{StaticResource Tb}" Width="Auto" Padding="8,0" Command="{Binding ToggleEraserModeCommand}"
+                        ToolTip="{DynamicResource Draw.EraserModeTip}" AutomationProperties.Name="{DynamicResource Draw.EraserMode}">
+                    <TextBlock Text="{Binding EraserModeText}" Margin="8,0" FontWeight="SemiBold" FontSize="11"
+                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                </Button>
+                <Grid>
+                    <ToggleButton x:Name="EraserSizeToggle" Height="34" MinWidth="34" Focusable="False" Cursor="Hand"
+                                  ToolTip="{DynamicResource Draw.EraserSize}" AutomationProperties.Name="{DynamicResource Draw.EraserSize}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border x:Name="Bg" CornerRadius="9" Background="Transparent" Padding="6,0">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Ellipse Width="14" Height="14" Stroke="{DynamicResource Brush.TextSecondary}" StrokeThickness="1.5" />
+                                        <TextBlock Text="{Binding EraserSize, StringFormat={}{0:0}}" Margin="5,0,0,0" FontSize="11"
+                                                   VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextSecondary}" />
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Brush.SurfaceHover}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                    <Popup IsOpen="{Binding IsChecked, ElementName=EraserSizeToggle}" PlacementTarget="{Binding ElementName=EraserSizeToggle}"
+                           Placement="Bottom" StaysOpen="False" AllowsTransparency="True" Closed="OnEraserPopupClosed">
+                        <Border Margin="4" Padding="12,10" CornerRadius="12" BorderThickness="1"
+                                Background="{DynamicResource Brush.SurfaceRaised}" BorderBrush="{DynamicResource Brush.BorderStrong}">
+                            <StackPanel Width="200">
+                                <TextBlock Text="{DynamicResource Draw.EraserSize}" Foreground="{DynamicResource Brush.TextSecondary}" />
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                    <Slider Style="{StaticResource Slider.Modern}" Width="150" Minimum="5" Maximum="100" SmallChange="1" LargeChange="10"
+                                            Value="{Binding EraserSize}" AutomationProperties.Name="{DynamicResource Draw.EraserSize}" />
+                                    <TextBlock Text="{Binding EraserSizeText}" Margin="10,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </StackPanel>
+
+            <Border Style="{StaticResource Sep}" />
+
+            <!-- History -->
+            <Button Style="{StaticResource Tb}" Command="{Binding UndoCommand}" ToolTip="{DynamicResource Draw.Undo}" AutomationProperties.Name="{DynamicResource Draw.Undo}">
+                <TextBlock Style="{StaticResource Glyph}" Text="&#xE7A7;" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding RedoCommand}" ToolTip="{DynamicResource Draw.Redo}" AutomationProperties.Name="{DynamicResource Draw.Redo}">
+                <TextBlock Style="{StaticResource Glyph}" Text="&#xE7A6;" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding ClearCommand}" ToolTip="{DynamicResource Draw.Clear}" AutomationProperties.Name="{DynamicResource Draw.Clear}"
+                    Visibility="{Binding IsConfirmingClear, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                <TextBlock Style="{StaticResource Glyph}" Text="&#xE74D;" />
+            </Button>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding IsConfirmingClear, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="{DynamicResource Draw.ClearConfirm}" VerticalAlignment="Center" Margin="6,0,4,0" Foreground="{DynamicResource Brush.Danger}" FontWeight="SemiBold" />
+                <Button Style="{StaticResource Tb}" Command="{Binding ConfirmClearCommand}" ToolTip="{DynamicResource Draw.ClearYes}" AutomationProperties.Name="{DynamicResource Draw.ClearYes}">
+                    <TextBlock Style="{StaticResource Glyph}" Text="&#xE73E;" Foreground="{DynamicResource Brush.Danger}" />
+                </Button>
+                <Button Style="{StaticResource Tb}" Command="{Binding CancelClearCommand}" ToolTip="{DynamicResource Common.Cancel}" AutomationProperties.Name="{DynamicResource Common.Cancel}">
+                    <TextBlock Style="{StaticResource Glyph}" Text="&#xE711;" FontSize="11" />
+                </Button>
+            </StackPanel>
+
+            <Border Style="{StaticResource Sep}" />
+
+            <!-- Mode, visibility, close -->
+            <Button Style="{StaticResource Tb}" Command="{Binding ToggleModeCommand}" Tag="{Binding IsClickThrough}"
+                    ToolTip="{DynamicResource Draw.PassThroughTip}" AutomationProperties.Name="{DynamicResource Draw.PassThroughButton}">
+                <Path Style="{StaticResource Line}" Data="M5,3 L5,19 L9.5,14.5 L12.5,21 L15,20 L12,13.5 L18,13.5 Z" />
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding ToggleVisibilityCommand}"
+                    ToolTip="{DynamicResource Draw.ShowHideTip}" AutomationProperties.Name="{DynamicResource Draw.ShowHide}">
+                <TextBlock>
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Glyph}">
+                            <Setter Property="Text" Value="&#xE890;" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AnnotationsVisible}" Value="False">
+                                    <Setter Property="Text" Value="&#xED1A;" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Button>
+            <Button Style="{StaticResource Tb}" Command="{Binding CloseCommand}" ToolTip="{DynamicResource Draw.CloseTip}" AutomationProperties.Name="{DynamicResource Draw.Close}">
+                <TextBlock Style="{StaticResource Glyph}" Text="&#xE711;" FontSize="12" />
+            </Button>
+        </StackPanel>
+    </Border>
+</Window>

@@ -1,0 +1,80 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===== Core palette ===== -->
+    <Color x:Key="Color.Background">#FF0A0D14</Color>
+    <Color x:Key="Color.Sidebar">#FF0D1119</Color>
+    <Color x:Key="Color.Surface">#FF121722</Color>
+    <Color x:Key="Color.SurfaceRaised">#FF171D2A</Color>
+    <Color x:Key="Color.SurfaceHover">#FF1D2434</Color>
+    <Color x:Key="Color.Border">#FF1F2737</Color>
+    <Color x:Key="Color.BorderStrong">#FF2C364C</Color>
+
+    <Color x:Key="Color.TextPrimary">#FFE9EDF5</Color>
+    <Color x:Key="Color.TextSecondary">#FF98A2B7</Color>
+    <Color x:Key="Color.TextTertiary">#FF5F6980</Color>
+
+    <Color x:Key="Color.Accent">#FFFF354E</Color>
+    <Color x:Key="Color.AccentViolet">#FFFF5268</Color>
+    <Color x:Key="Color.Success">#FF34D399</Color>
+    <Color x:Key="Color.Warning">#FFF5B547</Color>
+    <Color x:Key="Color.Danger">#FFE5484D</Color>
+
+    <!-- ===== Brushes ===== -->
+    <SolidColorBrush x:Key="Brush.Background" Color="{StaticResource Color.Background}" />
+    <SolidColorBrush x:Key="Brush.Sidebar" Color="{StaticResource Color.Sidebar}" />
+    <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}" />
+    <SolidColorBrush x:Key="Brush.SurfaceRaised" Color="{StaticResource Color.SurfaceRaised}" />
+    <SolidColorBrush x:Key="Brush.SurfaceHover" Color="{StaticResource Color.SurfaceHover}" />
+    <SolidColorBrush x:Key="Brush.Border" Color="{StaticResource Color.Border}" />
+    <SolidColorBrush x:Key="Brush.BorderStrong" Color="{StaticResource Color.BorderStrong}" />
+
+    <SolidColorBrush x:Key="Brush.TextPrimary" Color="{StaticResource Color.TextPrimary}" />
+    <SolidColorBrush x:Key="Brush.TextSecondary" Color="{StaticResource Color.TextSecondary}" />
+    <SolidColorBrush x:Key="Brush.TextTertiary" Color="{StaticResource Color.TextTertiary}" />
+
+    <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Color.Accent}" />
+    <SolidColorBrush x:Key="Brush.AccentViolet" Color="{StaticResource Color.AccentViolet}" />
+    <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Color.Success}" />
+    <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}" />
+    <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Color.Danger}" />
+
+    <SolidColorBrush x:Key="Brush.AccentSoft" Color="#22FF354E" />
+    <SolidColorBrush x:Key="Brush.VioletSoft" Color="#22FF5268" />
+    <SolidColorBrush x:Key="Brush.SuccessSoft" Color="#1F34D399" />
+    <SolidColorBrush x:Key="Brush.WarningSoft" Color="#1FF5B547" />
+    <SolidColorBrush x:Key="Brush.Selection" Color="#1AFF354E" />
+
+    <LinearGradientBrush x:Key="Brush.AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="{StaticResource Color.Accent}" />
+        <GradientStop Offset="1" Color="{StaticResource Color.AccentViolet}" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="Brush.AccentGradientVertical" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="{StaticResource Color.Accent}" />
+        <GradientStop Offset="1" Color="{StaticResource Color.AccentViolet}" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="Brush.HeroGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="#FF121A2C" />
+        <GradientStop Offset="0.55" Color="#FF0F1A2C" />
+        <GradientStop Offset="1" Color="#FF0A1F2E" />
+    </LinearGradientBrush>
+
+    <RadialGradientBrush x:Key="Brush.GlowBlue">
+        <GradientStop Offset="0" Color="#55FF354E" />
+        <GradientStop Offset="1" Color="#00FF354E" />
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="Brush.GlowViolet">
+        <GradientStop Offset="0" Color="#4AFF5268" />
+        <GradientStop Offset="1" Color="#00FF5268" />
+    </RadialGradientBrush>
+
+    <!-- ===== Typography ===== -->
+    <FontFamily x:Key="Font.UI">Segoe UI Variable Text, Segoe UI</FontFamily>
+    <FontFamily x:Key="Font.Display">Segoe UI Variable Display, Segoe UI</FontFamily>
+    <FontFamily x:Key="Font.Icons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+    <FontFamily x:Key="Font.Mono">Cascadia Mono, Consolas</FontFamily>
+
+</ResourceDictionary>

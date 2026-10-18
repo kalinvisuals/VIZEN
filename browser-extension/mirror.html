@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>VIZEN Tab</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+    video { width: 100%; height: 100%; object-fit: contain; display: block; }
+    #message { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: #98a2b7; font: 14px "Segoe UI", sans-serif; text-align: center; padding: 24px; }
+    #keep { position: absolute; left: 12px; right: 12px; bottom: 12px; display: none; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; background: rgba(20,24,33,.92); color: #e6e9f0; font: 13px "Segoe UI", sans-serif; }
+    #keep span { flex: 1; }
+    #keep button { border: 0; border-radius: 16px; padding: 7px 14px; background: #fff; color: #0a0d14; font: 600 13px "Segoe UI", sans-serif; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <video id="video" autoplay playsinline></video>
+  <div id="message"></div>
+  <div id="keep"><span id="keepText"></span><button id="keepButton"></button></div>
+  <script src="mirror.js"></script>
+</body>
+</html>
