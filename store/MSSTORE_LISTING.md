@@ -1,5 +1,8 @@
 # VIZEN — Microsoft Store listing
 
+**Status (2026-10-23): live in the Microsoft Store** (https://apps.microsoft.com/detail/9P7K298JRBK2), package 0.4.6.0
+(submission 2, after the 10.6.3 rejection of submission 1). The next Store update is a new package version.
+
 Everything to paste into Partner Center (Apps and games → VIZEN). The package is built by `scripts\build-msix.ps1`
 with the values from Product management → Product identity.
 

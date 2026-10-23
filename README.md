@@ -45,13 +45,19 @@ Website: [www.vizen.ro](https://www.vizen.ro) · Contact: [hi@vizen.ro](mailto:h
 
 ## Install
 
+**Microsoft Store:** [get VIZEN from the Microsoft Store](https://apps.microsoft.com/detail/9P7K298JRBK2). It is signed by
+Microsoft, installs in one click and is updated by the Store.
+
+**Installer** (from GitHub, also linked from [vizen.ro](https://vizen.ro/download)):
+
 1. Download `VIZEN-Setup-x64.exe` from the [Releases](../../releases) page.
 2. Run it and follow the steps. Windows asks for administrator permission once, because VIZEN is installed in
    *Program Files*. VIZEN itself then runs as a normal app.
 3. Start VIZEN from the Start menu or the desktop shortcut.
 
-Settings, notes and profiles are saved in your user folder (`%LOCALAPPDATA%\VIZEN`). Uninstall from
-*Settings → Apps → Installed apps*.
+The installer version updates itself (vizen.ro, with GitHub as fallback), after you confirm. Use one of the two, not
+both. Settings, notes and profiles are saved in your user folder (`%LOCALAPPDATA%\VIZEN`) by both versions. Uninstall
+from *Settings → Apps → Installed apps*.
 
 ## Quick start: your first overlay
 
