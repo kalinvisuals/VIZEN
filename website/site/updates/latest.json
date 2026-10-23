@@ -2,14 +2,14 @@
   "schema": 1,
   "product": "VIZEN",
   "channel": "stable",
-  "version": "0.4.6",
-  "releaseDate": "2026-10-18",
-  "notes": { "en": "Automatic updates: VIZEN checks vizen.ro and GitHub for new versions, verifies the digital signature and the installer file, and installs an update only after you confirm (Settings \u003e Updates). Your settings and data are kept. Ready for the Microsoft Store: a Store copy is updated by the Store. From this version on, updates arrive automatically; install 0.4.6 once by hand.", "ro": "Actualizări automate: VIZEN verifică vizen.ro și GitHub pentru versiuni noi, verifică semnătura digitală și fișierul installerului și instalează o actualizare doar după ce confirmi (Setări \u003e Actualizări). Setările și datele se păstrează. Pregătit pentru Microsoft Store: o copie din Store e actualizată de Store. De la această versiune, actualizările vin automat; instalează o dată manual versiunea 0.4.6." },
-  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.6",
+  "version": "0.4.7",
+  "releaseDate": "2026-10-23",
+  "notes": { "en": "VIZEN Connector from the official stores: the Browser page now has buttons for the Chrome Web Store (Chrome, Brave) and Microsoft Edge Add-ons, instead of loading the extension in Developer mode. The setup steps are clearer, in English and Romanian. Ready for the Microsoft Store: the Store copy of VIZEN no longer needs any special permission besides running as a desktop app, and \"Launch at sign-in\" in the Store copy is removed together with the app when it is uninstalled. Your settings and data are kept.", "ro": "VIZEN Connector din magazinele oficiale: pagina Browser are acum butoane pentru Chrome Web Store (Chrome, Brave) și Microsoft Edge Add-ons, în locul încărcării extensiei în Modul dezvoltator. Pașii de configurare sunt mai clari, în română și engleză. Pregătit pentru Microsoft Store: copia VIZEN din Store nu mai cere nicio permisiune specială în afară de rularea ca aplicație desktop, iar „Pornire la conectare” din copia din Store dispare odată cu aplicația la dezinstalare. Setările și datele se păstrează." },
+  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.7",
   "installer": {
-    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.6/VIZEN-Setup-x64.exe",
+    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.7/VIZEN-Setup-x64.exe",
     "mirrors": [],
-    "size": 58794338,
-    "sha256": "b5d251f9854cf1ef7f9226fe95f2c4d22ab01bb5f40c9d16501c93a46a8f1fb9"
+    "size": 58794774,
+    "sha256": "c965863c8b301a31b3e11fdd18ef99a6a979d065b3b4631c735c254a0cff1def"
   }
 }
