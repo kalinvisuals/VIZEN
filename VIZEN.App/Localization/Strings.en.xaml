@@ -815,6 +815,9 @@
     <sys:String x:Key="Activity.LaunchOnEffect">Windows will start VIZEN when you sign in.</sys:String>
     <sys:String x:Key="Activity.LaunchOffEffect">VIZEN no longer starts with Windows.</sys:String>
     <sys:String x:Key="Activity.LaunchFailed">Start with Windows could not be changed</sys:String>
+    <sys:String x:Key="Activity.LaunchDisabledByUser">It is turned off in Task Manager › Startup apps. Turn VIZEN on there.</sys:String>
+    <sys:String x:Key="Activity.LaunchDisabledByPolicy">Your organization's policy does not allow it.</sys:String>
+    <sys:String x:Key="Activity.LaunchTaskMissing">This VIZEN package has no startup task.</sys:String>
     <sys:String x:Key="Tray.Open">Open VIZEN</sys:String>
     <sys:String x:Key="Tray.ToggleLayers">Show / hide overlays and media</sys:String>
     <sys:String x:Key="Tray.Exit">Exit VIZEN</sys:String>
@@ -1333,12 +1336,11 @@
     <sys:String x:Key="Tabs.ConnectFailed">Could not connect: {0}</sys:String>
     <sys:String x:Key="Tabs.HowTo">How to add it (one time)</sys:String>
     <sys:String x:Key="Tabs.Step1">Press Connect above. VIZEN registers itself for your Windows user only, no admin rights needed.</sys:String>
-    <sys:String x:Key="Tabs.Step2">Open the extensions page in your browser (copy the address and paste it in the address bar), then turn on Developer mode.</sys:String>
-    <sys:String x:Key="Tabs.Step3">Press Load unpacked and choose this folder.</sys:String>
+    <sys:String x:Key="Tabs.Step2">Install VIZEN Connector from your browser's official store: Chrome Web Store for Chrome and Brave, or Microsoft Edge Add-ons for Edge.</sys:String>
+    <sys:String x:Key="Tabs.Step3">Keep the browser open. Within 30 seconds the status above shows Connected. If it does not, close the browser completely and open it again.</sys:String>
     <sys:String x:Key="Tabs.Step4">Done. Your tabs appear under Windows &amp; apps, and tabs with sound appear in the mixer. To capture one tab on its own, click the VIZEN icon in the browser and choose Mirror this tab live.</sys:String>
-    <sys:String x:Key="Tabs.CopyChrome">Copy Chrome / Brave address</sys:String>
-    <sys:String x:Key="Tabs.CopyEdge">Copy Edge address</sys:String>
-    <sys:String x:Key="Tabs.OpenFolder">Open folder</sys:String>
+    <sys:String x:Key="Tabs.GetChrome">Chrome Web Store (Chrome, Brave)</sys:String>
+    <sys:String x:Key="Tabs.GetEdge">Microsoft Edge Add-ons</sys:String>
     <sys:String x:Key="Tabs.Privacy">Private: the extension only shares tab titles and site names (never full addresses or page content) with VIZEN on this PC. Nothing goes on the internet. Incognito tabs are never shared.</sys:String>
     <sys:String x:Key="Tabs.SectionTitle">Browser tabs</sys:String>
     <sys:String x:Key="Tabs.SectionHint">See every browser tab on its own, not just the browser window. Needs the free VIZEN Connector extension.</sys:String>

@@ -1,10 +1,15 @@
 using Microsoft.Win32;
+using VIZEN.App.Localization;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
 
 namespace VIZEN.App.Services;
 
 /// <summary>
-/// "Start with Windows": a value under HKCU\Software\Microsoft\Windows\CurrentVersion\Run (current user only,
-/// no administrator rights). VIZEN starts with --tray so it opens quietly in the notification area.
+/// "Start with Windows". Installer VIZEN: a value under HKCU\Software\Microsoft\Windows\CurrentVersion\Run (current user
+/// only, no administrator rights, removed by the uninstaller), started with --tray so it opens quietly in the
+/// notification area. Store (MSIX) VIZEN: the package's startup task (installer\msix\AppxManifest.xml), which Windows
+/// lists under Task Manager > Startup apps and removes with the package, so an uninstall leaves no startup entry behind.
 /// </summary>
 public static class StartupRegistration
 {
@@ -12,14 +17,21 @@ public static class StartupRegistration
     private const string ValueName = "VIZEN";
     public const string TrayArgument = "--tray";
 
-    // A Store (MSIX) VIZEN is started through its app execution alias; the package folder is not for other programs.
+    /// <summary>The TaskId of the startup task declared in the package manifest.</summary>
+    public const string StartupTaskId = "VIZENStartup";
+
     private static string Command => $"\"{PackagedApp.LaunchPath}\" {TrayArgument}";
 
-    /// <summary>True when Windows will start this VIZEN executable at sign-in.</summary>
+    /// <summary>True when Windows will start this VIZEN at sign-in.</summary>
     public static bool IsEnabled
     {
         get
         {
+            if (PackagedApp.IsPackaged)
+            {
+                return GetTask() is { State: StartupTaskState.Enabled or StartupTaskState.EnabledByPolicy };
+            }
+
             try
             {
                 using var key = Registry.CurrentUser.OpenSubKey(RunKey);
@@ -33,8 +45,28 @@ public static class StartupRegistration
         }
     }
 
+    /// <summary>True when Windows started this Store VIZEN through its startup task (the task passes no arguments).</summary>
+    public static bool StartedByStartupTask()
+    {
+        if (!PackagedApp.IsPackaged)
+        {
+            return false;
+        }
+
+        try
+        {
+            return AppInstance.GetActivatedEventArgs()?.Kind == ActivationKind.StartupTask;
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.Runtime.InteropServices.COMException)
+        {
+            return false;
+        }
+    }
+
     /// <summary>Adds or removes the sign-in entry. Returns an error message, or null on success.</summary>
-    public static string? Set(bool enabled)
+    public static string? Set(bool enabled) => PackagedApp.IsPackaged ? SetTask(enabled) : SetRunValue(enabled);
+
+    private static string? SetRunValue(bool enabled)
     {
         try
         {
@@ -53,6 +85,66 @@ public static class StartupRegistration
         catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or System.IO.IOException)
         {
             return ex.Message;
+        }
+    }
+
+    private static string? SetTask(bool enabled)
+    {
+        RemoveAliasRunValue();
+        var task = GetTask();
+        if (task is null)
+        {
+            return Loc.T("Activity.LaunchTaskMissing");
+        }
+
+        try
+        {
+            if (!enabled)
+            {
+                task.Disable();
+                return null;
+            }
+
+            return task.RequestEnableAsync().AsTask().GetAwaiter().GetResult() switch
+            {
+                StartupTaskState.Enabled or StartupTaskState.EnabledByPolicy => null,
+                StartupTaskState.DisabledByUser => Loc.T("Activity.LaunchDisabledByUser"),
+                StartupTaskState.DisabledByPolicy => Loc.T("Activity.LaunchDisabledByPolicy"),
+                var state => state.ToString(),
+            };
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.Runtime.InteropServices.COMException)
+        {
+            return ex.Message;
+        }
+    }
+
+    private static StartupTask? GetTask()
+    {
+        try
+        {
+            return StartupTask.GetAsync(StartupTaskId).AsTask().GetAwaiter().GetResult();
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or System.Runtime.InteropServices.COMException)
+        {
+            return null; // not declared in this package
+        }
+    }
+
+    /// <summary>A Run value that starts the Store VIZEN through its alias would break once the package is removed.</summary>
+    private static void RemoveAliasRunValue()
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(RunKey, writable: true);
+            if (key?.GetValue(ValueName) is string value && value.Contains(PackagedApp.LaunchPath, StringComparison.OrdinalIgnoreCase))
+            {
+                key.DeleteValue(ValueName);
+            }
+        }
+        catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or System.IO.IOException)
+        {
+            // Left as it is; the task is what starts VIZEN.
         }
     }
 }

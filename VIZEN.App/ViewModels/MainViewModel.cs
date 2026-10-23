@@ -93,7 +93,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         Mixer = new AudioMixerViewModel(_audio, mixerPresenter, Activity);
         BrowserExtension = new BrowserExtensionViewModel(new BrowserBridgeService(),
             new BrowserHostRegistration(new CurrentUserHostRegistry(), JsonStore.DataDirectory), Activity,
-            PackagedApp.LaunchPath, PackagedApp.ExtensionFolder(JsonStore.DataDirectory));
+            PackagedApp.LaunchPath);
         Sources.BrowserTabs = BrowserExtension;
         Browsers.Extension = BrowserExtension;
         Mixer.BrowserTabs = BrowserExtension;

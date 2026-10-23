@@ -10,10 +10,13 @@ with the values from Product management → Product identity.
 ## Properties
 
 - Category: **Productivity** (subcategory, if asked: Utilities & tools)
-- Privacy policy URL: `https://github.com/kalinvisuals/VIZEN/blob/main/PRIVACY.md`
-- Website: `https://github.com/kalinvisuals/VIZEN` (later `https://www.vizen.ro`)
+- Privacy policy URL: `https://vizen.ro/privacy/` (after the updated site is uploaded; otherwise
+  `https://github.com/kalinvisuals/VIZEN/blob/main/PRIVACY.md` after the push)
+- Website: `https://vizen.ro`
 - Support contact: `https://github.com/kalinvisuals/VIZEN/issues` (or `hi@vizen.ro` once it receives mail)
 - System requirements: Windows 10 version 2004 or later, 64-bit; DirectX 11 graphics; Memory: minimum 8 GB, recommended 16 GB
+  (the manifest's MaxVersionTested 10.0.26100.0 is the newest build VIZEN was tested on, not an upper limit: newer
+  Windows versions install it too)
 - Product declarations: none of the special cases apply (no in-app purchases, no ads)
 
 ## Age ratings (IARC questionnaire)
@@ -134,16 +137,33 @@ fără injecție, pe care VIZEN nu o folosește niciodată.
 Partner Center asks why the package uses restricted capabilities:
 
 - **runFullTrust:** "VIZEN is a desktop (WPF, .NET) app: it captures windows with Windows Graphics Capture, shows
-  always-on-top overlay windows, registers global hotkeys and controls per-app audio volume, which need a full-trust
-  desktop process."
-- **unvirtualizedResources:** "VIZEN keeps its user data in %LOCALAPPDATA%\VIZEN (shared with the VIZEN desktop
-  installer, so users keep their settings when they switch), and its optional browser extension, VIZEN Connector,
-  needs a native messaging host registration under HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts and
-  ...\Microsoft\Edge\NativeMessagingHosts that the browsers can read. With write virtualization the browsers would not
-  see that registration. VIZEN writes only these locations, only for the current user, and removes the registration
-  when the user presses Disconnect."
+  always-on-top overlay windows, registers global hotkeys, controls per-app audio volume and, when the user asks,
+  registers the native messaging host for its browser extension, which need a full-trust desktop process."
+`unvirtualizedResources` is **no longer used** (removed after the 10.6.3 rejection of submission 1). VIZEN is now a
+packaged Win32 app (`uap10:RuntimeBehavior="win32App"`, `uap10:TrustLevel="mediumIL"`), which Windows runs without
+file system and registry write virtualization; `runFullTrust` is the only restricted capability.
 
-## Notes for certification
+## Notes for certification (submission 2, after the 10.6.3 rejection)
+
+Use this text for the resubmission:
+
+> This submission removes the restricted capability unvirtualizedResources that was rejected under policy 10.6.3 in
+> the previous submission. The package now declares only runFullTrust. VIZEN is declared as a packaged Win32 app
+> (uap10:RuntimeBehavior="win32App", uap10:TrustLevel="mediumIL"). It keeps its settings in %LOCALAPPDATA%\VIZEN
+> and, only when the user presses Connect on its Browser page, registers the native messaging host of its published
+> browser extension (VIZEN Connector, Microsoft Edge Add-ons and Chrome Web Store) under
+> HKCU\Software\Microsoft\Edge\NativeMessagingHosts\com.vizen.connector,
+> HKCU\Software\Google\Chrome\NativeMessagingHosts\com.vizen.connector and
+> HKCU\Software\BraveSoftware\Brave-Browser\NativeMessagingHosts\com.vizen.connector. Their value is the host manifest
+> %LOCALAPPDATA%\VIZEN\browser\com.vizen.connector.json, which lets only the VIZEN Connector extension IDs start VIZEN
+> through its app execution alias vizen.exe. Disconnect removes these keys. "Launch at sign-in" uses the package's
+> windows.startupTask (TaskId VIZENStartup, disabled until the user turns the option on; Windows removes it with the
+> package); the Store build writes no Run registry value. VIZEN does not inject code into other processes. The privacy policy
+> (https://vizen.ro/privacy/) explains what stays after uninstall and how to remove it. No account is needed.
+> To test: start VIZEN, select any open window under Sources and press "Create overlay". The browser extension is
+> optional: Browser > Connect, then install VIZEN Connector from Chrome Web Store or Microsoft Edge Add-ons.
+
+## Notes for certification (submission 1)
 
 VIZEN is a free, open-source overlay app (GPL-3.0, https://github.com/kalinvisuals/VIZEN). No account or sign-in is
 needed. To test: start VIZEN, open any window (for example a browser with a video), select it under Sources and press

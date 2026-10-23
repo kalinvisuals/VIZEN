@@ -66,6 +66,10 @@ public static class BrowserTabs
     /// <summary>ID given by the Chrome Web Store (developer dashboard).</summary>
     public const string ChromeWebStoreId = "eifpggcoejhihbdighpghkacpghehnjb";
 
+    /// <summary>The published listings (Chrome Web Store also serves Brave).</summary>
+    public const string ChromeWebStoreUrl = "https://chromewebstore.google.com/detail/" + ChromeWebStoreId;
+    public const string EdgeAddonsUrl = "https://microsoftedge.microsoft.com/addons/detail/" + EdgeAddonsId;
+
     /// <summary>Largest message accepted from either side (a list of tabs is a few KB).</summary>
     public const int MaxMessageBytes = 1024 * 1024;
 

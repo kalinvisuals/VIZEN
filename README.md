@@ -117,8 +117,8 @@ Edge WebView2 with its own profile.
 ![Browser tabs](docs/screenshots/browser-tabs.png)
 
 Windows can only capture windows, not tabs. The optional **VIZEN Connector** extension lets VIZEN see every tab on its own. Get it from
-[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl) (Chrome Web
-Store: in review; Chrome and Brave can also load it from the `browser-extension` folder):
+the [Chrome Web Store](https://chromewebstore.google.com/detail/eifpggcoejhihbdighpghkacpghehnjb) (Chrome, Brave) or
+[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl):
 
 - every tab appears under **Sources** with its title, site and category;
 - **Switch to tab**, **Mute / Unmute** and **Separate window** (moves the tab into its own window, only when you ask);
@@ -129,10 +129,10 @@ Store: in review; Chrome and Brave can also load it from the `browser-extension`
 
 Set it up once:
 1. In VIZEN, open **Browser** and press **Connect**.
-2. Microsoft Edge: install VIZEN Connector from
-   [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl).
-   Chrome / Brave (until the Chrome Web Store listing is live): open `chrome://extensions`, turn on **Developer mode**,
-   press **Load unpacked** and choose the folder shown in VIZEN (`browser-extension` in the VIZEN folder).
+2. Install VIZEN Connector from the
+   [Chrome Web Store](https://chromewebstore.google.com/detail/eifpggcoejhihbdighpghkacpghehnjb) (Chrome, Brave) or
+   [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl).
+3. Within 30 seconds VIZEN shows **Connected**. Developers can also load the `browser-extension` folder unpacked.
 
 The extension sends only tab titles and site names (never full addresses or page content) to VIZEN on your PC.
 Incognito tabs are never shared. **Disconnect** removes everything VIZEN registered.

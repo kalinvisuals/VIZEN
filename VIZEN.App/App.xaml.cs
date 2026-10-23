@@ -64,8 +64,10 @@ public partial class App : Application
         settings.PropertyChanged += OnSettingsChanged;
         TopmostKeeper.ExclusiveFullscreenBlocked += OnExclusiveFullscreenBlocked;
 
-        // Started by Windows at sign-in (--tray): stay in the notification area, or start minimized.
-        var startedAtSignIn = e.Args.Contains(StartupRegistration.TrayArgument, StringComparer.OrdinalIgnoreCase);
+        // Started by Windows at sign-in (--tray, or the Store package's startup task): stay in the notification area,
+        // or start minimized.
+        var startedAtSignIn = e.Args.Contains(StartupRegistration.TrayArgument, StringComparer.OrdinalIgnoreCase)
+                              || StartupRegistration.StartedByStartupTask();
         if (startedAtSignIn && settings.RunInTray)
         {
             _tray.Visible = true;

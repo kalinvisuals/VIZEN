@@ -815,6 +815,9 @@
     <sys:String x:Key="Activity.LaunchOnEffect">Windows va porni VIZEN când te conectezi.</sys:String>
     <sys:String x:Key="Activity.LaunchOffEffect">VIZEN nu mai pornește odată cu Windows.</sys:String>
     <sys:String x:Key="Activity.LaunchFailed">Pornirea cu Windows nu a putut fi schimbată</sys:String>
+    <sys:String x:Key="Activity.LaunchDisabledByUser">E dezactivată din Task Manager › Aplicații de pornire. Activează VIZEN acolo.</sys:String>
+    <sys:String x:Key="Activity.LaunchDisabledByPolicy">Politica organizației tale nu permite asta.</sys:String>
+    <sys:String x:Key="Activity.LaunchTaskMissing">Acest pachet VIZEN nu are o sarcină de pornire.</sys:String>
     <sys:String x:Key="Tray.Open">Deschide VIZEN</sys:String>
     <sys:String x:Key="Tray.ToggleLayers">Arată / ascunde overlay-urile și media</sys:String>
     <sys:String x:Key="Tray.Exit">Ieși din VIZEN</sys:String>
@@ -1333,12 +1336,11 @@
     <sys:String x:Key="Tabs.ConnectFailed">Nu s-a putut conecta: {0}</sys:String>
     <sys:String x:Key="Tabs.HowTo">Cum o adaugi (o singură dată)</sys:String>
     <sys:String x:Key="Tabs.Step1">Apasă Conectează mai sus. VIZEN se înregistrează doar pentru utilizatorul tău de Windows, fără drepturi de administrator.</sys:String>
-    <sys:String x:Key="Tabs.Step2">Deschide pagina de extensii din browser (copiază adresa și lipește-o în bara de adrese), apoi pornește Modul dezvoltator.</sys:String>
-    <sys:String x:Key="Tabs.Step3">Apasă Încarcă extensia neîmpachetată și alege acest folder.</sys:String>
+    <sys:String x:Key="Tabs.Step2">Instalează VIZEN Connector din magazinul oficial al browserului: Chrome Web Store pentru Chrome și Brave sau Microsoft Edge Add-ons pentru Edge.</sys:String>
+    <sys:String x:Key="Tabs.Step3">Lasă browserul deschis. În cel mult 30 de secunde, starea de mai sus arată Conectat. Dacă nu, închide complet browserul și deschide-l din nou.</sys:String>
     <sys:String x:Key="Tabs.Step4">Gata. Taburile apar la Ferestre și aplicații, iar cele cu sunet apar în mixer. Ca să capturezi un singur tab, apasă iconița VIZEN din browser și alege Oglindește tabul live.</sys:String>
-    <sys:String x:Key="Tabs.CopyChrome">Copiază adresa Chrome / Brave</sys:String>
-    <sys:String x:Key="Tabs.CopyEdge">Copiază adresa Edge</sys:String>
-    <sys:String x:Key="Tabs.OpenFolder">Deschide folderul</sys:String>
+    <sys:String x:Key="Tabs.GetChrome">Chrome Web Store (Chrome, Brave)</sys:String>
+    <sys:String x:Key="Tabs.GetEdge">Microsoft Edge Add-ons</sys:String>
     <sys:String x:Key="Tabs.Privacy">Privat: extensia trimite către VIZEN, pe acest PC, doar titlurile taburilor și numele site-urilor (niciodată adresa completă sau conținutul paginii). Nimic nu ajunge pe internet. Taburile incognito nu sunt trimise niciodată.</sys:String>
     <sys:String x:Key="Tabs.SectionTitle">Taburi din browser</sys:String>
     <sys:String x:Key="Tabs.SectionHint">Vezi separat fiecare tab, nu doar fereastra browserului. Necesită extensia gratuită VIZEN Connector.</sys:String>

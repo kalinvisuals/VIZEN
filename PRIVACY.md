@@ -1,6 +1,6 @@
 # Privacy Policy — VIZEN and VIZEN Connector
 
-*Last updated: October 18, 2026*
+*Last updated: October 23, 2026*
 
 VIZEN (the Windows app) and VIZEN Connector (the browser extension for Microsoft Edge, Google Chrome and Brave) are
 made by kalinvisuals. This policy explains what data they handle. In short: **everything stays on your PC. Nothing is
@@ -42,7 +42,14 @@ address; VIZEN sends no other information about you or your PC.
 
 Uninstall the extension from your browser and VIZEN from *Settings → Apps*. To remove VIZEN's saved settings, delete
 the folder `%LOCALAPPDATA%\VIZEN`. In VIZEN, **Disconnect** on the Browser page removes the link between VIZEN and the
-extension.
+extension: the registry keys `HKEY_CURRENT_USER\Software\Google\Chrome\NativeMessagingHosts\com.vizen.connector`,
+`...\Microsoft\Edge\NativeMessagingHosts\com.vizen.connector` and
+`...\BraveSoftware\Brave-Browser\NativeMessagingHosts\com.vizen.connector`. Uninstalling VIZEN (installer or Microsoft
+Store) keeps the settings folder and, if you did not press Disconnect first, these keys; delete them with Registry
+Editor, or press Disconnect before uninstalling. If **Launch at sign-in** is on, the installer version writes the value
+`VIZEN` under `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`, which its uninstaller removes; the
+Microsoft Store version uses a Windows startup task instead (listed in Task Manager › Startup apps), which Windows
+removes together with the app.
 
 ## Children
 

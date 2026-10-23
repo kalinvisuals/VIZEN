@@ -76,18 +76,16 @@ public sealed class BrowserExtensionViewModel : ObservableObject, IDisposable
     private readonly string _exePath;
     private string? _errorMessage;
 
-    public BrowserExtensionViewModel(BrowserBridgeService bridge, BrowserHostRegistration registration, ActivityLog activity, string exePath, string extensionFolder)
+    public BrowserExtensionViewModel(BrowserBridgeService bridge, BrowserHostRegistration registration, ActivityLog activity, string exePath)
     {
         _bridge = bridge;
         _registration = registration;
         _activity = activity;
         _exePath = exePath;
-        ExtensionFolder = extensionFolder;
         ConnectCommand = new RelayCommand(Connect);
         DisconnectCommand = new RelayCommand(Disconnect);
-        OpenFolderCommand = new RelayCommand(OpenFolder);
-        CopyChromeAddressCommand = new RelayCommand(() => Copy("chrome://extensions"));
-        CopyEdgeAddressCommand = new RelayCommand(() => Copy("edge://extensions"));
+        OpenChromeWebStoreCommand = new RelayCommand(() => OpenPage(BrowserTabs.ChromeWebStoreUrl));
+        OpenEdgeAddonsCommand = new RelayCommand(() => OpenPage(BrowserTabs.EdgeAddonsUrl));
         _bridge.Changed += (_, _) => Sync();
         _bridge.CommandFailed += (_, failure) => _activity.Add("", "Tabs.CommandFailed", "Tabs.CommandFailedDetail", failure.Error);
         if (IsRegistered)
@@ -101,10 +99,6 @@ public sealed class BrowserExtensionViewModel : ObservableObject, IDisposable
 
     /// <summary>Raised after the tab list changed (UI thread).</summary>
     public event EventHandler? TabsChanged;
-
-    public string ExtensionFolder { get; }
-
-    public bool IsExtensionFolderPresent => Directory.Exists(ExtensionFolder);
 
     /// <summary>VIZEN is registered as the extension's host (the user pressed Connect).</summary>
     public bool IsRegistered => DemoMode.IsOn || _registration.IsRegistered(_exePath);
@@ -123,9 +117,8 @@ public sealed class BrowserExtensionViewModel : ObservableObject, IDisposable
 
     public ICommand ConnectCommand { get; }
     public ICommand DisconnectCommand { get; }
-    public ICommand OpenFolderCommand { get; }
-    public ICommand CopyChromeAddressCommand { get; }
-    public ICommand CopyEdgeAddressCommand { get; }
+    public ICommand OpenChromeWebStoreCommand { get; }
+    public ICommand OpenEdgeAddonsCommand { get; }
 
     /// <summary>The tabs of a category (null = all) whose title or site contains <paramref name="search"/>.</summary>
     public IEnumerable<BrowserTabViewModel> Filter(SourceCategory? category, string? search) =>
@@ -206,23 +199,16 @@ public sealed class BrowserExtensionViewModel : ObservableObject, IDisposable
         RaiseStatus();
     }
 
-    private void OpenFolder()
-    {
-        if (IsExtensionFolderPresent)
-        {
-            Process.Start(new ProcessStartInfo("explorer.exe", $"\"{ExtensionFolder}\"") { UseShellExecute = true });
-        }
-    }
-
-    private static void Copy(string text)
+    /// <summary>Opens a store listing in the default browser (only when the user presses the button).</summary>
+    private static void OpenPage(string url)
     {
         try
         {
-            System.Windows.Clipboard.SetText(text);
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
-        catch (System.Runtime.InteropServices.COMException)
+        catch (System.ComponentModel.Win32Exception)
         {
-            // The clipboard is busy; the address is also written on the page.
+            // No default browser; the store names are written on the page.
         }
     }
 

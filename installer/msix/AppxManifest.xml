@@ -2,17 +2,19 @@
 <!--
   VIZEN for the Microsoft Store (MSIX). scripts\build-msix.ps1 fills in the $...$ values: the package identity comes
   from Partner Center (Product management > Product identity), the version from VIZEN.App.csproj.
-  Write virtualization is off (unvirtualizedResources) so VIZEN keeps its data in %LOCALAPPDATA%\VIZEN, shared with
-  the classic installer, and so the browsers can see the VIZEN Connector registration under HKEY_CURRENT_USER.
+  VIZEN is a "win32App" (uap10:RuntimeBehavior="win32App", uap10:TrustLevel="mediumIL"): a packaged Win32 app with
+  package identity and no file system / registry write virtualization, so it needs no restricted capability other
+  than runFullTrust. Its data stays in %LOCALAPPDATA%\VIZEN (shared with the classic installer) and the browsers can read the
+  VIZEN Connector native messaging registration it writes under HKEY_CURRENT_USER.
 -->
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
-  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap uap3 desktop desktop6 rescap">
+  IgnorableNamespaces="uap uap3 uap10 desktop rescap">
 
   <Identity Name="$IdentityName$" Publisher="$Publisher$" Version="$Version$" ProcessorArchitecture="x64" />
 
@@ -20,8 +22,6 @@
     <DisplayName>VIZEN</DisplayName>
     <PublisherDisplayName>$PublisherDisplayName$</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
-    <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
   </Properties>
 
   <Dependencies>
@@ -34,7 +34,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="VIZEN" Executable="VIZEN.App.exe" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="VIZEN" Executable="VIZEN.App.exe" uap10:RuntimeBehavior="win32App" uap10:TrustLevel="mediumIL">
       <uap:VisualElements
         DisplayName="VIZEN"
         Description="Free, open-source overlays for Windows: any window or region on top of your game, in OBS or in a composition."
@@ -44,18 +44,21 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="VIZEN" />
       </uap:VisualElements>
       <Extensions>
-        <!-- "vizen.exe": how the browsers (VIZEN Connector) and Windows (start at sign-in) start a Store VIZEN. -->
-        <uap3:Extension Category="windows.appExecutionAlias" Executable="VIZEN.App.exe" EntryPoint="Windows.FullTrustApplication">
+        <!-- "vizen.exe": how the browsers (VIZEN Connector) start a Store VIZEN. -->
+        <uap3:Extension Category="windows.appExecutionAlias">
           <uap3:AppExecutionAlias>
             <desktop:ExecutionAlias Alias="vizen.exe" />
           </uap3:AppExecutionAlias>
         </uap3:Extension>
+        <!-- "Launch at sign-in" (off until the user turns it on; Windows removes it with the package). -->
+        <desktop:Extension Category="windows.startupTask">
+          <desktop:StartupTask TaskId="VIZENStartup" Enabled="false" DisplayName="VIZEN" />
+        </desktop:Extension>
       </Extensions>
     </Application>
   </Applications>
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
-    <rescap:Capability Name="unvirtualizedResources" />
   </Capabilities>
 </Package>
