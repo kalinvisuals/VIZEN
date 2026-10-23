@@ -25,21 +25,23 @@ $sums = @($installer, $manifest, $signature | ForEach-Object { "$((Get-FileHash 
 [IO.File]::WriteAllText((Join-Path $out 'SHA256SUMS.txt'), ($sums -join "`n") + "`n", (New-Object Text.UTF8Encoding $false))
 
 $notes = (Get-Content $notesFile -Raw -Encoding UTF8).Trim()
+# Non-ASCII characters are written as codes: Windows PowerShell reads a script without BOM as ANSI.
+$arrow = [char]0x2192; $dot = [char]0x00B7
 $body = @"
 ## VIZEN $version
 
 $notes
 
 ### Install
-Download **VIZEN-Setup-x64.exe** below and run it. Windows asks for administrator permission once (VIZEN installs in Program Files). Your settings and data are kept. VIZEN 0.4.6 or later finds this version by itself (Settings → Updates) and installs it after you confirm.
+Download **VIZEN-Setup-x64.exe** below and run it. Windows asks for administrator permission once (VIZEN installs in Program Files). Your settings and data are kept. VIZEN 0.4.6 or later finds this version by itself (Settings $arrow Updates) and installs it after you confirm.
 
 SHA-256 of VIZEN-Setup-x64.exe: ``$sha``
 
-The installer is not digitally signed yet, so Windows SmartScreen may show "Windows protected your PC": click **More info → Run anyway**. ``SHA256SUMS.txt`` lists the checksums of every file. ``latest.json`` and ``latest.json.sig`` are the signed update information read by VIZEN.
+The installer is not digitally signed yet, so Windows SmartScreen may show "Windows protected your PC": click **More info $arrow Run anyway**. ``SHA256SUMS.txt`` lists the checksums of every file. ``latest.json`` and ``latest.json.sig`` are the signed update information read by VIZEN.
 
 Microsoft Store copies of VIZEN are updated by the Microsoft Store.
 
-Guide: https://vizen.ro/help/ · What's new: https://vizen.ro/changelog/ · Contact: hi@vizen.ro
+Guide: https://vizen.ro/help/ $dot What's new: https://vizen.ro/changelog/ $dot Contact: hi@vizen.ro
 "@
 [IO.File]::WriteAllText((Join-Path $out 'RELEASE_NOTES.md'), $body.Replace("`r`n", "`n"), (New-Object Text.UTF8Encoding $false))
 "release text and checksums for VIZEN $version in $out"
