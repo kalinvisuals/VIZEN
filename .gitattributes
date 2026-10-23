@@ -1,0 +1,3 @@
+# Signed update files: byte for byte, never convert line endings (any change breaks the signature).
+website/site/updates/latest.json -text
+website/site/updates/latest.json.sig -text
