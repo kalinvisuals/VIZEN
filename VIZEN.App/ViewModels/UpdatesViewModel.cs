@@ -53,6 +53,10 @@ public sealed class UpdatesViewModel : ObservableObject, IDisposable
         Channel = channel;
         _current = AppVersion.TryParse(currentVersion, out var v) ? v : default;
         CurrentVersion = _current.ToString();
+        if (_current != default)
+        {
+            _downloader.RemoveInstalled(_current); // the installer of the update that brought this version
+        }
         _state = channel switch
         {
             UpdateChannel.Store or UpdateChannel.AppInstaller => State.Managed,

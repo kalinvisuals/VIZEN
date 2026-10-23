@@ -1,11 +1,13 @@
-# VIZEN release: push a tag "vX.Y.Z" (the same version as <Version> in VIZEN.App.csproj).
-# Builds and tests VIZEN, builds the installer, writes and signs the update manifest (latest.json + .sig) and creates a
-# DRAFT GitHub release with all three files. Nothing is published until the draft is reviewed and published by hand.
+# VIZEN release: runs only when a tag "vX.Y.Z" is pushed (the same version as <Version> in VIZEN.App.csproj); ordinary
+# commits never make a release. Every check runs first; only if all pass does it create a DRAFT GitHub release with the
+# installer, the signed update manifest and the checksums. Nothing is public until the draft is reviewed and published
+# by hand. A failed run leaves no release.
 #
-# Needs the repository secret UPDATE_SIGNING_KEY (the private update key, PEM). Optional repository variables
-# MSIX_IDENTITY_NAME and MSIX_PUBLISHER (Partner Center > Product identity) also build the Microsoft Store package as a
-# workflow artifact (it is submitted to the Store by hand, never attached to the release).
-# Release notes: docs/release-notes/<version>.en.txt and .ro.txt (optional).
+# Needs the repository secret UPDATE_SIGNING_KEY (the private update key, PEM). It is passed only to the signing step,
+# never printed and never written to the release. Optional repository variables MSIX_IDENTITY_NAME and MSIX_PUBLISHER
+# (Partner Center > Product identity) also build the Microsoft Store package as a workflow artifact (submitted to the
+# Store by hand, never attached to the release).
+# Release notes: docs/release-notes/<version>.en.txt and .ro.txt (required).
 name: Release
 
 on:
@@ -15,32 +17,53 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
-      - name: Check the version
+      - name: Check the version, the tag and the release notes
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           $version = ([xml](Get-Content VIZEN.App/VIZEN.App.csproj -Raw)).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
           if ("v$version" -ne $env:GITHUB_REF_NAME) { throw "tag $env:GITHUB_REF_NAME does not match VIZEN.App.csproj version $version" }
+          git merge-base --is-ancestor $env:GITHUB_SHA origin/main
+          if ($LASTEXITCODE -ne 0) { throw "tag $env:GITHUB_REF_NAME is not on main" }
+          foreach ($lang in 'en', 'ro') { if (-not (Test-Path "docs/release-notes/$version.$lang.txt")) { throw "docs/release-notes/$version.$lang.txt is missing" } }
+          gh release view $env:GITHUB_REF_NAME --json tagName 2>$null
+          if ($LASTEXITCODE -eq 0) { throw "a release $env:GITHUB_REF_NAME already exists; never replace published files, make a new version" }
           "VERSION=$version" | Out-File $env:GITHUB_ENV -Append
+          $global:LASTEXITCODE = 0 # "gh release view" failing is the expected case
+
+      - name: Restore
+        run: dotnet restore VIZEN.Tests/VIZEN.Tests.csproj
 
       - name: Test
-        run: dotnet test VIZEN.Tests/VIZEN.Tests.csproj -c Release
+        run: dotnet test VIZEN.Tests/VIZEN.Tests.csproj -c Release --no-restore
 
       - name: Install Inno Setup
         run: choco install innosetup --no-progress -y
 
-      - name: Build the installer
+      - name: Build the installer (Release, self-contained)
         shell: powershell
         run: powershell -ExecutionPolicy Bypass -File scripts\build-installer.ps1 -SkipSmokeTest
+
+      - name: Install, check and uninstall the installer
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File scripts\test-installer.ps1
 
       - name: Write and sign the update manifest
         shell: powershell
@@ -48,29 +71,49 @@ jobs:
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
         run: |
           if (-not $env:UPDATE_SIGNING_KEY) { throw 'the UPDATE_SIGNING_KEY secret is missing' }
-          $en = if (Test-Path "docs\release-notes\$env:VERSION.en.txt") { Get-Content "docs\release-notes\$env:VERSION.en.txt" -Raw -Encoding UTF8 } else { '' }
-          $ro = if (Test-Path "docs\release-notes\$env:VERSION.ro.txt") { Get-Content "docs\release-notes\$env:VERSION.ro.txt" -Raw -Encoding UTF8 } else { '' }
-          powershell -ExecutionPolicy Bypass -File scripts\make-update-manifest.ps1 -Key env:UPDATE_SIGNING_KEY -NotesEn $en.Trim() -NotesRo $ro.Trim()
+          $en = Get-Content "docs\release-notes\$env:VERSION.en.txt" -Raw -Encoding UTF8
+          $ro = Get-Content "docs\release-notes\$env:VERSION.ro.txt" -Raw -Encoding UTF8
+          # called in this process: notes with quotes would be split when passed to a new powershell.exe
+          & .\scripts\make-update-manifest.ps1 -Key env:UPDATE_SIGNING_KEY -NotesEn $en.Trim() -NotesRo $ro.Trim()
+          if ($LASTEXITCODE -ne 0) { throw 'make-update-manifest failed' }
+
+      - name: Verify the signature with the keys built into VIZEN
+        shell: pwsh
+        run: |
+          $keys = [regex]::Matches((Get-Content VIZEN.App/Models/Updates.cs -Raw), '"(MFkw[A-Za-z0-9+/=]+)"') | ForEach-Object { $_.Groups[1].Value }
+          if (-not $keys) { throw 'no trusted keys found in Updates.cs' }
+          $ok = $false
+          foreach ($k in $keys) { dotnet run scripts/update-signing.cs -- verify $k artifacts/update/latest.json; if ($LASTEXITCODE -eq 0) { $ok = $true; break } }
+          if (-not $ok) { throw 'latest.json.sig does not match any key trusted by VIZEN' }
+
+      - name: Release text and checksums
+        shell: powershell
+        run: powershell -ExecutionPolicy Bypass -File scripts\make-release-notes.ps1
+
+      - name: Build the Microsoft Store package
+        if: ${{ vars.MSIX_IDENTITY_NAME != '' && vars.MSIX_PUBLISHER != '' }}
+        shell: powershell
+        run: powershell -STA -ExecutionPolicy Bypass -Command "& .\scripts\build-msix.ps1 -IdentityName '${{ vars.MSIX_IDENTITY_NAME }}' -Publisher '${{ vars.MSIX_PUBLISHER }}' -Publish `$false"
+
+      - name: Keep the Store package
+        if: ${{ vars.MSIX_IDENTITY_NAME != '' && vars.MSIX_PUBLISHER != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: VIZEN-${{ env.VERSION }}-msix
+          path: artifacts/msix/*.msix
+
+      - name: Keep the files for vizen.ro/updates
+        uses: actions/upload-artifact@v4
+        with:
+          name: vizen-ro-updates-${{ env.VERSION }}
+          path: |
+            artifacts/update/latest.json
+            artifacts/update/latest.json.sig
 
       - name: Create the draft release
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $notes = if (Test-Path "docs/release-notes/$env:VERSION.en.txt") { "docs/release-notes/$env:VERSION.en.txt" } else { $null }
-          $ghArgs = @('release', 'create', $env:GITHUB_REF_NAME, '--draft', '--title', "VIZEN $env:VERSION",
-            'artifacts/installer/VIZEN-Setup-x64.exe', 'artifacts/update/latest.json', 'artifacts/update/latest.json.sig')
-          if ($notes) { $ghArgs += @('--notes-file', $notes) } else { $ghArgs += @('--notes', "VIZEN $env:VERSION") }
-          gh @ghArgs
-
-      - name: Build the Microsoft Store package
-        if: ${{ vars.MSIX_IDENTITY_NAME != '' && vars.MSIX_PUBLISHER != '' }}
-        shell: powershell
-        run: powershell -STA -ExecutionPolicy Bypass -File scripts\build-msix.ps1 -IdentityName "${{ vars.MSIX_IDENTITY_NAME }}" -Publisher "${{ vars.MSIX_PUBLISHER }}" -Publish:$false
-
-      - name: Keep the Store package
-        if: ${{ vars.MSIX_IDENTITY_NAME != '' && vars.MSIX_PUBLISHER != '' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: VIZEN-msix
-          path: artifacts/msix/*.msix
+          gh release create $env:GITHUB_REF_NAME --draft --verify-tag --title "VIZEN $env:VERSION" --notes-file artifacts/release/RELEASE_NOTES.md `
+            artifacts/installer/VIZEN-Setup-x64.exe artifacts/update/latest.json artifacts/update/latest.json.sig artifacts/release/SHA256SUMS.txt

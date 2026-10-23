@@ -19,9 +19,13 @@ https://vizen.ro/
 3. Publish the GitHub release with three files: `VIZEN-Setup-x64.exe`, `latest.json`, `latest.json.sig`.
 4. Upload **the same** `latest.json` and `latest.json.sig` to `https://vizen.ro/updates/` (replace the old ones).
    Upload them byte for byte (FTP binary mode / file manager upload, no editing): any change breaks the signature.
-5. Point the download button on `https://vizen.ro/download` to
-   `https://github.com/kalinvisuals/VIZEN/releases/latest/download/VIZEN-Setup-x64.exe`
-   (always the newest installer, nothing to change per release).
+5. Nothing to change on the pages for the download itself: `https://vizen.ro/download` leads to the download section
+   of the home page, whose buttons point to
+   `https://github.com/kalinvisuals/VIZEN/releases/latest/download/VIZEN-Setup-x64.exe`. When the page loads,
+   `assets/site.js` reads `/updates/latest.json` (the same signed file VIZEN reads) and shows its version and size and
+   links the buttons to the exact installer it describes, so the website and the app always agree. If that file
+   cannot be read it asks the GitHub API instead, and without either the built-in values stay.
+   Upload the updated `latest.json` only after the GitHub release is published (its installer address must exist).
 
 Optional mirror: to serve the installer from vizen.ro too, upload it as
 `https://vizen.ro/download/VIZEN-Setup-x64-<version>.exe` **before** making the manifest with `-WebsiteMirror`. VIZEN

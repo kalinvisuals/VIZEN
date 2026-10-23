@@ -76,21 +76,41 @@ The same two files are published in two places:
 
 ## Making a release
 
-1. Set `<Version>` in `VIZEN.App/VIZEN.App.csproj` (for example `0.4.6`), and optionally write
-   `docs/release-notes/0.4.6.en.txt` and `0.4.6.ro.txt`.
-2. Commit, then push a tag with the same version: `git tag v0.4.6` and `git push origin v0.4.6` (public repository).
-3. The **Release** workflow (`.github/workflows/release.yml`) tests VIZEN, builds the installer, writes and signs the
-   manifest, and creates a **draft** GitHub release with `VIZEN-Setup-x64.exe`, `latest.json` and `latest.json.sig`.
-   If the repository variables `MSIX_IDENTITY_NAME` and `MSIX_PUBLISHER` are set, it also builds the Microsoft Store
-   package as a workflow artifact.
-4. Review the draft and publish it on GitHub. From now on GitHub's fallback offers the new version.
-5. Download `latest.json` and `latest.json.sig` from the release and upload them, unchanged, to
-   `https://vizen.ro/updates/` (see `website/README.md`). From now on vizen.ro offers it too.
-6. Microsoft Store: upload the MSIX in Partner Center as a new submission (the Store updates Store copies itself).
+A published version is never changed: its installer, manifest and checksums stay as they are. Any change, even a
+small fix, gets a new version (for example 0.4.7 after 0.4.6). The workflow refuses a tag whose release already exists.
 
-Without GitHub Actions the same is done locally: `scripts\build-installer.ps1`, then
-`scripts\make-update-manifest.ps1 -NotesEn "…" -NotesRo "…"` (uses the local key), then create the release by hand
-with the three files from `artifacts\installer` and `artifacts\update`.
+1. Set `<Version>` in `VIZEN.App/VIZEN.App.csproj` (for example `0.4.7`). This one value becomes the About page
+   version, the EXE version information, the installer version and its Installed apps entry, the tag, the manifest and
+   the version the website shows.
+2. Write `docs/release-notes/0.4.7.en.txt` and `0.4.7.ro.txt` (required; shown in VIZEN's update notice and on GitHub)
+   and add the version to `website/site/changelog/index.html` (EN and RO).
+3. Commit to `main` (private repository), export to the public repository, check that CI passes there.
+4. Approve the release by pushing a tag with the same version in the public repository:
+   `git tag v0.4.7` and `git push origin v0.4.7`. Ordinary commits never make a release.
+5. The **Release** workflow (`.github/workflows/release.yml`) then, in order, and stops at the first failure:
+   checks that the tag matches the version, is on `main`, has release notes and has no release yet; restores and runs
+   the tests; builds the self-contained Release build and the installer; installs the installer silently on the
+   runner, checks the installed files, version and Installed apps entry, and uninstalls it
+   (`scripts\test-installer.ps1`); writes and signs `latest.json` with the `UPDATE_SIGNING_KEY` secret and verifies the
+   signature with the keys built into VIZEN; writes the release text and `SHA256SUMS.txt`
+   (`scripts\make-release-notes.ps1`); keeps `latest.json` + `.sig` as the workflow artifact `vizen-ro-updates-<version>`;
+   and only then creates a **draft** GitHub release with `VIZEN-Setup-x64.exe`, `latest.json`, `latest.json.sig` and
+   `SHA256SUMS.txt`. If the repository variables `MSIX_IDENTITY_NAME` and `MSIX_PUBLISHER` are set, it also builds the
+   Microsoft Store package as a workflow artifact.
+6. Review the draft (notes, size, SHA-256) and press **Publish release** on GitHub. From now on GitHub's fallback
+   offers the new version to installed copies.
+7. Upload the two files from the `vizen-ro-updates-<version>` artifact (identical to the release assets), unchanged,
+   to `https://vizen.ro/updates/`, together with the website files if they changed (see `website/README.md`). From
+   now on vizen.ro offers the version too, and its download section shows it (the page reads the same `latest.json`).
+8. Check: `https://vizen.ro/updates/latest.json` and the GitHub release show the same version and SHA-256, and an
+   installed older VIZEN finds the update (Settings → Updates → Check for updates).
+9. Microsoft Store (only when a new Store build is wanted): `scripts\build-msix.ps1` (or the workflow artifact), then
+   a new submission in Partner Center. The Store updates Store copies itself; they never use vizen.ro or GitHub.
+
+Without GitHub Actions the same is done locally: `scripts\build-installer.ps1`, `scripts\test-installer.ps1` (as
+administrator, on a PC without VIZEN installed), `scripts\make-update-manifest.ps1 -NotesEn "…" -NotesRo "…"` (uses the
+local key), `scripts\make-release-notes.ps1`, then create the release by hand with the files from
+`artifacts\installer`, `artifacts\update` and `artifacts\release`.
 
 One-time setup for the workflow: add the repository secret `UPDATE_SIGNING_KEY` with the full content of the private
 key file (GitHub → Settings → Secrets and variables → Actions → New repository secret).
@@ -103,13 +123,20 @@ different versions on the two sources; same version with different files; older 
 older version; unsigned GitHub release shown but not installable; non-HTTPS addresses refused; verified download;
 interrupted download resumed with a range request; changed installer refused and deleted; mirror used when the main
 address fails; file that is not a VIZEN installer refused; verified download reused; channel detection of a
-non-installed build; installer never deletes user data; the built-in key is valid.
+non-installed build; installer never deletes user data; the built-in key is valid; downloaded installers of the
+installed version or older are removed at start.
 
 End to end (`tools/perf/updateflow.ps1`, private tools): a local feed signed with the real key announced 0.4.6 for the
 real 0.4.5 installer on GitHub; VIZEN showed the update, downloaded 56 MB and refused it ("installer version does not
 match"), leaving no file; two overlays stayed at 0 % dropped frames before and after five checks and the download.
 
-Not tested automatically: a real installation over an older installed version (it installs into Program Files and needs
-administrator rights; test it by hand: install VIZEN 0.4.5 with the installer, publish a newer signed release, use
-Settings → Updates), a real Microsoft Store copy (needs the Store-signed package), and the App Installer channel (not
+By hand, 2026-10-23 (0.4.7): the official GitHub 0.4.6 installer installed, then updated by VIZEN 0.4.6 itself to 0.4.7
+(signed local test manifest, real key; the installer placed where VIZEN downloads it, because the v0.4.7 address did
+not exist yet): verified, "Restart and install", Windows' administrator prompt, VIZEN restarted as 0.4.7, one
+Installed apps entry, data unchanged, the used installer removed at start. Also: vizen.ro unreachable -> the real
+GitHub release read and verified ("up to date"); a changed installer refused and deleted; a missing download (404)
+reported, nothing kept.
+
+Not tested automatically: the real installation over an older version (Program Files, administrator rights; done by
+hand as above), a real Microsoft Store copy (needs the Store-signed package), and the App Installer channel (not
 offered).

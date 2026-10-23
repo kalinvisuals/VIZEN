@@ -115,16 +115,29 @@
   }), { rootMargin: "0px 0px -8% 0px" }) : null;
   document.querySelectorAll(".reveal").forEach(el => io ? io.observe(el) : el.classList.add("in"));
 
-  // latest release (version and size of the installer), from the public GitHub API
+  // latest release (version, size and address of the installer): the update manifest on vizen.ro, the same file VIZEN
+  // reads, so the page and the app always agree; the public GitHub API when it cannot be read
   if (document.querySelector("[data-release-version]")) {
-    fetch("https://api.github.com/repos/kalinvisuals/VIZEN/releases/latest", { headers: { Accept: "application/vnd.github+json" } })
+    const official = /^https:\/\/(github\.com\/kalinvisuals\/VIZEN\/releases\/download\/|vizen\.ro\/download\/)/;
+    const show = (version, size, url) => {
+      document.querySelectorAll("[data-release-version]").forEach(el => (el.textContent = el.textContent.startsWith("v") ? `v${version}` : version));
+      if (size) document.querySelectorAll("[data-release-size]").forEach(el => (el.textContent = `${Math.round(size / 1048576)} MB`));
+      if (url && official.test(url)) document.querySelectorAll("[data-release-download]").forEach(el => (el.href = url));
+    };
+    const fromGitHub = () => fetch("https://api.github.com/repos/kalinvisuals/VIZEN/releases/latest", { headers: { Accept: "application/vnd.github+json" } })
       .then(r => (r.ok ? r.json() : null))
       .then(release => {
         if (!release || !release.tag_name) return;
-        document.querySelectorAll("[data-release-version]").forEach(el => (el.textContent = el.textContent.startsWith("v") ? release.tag_name : release.tag_name.replace(/^v/, "")));
         const asset = (release.assets || []).find(a => a.name === "VIZEN-Setup-x64.exe");
-        if (asset) document.querySelectorAll("[data-release-size]").forEach(el => (el.textContent = `${Math.round(asset.size / 1048576)} MB`));
+        show(release.tag_name.replace(/^v/, ""), asset && asset.size, asset && asset.browser_download_url);
+      });
+    fetch("/updates/latest.json", { cache: "no-cache" })
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error("no manifest"))))
+      .then(m => {
+        if (m.product !== "VIZEN" || !/^\d+\.\d+\.\d+$/.test(m.version || "") || !m.installer) throw new Error("bad manifest");
+        show(m.version, m.installer.size, m.installer.url);
       })
+      .catch(() => fromGitHub())
       .catch(() => { /* offline: keep the built-in values */ });
   }
 })();

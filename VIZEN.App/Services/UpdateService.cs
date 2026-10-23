@@ -254,6 +254,28 @@ public sealed class UpdateDownloader
 
     public string PathFor(UpdateManifest manifest) => Path.Combine(_folder, $"VIZEN-Setup-{manifest.Version}.exe");
 
+    /// <summary>
+    /// Deletes downloaded installers (and partial downloads) for this version or older: after an update is installed
+    /// they are no longer needed. Installers of newer versions are kept for the next update.
+    /// </summary>
+    public void RemoveInstalled(AppVersion current)
+    {
+        if (!Directory.Exists(_folder))
+        {
+            return;
+        }
+
+        foreach (var file in Directory.EnumerateFiles(_folder, "VIZEN-Setup-*"))
+        {
+            var name = Path.GetFileName(file);
+            var version = name["VIZEN-Setup-".Length..].Replace(".exe.part", "").Replace(".exe", "");
+            if (AppVersion.TryParse(version, out var v) && v.CompareTo(current) <= 0)
+            {
+                TryDelete(file);
+            }
+        }
+    }
+
     /// <summary>Returns the verified installer's path. Throws <see cref="UpdateException"/> when no copy can be verified.</summary>
     public async Task<string> DownloadAsync(UpdateManifest manifest, IProgress<double>? progress, CancellationToken cancel, bool checkVersionInfo = true)
     {

@@ -252,6 +252,20 @@ public class UpdateTests : IDisposable
     }
 
     [Fact]
+    public void InstallersOfInstalledVersionsAreRemoved()
+    {
+        Directory.CreateDirectory(_folder);
+        foreach (var name in new[] { "VIZEN-Setup-0.4.6.exe", "VIZEN-Setup-0.4.7.exe", "VIZEN-Setup-0.4.7.exe.part", "VIZEN-Setup-0.4.8.exe", "notes.txt" })
+        {
+            File.WriteAllText(Path.Combine(_folder, name), "x");
+        }
+
+        Downloader().RemoveInstalled(new AppVersion(0, 4, 7, 0, null));
+
+        Assert.Equal(["VIZEN-Setup-0.4.8.exe", "notes.txt"], Directory.GetFiles(_folder).Select(Path.GetFileName).Order(StringComparer.Ordinal).ToArray());
+    }
+
+    [Fact]
     public async Task InterruptedDownloadResumes()
     {
         var installer = Installer();
