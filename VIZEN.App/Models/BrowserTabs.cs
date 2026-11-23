@@ -14,7 +14,7 @@ namespace VIZEN.App.Models;
 /// </summary>
 public sealed record BrowserTab(string Browser, int Id, int WindowId, string Title, string Site, bool Audible, bool Muted, bool Active)
 {
-    /// <summary>"Calls" for Meet / Messenger tabs, "Media" for YouTube / Twitch, otherwise "Browsers".</summary>
+    /// <summary>"Media" for YouTube / Twitch tabs, otherwise "Browsers".</summary>
     public SourceCategory Category => SourceClassifier.Classify(BrowserTabs.ProcessFor(Browser), $"{Title} - {Site}");
 
     /// <summary>Key of the browser in the mixer and in Sources ("chrome.exe").</summary>

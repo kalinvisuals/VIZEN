@@ -66,6 +66,9 @@ public sealed class OutputViewModel : ObservableObject
 
     public LiveCapture Capture => _lease.Capture;
 
+    /// <summary>The window tells it when it shows the capture natively (no CPU copies needed).</summary>
+    public CaptureLease Lease => _lease;
+
     private AppAudioViewModel? _audio;
 
     /// <summary>Sound controls for the source's app (null for cameras).</summary>

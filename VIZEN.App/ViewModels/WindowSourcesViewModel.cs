@@ -105,7 +105,6 @@ public sealed class WindowSourcesViewModel : ObservableObject
         [
             new CategoryFilter(null, SelectFilter),
             new CategoryFilter(SourceCategory.Browsers, SelectFilter),
-            new CategoryFilter(SourceCategory.Calls, SelectFilter),
             new CategoryFilter(SourceCategory.Media, SelectFilter),
             new CategoryFilter(SourceCategory.Cameras, SelectFilter),
             new CategoryFilter(SourceCategory.Other, SelectFilter),
@@ -186,7 +185,7 @@ public sealed class WindowSourcesViewModel : ObservableObject
     public bool HasCameras => Cameras.Count > 0;
 
     /// <summary>Explains the browser limitation when looking at categories that contain browser windows.</summary>
-    public bool ShowBrowserNote => SelectedCategory is SourceCategory.Browsers or SourceCategory.Calls or SourceCategory.Media;
+    public bool ShowBrowserNote => SelectedCategory is SourceCategory.Browsers or SourceCategory.Media;
 
     public WindowSource? SelectedSource
     {
@@ -196,10 +195,57 @@ public sealed class WindowSourcesViewModel : ObservableObject
             if (SetProperty(ref _selectedSource, value))
             {
                 OnPropertyChanged(nameof(HasSelection));
+                SelectedOverlay = value is null ? null : OverlayFor?.Invoke(value);
                 UpdatePreview();
                 SelectedAudio = value is null ? null : AudioFor?.Invoke(value);
             }
         }
+    }
+
+    private OverlayViewModel? _selectedOverlay;
+
+    /// <summary>
+    /// The overlay showing the selected window, if any: its settings are shown right here, so creating an overlay
+    /// never moves the user to another page.
+    /// </summary>
+    public OverlayViewModel? SelectedOverlay
+    {
+        get => _selectedOverlay;
+        private set
+        {
+            if (SetProperty(ref _selectedOverlay, value))
+            {
+                OnPropertyChanged(nameof(HasSelectedOverlay));
+                OnPropertyChanged(nameof(ActiveCapture));
+                UpdatePreview();
+            }
+        }
+    }
+
+    public bool HasSelectedOverlay => SelectedOverlay is not null;
+
+    /// <summary>The capture whose health is shown: the overlay's while one is open (the preview is not needed then), else the preview.</summary>
+    public LiveCapture? ActiveCapture => SelectedOverlay?.Capture ?? Preview;
+
+    /// <summary>Set by the shell: opens the Gaming page with every overlay.</summary>
+    public Action? ShowOverlaysRequested { get; set; }
+
+    public ICommand ShowOverlaysCommand => _showOverlaysCommand ??= new RelayCommand(() => ShowOverlaysRequested?.Invoke());
+
+    private ICommand? _showOverlaysCommand;
+
+    /// <summary>Set by the shell: the overlay showing a source (the first one when several regions of it are open).</summary>
+    public Func<WindowSource, OverlayViewModel?>? OverlayFor { get; set; }
+
+    /// <summary>Shell: overlays were opened or closed, or the list was refreshed. Updates the row marks and the panel.</summary>
+    public void RefreshOverlays()
+    {
+        foreach (var source in Sources)
+        {
+            source.HasOverlay = OverlayFor?.Invoke(source) is not null;
+        }
+
+        SelectedOverlay = SelectedSource is { } selected ? OverlayFor?.Invoke(selected) : null;
     }
 
     private AppAudioViewModel? _selectedAudio;
@@ -328,13 +374,11 @@ public sealed class WindowSourcesViewModel : ObservableObject
 
                 OnPropertyChanged(nameof(PreviewMessage));
                 OnPropertyChanged(nameof(HasPreviewFrame));
+                OnPropertyChanged(nameof(ActiveCapture));
                 OnPropertyChanged(nameof(ShowIdleBrowserHint));
             }
         }
     }
-
-    /// <summary>The lease of <see cref="Preview"/> (the native preview tells it when no CPU copy is needed).</summary>
-    public CaptureLease? PreviewLease => _previewLease;
 
     public bool HasPreviewFrame => Preview?.HasFrame == true;
 
@@ -380,7 +424,7 @@ public sealed class WindowSourcesViewModel : ObservableObject
                 var processCount = windows.Select(w => w.ProcessId).Distinct().Count();
                 _activity.Add("", "Activity.ScanCompleted", "Activity.ScanCompletedDetail",
                     windows.Count, processCount,
-                    CountOf(SourceCategory.Browsers), CountOf(SourceCategory.Calls), CountOf(SourceCategory.Media),
+                    CountOf(SourceCategory.Browsers), CountOf(SourceCategory.Media),
                     CountOf(SourceCategory.Cameras), CountOf(SourceCategory.Other), Cameras.Count);
             }
         }
@@ -557,7 +601,7 @@ public sealed class WindowSourcesViewModel : ObservableObject
     public bool HasVisibleTabs => VisibleTabs.Count > 0;
 
     /// <summary>Tabs belong to the browser categories (and "All").</summary>
-    public bool ShowTabsSection => SelectedCategory is null or SourceCategory.Browsers or SourceCategory.Calls or SourceCategory.Media;
+    public bool ShowTabsSection => SelectedCategory is null or SourceCategory.Browsers or SourceCategory.Media;
 
     /// <summary>The extension is connected and a browser reports tabs (otherwise the section explains how to connect).</summary>
     public bool IsTabsConnected => _browserTabs?.IsBrowserConnected == true;
@@ -627,7 +671,8 @@ public sealed class WindowSourcesViewModel : ObservableObject
 
     private void UpdatePreview()
     {
-        var target = IsActive && SelectedSource is { } selected && _capture.CanCapture(selected) ? SelectedSource : null;
+        // No preview while the selected window has an overlay: the overlay shows the video.
+        var target = IsActive && SelectedOverlay is null && SelectedSource is { } selected && _capture.CanCapture(selected) ? SelectedSource : null;
         var alreadyPreviewing = target is not null && Preview is not null && Preview.Key.Equals(CaptureService.KeyFor(target))
             && Preview.Status is CaptureStatus.Starting or CaptureStatus.Live;
         if (alreadyPreviewing || (target is null && Preview is null))
@@ -637,9 +682,8 @@ public sealed class WindowSourcesViewModel : ObservableObject
 
         // Leases share the capture with overlays/editor of the same window; releasing ours never stops theirs.
         var oldLease = _previewLease;
-        // Shown natively (GPU), the preview follows the source rate like the overlays; the WPF image is capped.
-        _previewLease = target is null ? null : _capture.Acquire(target, _capture.GpuRendering ? 0 : PreviewMaxFps, presentsNatively: true);
-        OnPropertyChanged(nameof(PreviewLease));
+        // The preview is a WPF image (see LivePreview), capped; overlays of the same window keep their own rate.
+        _previewLease = target is null ? null : _capture.Acquire(target, PreviewMaxFps);
         Preview = _previewLease?.Capture;
         oldLease?.Dispose();
     }

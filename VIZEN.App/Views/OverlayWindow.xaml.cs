@@ -26,6 +26,8 @@ public partial class OverlayWindow : Window
     private NativeVideoPresenter? _presenter;
     private WindowCapture? _nativeCapture;
     private bool _popupChrome;
+    private bool _hovered;
+    private const double BadgeInset = 10;
     private readonly DispatcherTimer _hoverCheck;
     private const int GWL_STYLE = -16;
     private const long WS_CLIPCHILDREN = 0x02000000;
@@ -49,15 +51,28 @@ public partial class OverlayWindow : Window
         overlay.Closed += OnOverlayClosed;
         Closed += OnWindowClosed;
         Loaded += (_, _) => StartNativeVideo();
-        _hoverCheck = new DispatcherTimer(TimeSpan.FromMilliseconds(150), DispatcherPriority.Input, (_, _) => UpdateHoverPopup(), Dispatcher);
-        Root.MouseEnter += (_, _) => UpdateHoverPopup();
-        Root.MouseLeave += (_, _) => _hoverCheck.Start();
-        HoverBar.MouseLeave += (_, _) => _hoverCheck.Start();
+        // Hover is decided from the real pointer position: WPF's MouseLeave is not reliable here (the video is a native
+        // child window and the bar is a separate popup window), which left the bar on screen after the pointer had left.
+        _hoverCheck = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Input, (_, _) => CheckHover(), Dispatcher);
+        Root.MouseEnter += (_, _) => StartHoverCheck();
+        Root.MouseMove += (_, _) => StartHoverCheck();
+        HoverBar.MouseEnter += (_, _) => StartHoverCheck();
         Root.SizeChanged += (_, _) => PositionBadge();
         Badge.SizeChanged += (_, _) => PositionBadge();
         LocationChanged += (_, _) => NudgePopups();
         BadgePopup.Opened += (_, _) => MakePopupClickThrough(BadgePopup);
+        foreach (var popup in new[] { HoverPopup, BadgePopup })
+        {
+            // Kept above the overlay when the overlay is raised over games (see TopmostKeeper). The handle is remembered
+            // at opening: the popup window may already be gone when Closed is raised.
+            var handle = IntPtr.Zero;
+            popup.Opened += (_, _) => TopmostKeeper.AddCompanion(_style.Handle, handle = PopupHandle(popup));
+            popup.Closed += (_, _) => TopmostKeeper.RemoveCompanion(_style.Handle, handle);
+        }
     }
+
+    private static IntPtr PopupHandle(System.Windows.Controls.Primitives.Popup popup) =>
+        popup.Child is not null && PresentationSource.FromVisual(popup.Child) is HwndSource source ? source.Handle : IntPtr.Zero;
 
     // ---------- native video ----------
 
@@ -166,16 +181,17 @@ public partial class OverlayWindow : Window
 
         _popupChrome = true;
         Root.Children.Remove(HoverBar);
-        HoverBar.Style = null;
-        HoverBar.Visibility = Visibility.Visible;
+        HoverBar.Visibility = Visibility.Visible; // the popups open and close instead
         HoverPopup.Child = HoverBar;
         Root.Children.Remove(Badge);
+        Badge.Visibility = Visibility.Visible;
+        Badge.Margin = new Thickness(0); // a popup moves its child's margin back out: the inset is the popup offset instead
         BadgePopup.Child = Badge;
         HoverOutline.Visibility = Visibility.Collapsed;
 
         // The native window shows the video: don't keep a hidden WPF copy of it rendering underneath.
         WpfVideo.Visibility = Visibility.Collapsed;
-        UpdateBadgePopup();
+        UpdateChrome();
 
         // WPF now only draws the background behind the video (the bar and badge are popups, separate windows), which
         // the CPU does at no cost. Measured over 12 minutes with 4 overlays: WPF's GPU renderer for these windows held
@@ -206,30 +222,57 @@ public partial class OverlayWindow : Window
         BadgePopup.IsOpen = false;
         HoverPopup.Child = null;
         BadgePopup.Child = null;
-        HoverBar.ClearValue(StyleProperty);
-        HoverBar.ClearValue(VisibilityProperty);
+        Badge.ClearValue(MarginProperty);
         Root.Children.Add(Badge);
         Root.Children.Add(HoverBar);
-        HoverOutline.ClearValue(VisibilityProperty);
         WpfVideo.ClearValue(VisibilityProperty);
         SetWpfRenderMode(RenderMode.Default);
+        UpdateChrome();
     }
 
-    private void UpdateHoverPopup()
+    private void StartHoverCheck()
     {
-        _hoverCheck.Stop();
-        if (_popupChrome)
+        if (!_hoverCheck.IsEnabled)
         {
-            HoverPopup.IsOpen = IsVisible && !_overlay.IsClickThrough && (Root.IsMouseOver || HoverBar.IsMouseOver);
+            CheckHover();
+            _hoverCheck.Start();
         }
     }
 
-    private void UpdateBadgePopup()
+    /// <summary>Pointer inside the overlay window (bar included)? Polled only while it is near: stops once it has left.</summary>
+    private void CheckHover()
     {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        var inside = hwnd != IntPtr.Zero && NativeMethods.GetCursorPos(out var p) && NativeMethods.GetWindowRect(hwnd, out var r)
+            && p.X >= r.Left && p.X < r.Right && p.Y >= r.Top && p.Y < r.Bottom;
+        if (!inside)
+        {
+            _hoverCheck.Stop();
+        }
+
+        if (inside != _hovered)
+        {
+            _hovered = inside;
+            UpdateChrome();
+        }
+    }
+
+    /// <summary>The outline, the title bar and (when enabled) the performance badge show together, only while hovered.</summary>
+    private void UpdateChrome()
+    {
+        var hover = _hovered && IsVisible && !_overlay.IsClickThrough;
+        var badge = hover && _overlay.ShowPerformance;
         if (_popupChrome)
         {
-            BadgePopup.IsOpen = IsVisible && _overlay.ShowPerformance;
+            HoverPopup.IsOpen = hover;
+            BadgePopup.IsOpen = badge;
             PositionBadge();
+        }
+        else
+        {
+            HoverOutline.Visibility = hover ? Visibility.Visible : Visibility.Collapsed;
+            HoverBar.Visibility = hover ? Visibility.Visible : Visibility.Collapsed;
+            Badge.Visibility = badge ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 
@@ -237,7 +280,9 @@ public partial class OverlayWindow : Window
     {
         if (_popupChrome)
         {
-            BadgePopup.VerticalOffset = Math.Max(0, Root.ActualHeight - Badge.ActualHeight - Badge.Margin.Top - Badge.Margin.Bottom);
+            // Inside the overlay's bottom-left corner, clear of its rounded edge.
+            BadgePopup.HorizontalOffset = BadgeInset;
+            BadgePopup.VerticalOffset = Math.Max(0, Root.ActualHeight - Badge.ActualHeight - BadgeInset);
         }
     }
 
@@ -280,7 +325,7 @@ public partial class OverlayWindow : Window
                 break;
             case nameof(OverlayViewModel.IsClickThrough):
                 _style.ApplyExtendedStyle();
-                UpdateHoverPopup();
+                UpdateChrome();
                 break;
             case nameof(OverlayViewModel.IsVisible):
                 if (_overlay.IsVisible)
@@ -292,11 +337,10 @@ public partial class OverlayWindow : Window
                     Hide();
                 }
 
-                UpdateHoverPopup();
-                UpdateBadgePopup();
+                UpdateChrome();
                 break;
             case nameof(OverlayViewModel.ShowPerformance):
-                UpdateBadgePopup();
+                UpdateChrome();
                 break;
             case nameof(OverlayViewModel.Capture):
                 // The source was reconnected to a new window: show the new capture.

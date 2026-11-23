@@ -68,6 +68,9 @@ internal sealed unsafe class NativeVideoPresenter : IDisposable
     /// <summary>Colour behind letterboxing, matching the overlay window background.</summary>
     public (float R, float G, float B) Background { get; set; } = (0.02f, 0.027f, 0.043f);
 
+    /// <summary>How the frame fills the window (OBS outputs: fit, fill or stretch). Set from the UI thread.</summary>
+    public System.Windows.Media.Stretch Fit { get; set; } = System.Windows.Media.Stretch.Uniform;
+
     private int Create(IntPtr factory, uint swapEffect, uint buffers)
     {
         var desc = new D3D11Interop.SwapChainDesc1
@@ -104,7 +107,7 @@ internal sealed unsafe class NativeVideoPresenter : IDisposable
                 return -1;
             }
 
-            var drawn = _ring.Draw(_target, _width, _height, Viewbox, Background);
+            var drawn = _ring.Draw(_target, _width, _height, Viewbox, Background, Fit);
 
             // Sync interval 0: with the flip model an unseen frame is simply replaced. (DO_NOT_WAIT was measured: it
             // skipped up to 63 % of the frames of some windows, so a present may wait briefly instead.)

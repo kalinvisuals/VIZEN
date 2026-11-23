@@ -179,6 +179,9 @@ internal static class TopmostKeeper
     private static readonly IntPtr HwndTopmost = new(-1);
     private static readonly HashSet<IntPtr> Windows = [];
     private static readonly Dictionary<IntPtr, int> Bands = [];
+
+    /// <summary>Popups that belong to a registered window (an overlay's title bar and badge): kept right above it.</summary>
+    private static readonly Dictionary<IntPtr, HashSet<IntPtr>> Companions = [];
     private const uint EVENT_SYSTEM_MINIMIZESTART = 0x0016;
     private const int QUNS_RUNNING_D3D_FULL_SCREEN = 3;
     private static readonly TimeSpan MinimizeAfterRaise = TimeSpan.FromSeconds(2);
@@ -229,8 +232,37 @@ internal static class TopmostKeeper
         _timer.Start();
     }
 
+    /// <summary>
+    /// <paramref name="companion"/> (a popup of <paramref name="owner"/>) is raised right after its owner, so raising the
+    /// overlay never covers its own title bar or badge (they flickered every 2 s and on every foreground change).
+    /// </summary>
+    public static void AddCompanion(IntPtr owner, IntPtr companion)
+    {
+        if (owner == IntPtr.Zero || companion == IntPtr.Zero)
+        {
+            return;
+        }
+
+        if (!Companions.TryGetValue(owner, out var set))
+        {
+            Companions[owner] = set = [];
+        }
+
+        set.Add(companion);
+        Raise(companion); // above the owner now, not only at the next restack
+    }
+
+    public static void RemoveCompanion(IntPtr owner, IntPtr companion)
+    {
+        if (Companions.TryGetValue(owner, out var set) && set.Remove(companion) && set.Count == 0)
+        {
+            Companions.Remove(owner);
+        }
+    }
+
     public static void Unregister(IntPtr hwnd)
     {
+        Companions.Remove(hwnd);
         Bands.Remove(hwnd);
         if (!Windows.Remove(hwnd) || Windows.Count > 0)
         {
@@ -278,11 +310,24 @@ internal static class TopmostKeeper
             // Hidden overlays ("Visible" off) stay hidden.
             if (IsWindowVisible(hwnd))
             {
-                NativeMethods.SetWindowPos(hwnd, HwndTopmost, 0, 0, 0, 0,
-                    NativeMethods.SWP_NOMOVE | NativeMethods.SWP_NOSIZE | NativeMethods.SWP_NOACTIVATE | NativeMethods.SWP_NOOWNERZORDER);
+                Raise(hwnd);
+                if (Companions.TryGetValue(hwnd, out var companions))
+                {
+                    foreach (var companion in companions)
+                    {
+                        if (IsWindowVisible(companion))
+                        {
+                            Raise(companion);
+                        }
+                    }
+                }
             }
         }
     }
+
+    private static void Raise(IntPtr hwnd) =>
+        NativeMethods.SetWindowPos(hwnd, HwndTopmost, 0, 0, 0, 0,
+            NativeMethods.SWP_NOMOVE | NativeMethods.SWP_NOSIZE | NativeMethods.SWP_NOACTIVATE | NativeMethods.SWP_NOOWNERZORDER);
 
     /// <summary>Fallback for exclusive-fullscreen games that Windows does not report as such.</summary>
     private static void OnMinimized(IntPtr hwnd)

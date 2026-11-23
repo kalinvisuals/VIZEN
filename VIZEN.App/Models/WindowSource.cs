@@ -75,7 +75,16 @@ public sealed class WindowSource : ObservableObject
 
     public string CategoryGlyph => SourceClassifier.Glyph(Category);
 
-    /// <summary>A browser window categorised as Calls/Media from its active tab — the category can change with the tab.</summary>
+    private bool _hasOverlay;
+
+    /// <summary>True while an overlay shows this window (set by the Sources page; marks the row in the list).</summary>
+    public bool HasOverlay
+    {
+        get => _hasOverlay;
+        internal set => SetProperty(ref _hasOverlay, value);
+    }
+
+    /// <summary>A browser window categorised as Media from its active tab — the category can change with the tab.</summary>
     public bool IsCategoryFromTabTitle => IsBrowser && Category != SourceCategory.Browsers;
 
     /// <summary>Copies the mutable state of a fresher snapshot of the same window. Returns true if anything changed.</summary>

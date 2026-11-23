@@ -290,6 +290,48 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Floating hover bar of overlay and OBS output windows: a rounded pill with a soft shadow -->
+    <Style x:Key="FloatingBar" TargetType="Border">
+        <Setter Property="Height" Value="36" />
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="Padding" Value="10,0,4,0" />
+        <Setter Property="Background" Value="#EB12161F" />
+        <Setter Property="BorderBrush" Value="#2EFFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="TextElement.Foreground" Value="#F2FFFFFF" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="2" Opacity="0.45" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Close button of the floating bar: round, red only under the pointer -->
+    <Style x:Key="Button.FloatingClose" TargetType="Button">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bg" CornerRadius="8" Background="Transparent">
+                        <TextBlock x:Name="Glyph" Style="{StaticResource Text.Icon}" Text="&#xE8BB;" FontSize="10" Foreground="#B3FFFFFF" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="#FFE5484D" />
+                            <Setter TargetName="Glyph" Property="Foreground" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bg" Property="Background" Value="#FFC93C41" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- ================================================================
          Lists
          ================================================================ -->

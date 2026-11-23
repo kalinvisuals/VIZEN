@@ -151,8 +151,6 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="16" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="16" />
-                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" Style="{StaticResource ModeCard}">
@@ -172,24 +170,6 @@
                 </Border>
 
                 <Border Grid.Column="2" Style="{StaticResource ModeCard}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE717;" FontSize="20" HorizontalAlignment="Left" Foreground="{DynamicResource Brush.AccentViolet}" />
-                            <Border Style="{StaticResource Badge.Success}" HorizontalAlignment="Right">
-                                <TextBlock Text="{DynamicResource Badge.Ready}" />
-                            </Border>
-                        </Grid>
-                        <TextBlock Text="{DynamicResource Nav.Calls}" Style="{StaticResource Text.Title}" Margin="0,12,0,4" />
-                        <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap">
-                            <Run Text="{Binding Calls.CallCount, Mode=OneWay}" /><Run Text="{DynamicResource Dashboard.CallsCaption}" />
-                        </TextBlock>
-                        <Button Style="{StaticResource Button.Link}" Command="{Binding ViewCallsCommand}" Margin="-10,10,0,-6" AutomationProperties.Name="{DynamicResource Dashboard.OpenMode}">
-                            <TextBlock Text="{DynamicResource Dashboard.OpenMode}" />
-                        </Button>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="4" Style="{StaticResource ModeCard}">
                     <StackPanel>
                         <Grid>
                             <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE714;" FontSize="20" HorizontalAlignment="Left" Foreground="{DynamicResource Brush.Accent}" />

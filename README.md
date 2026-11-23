@@ -1,34 +1,184 @@
-# VIZEN
+<p align="center">
+  <img src="website/site/assets/img/icon.png" width="96" height="96" alt="VIZEN logo">
+</p>
 
-**Free, open-source overlays for Windows.** Pick any window (a game, a video call, a live chat, a video, a web page),
-crop the part you need and keep it on top of your game, in a clean window for OBS, or in a composition.
-VIZEN also includes Smart Notes, Smart Draw, a Smart Audio Mixer and an optional browser extension that shows every
-Chrome, Edge or Brave tab on its own.
+<h1 align="center">VIZEN</h1>
 
-![VIZEN dashboard](docs/screenshots/dashboard.png)
+<p align="center">
+  <strong>Live overlays for Windows.</strong><br>
+  Put any window, or just a part of it, on top of your game, in a clean window for OBS, or in a composition.
+</p>
 
-- **Free and open source** (GPL-3.0). No accounts, no ads, no tracking, no servers: everything runs on your PC.
-- **Game-safe by design.** VIZEN never injects into games, never reads game memory and never bypasses anti-cheat or
-  DRM. It only uses public Windows APIs (see [Games and anti-cheat](#games-and-anti-cheat)).
-- **English and Romanian** interface, dark and light themes, five accent colours.
+<p align="center">
+  <a href="https://github.com/kalinvisuals/VIZEN/releases/latest"><img src="https://img.shields.io/github/v/release/kalinvisuals/VIZEN?label=release&color=ff3d5a" alt="Latest release"></a>
+  <a href="https://apps.microsoft.com/detail/9P7K298JRBK2"><img src="https://img.shields.io/badge/Microsoft%20Store-available-0078d4" alt="Microsoft Store"></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078d4" alt="Windows 10 and 11">
+  <img src="https://img.shields.io/badge/.NET-10-512bd4" alt=".NET 10">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-2ea44f" alt="GPL-3.0"></a>
+</p>
 
-Website: [www.vizen.ro](https://www.vizen.ro) · Contact: [hi@vizen.ro](mailto:hi@vizen.ro)
+<p align="center">
+  <a href="https://www.vizen.ro"><b>Website</b></a> ·
+  <a href="https://vizen.ro/download"><b>Download</b></a> ·
+  <a href="https://apps.microsoft.com/detail/9P7K298JRBK2"><b>Microsoft Store</b></a> ·
+  <a href="https://www.vizen.ro/help/"><b>Guide</b></a> ·
+  <a href="https://www.vizen.ro/changelog/"><b>What's new</b></a>
+</p>
 
-## Contents
+<p align="center">
+  <img src="docs/screenshots/overlay-settings.png" alt="VIZEN Sources page: a live window with its overlay settings" width="100%">
+</p>
 
-- [Requirements](#requirements)
-- [Install](#install)
-- [Quick start: your first overlay](#quick-start-your-first-overlay)
-- [Tour of the app](#tour-of-the-app)
-- [Keyboard shortcuts](#keyboard-shortcuts)
-- [Games and anti-cheat](#games-and-anti-cheat)
-- [Privacy](#privacy)
-- [Known limitations](#known-limitations)
-- [Build from source](#build-from-source)
-- [Contact](#contact)
-- [License](#license)
+## Why VIZEN
 
-## Requirements
+- **Any window becomes an overlay.** A live chat, a video, a dashboard, a web page or a part of a game: pick it, crop
+  it and keep it on top while you play.
+- **Made for streamers.** Clean OBS windows with exact pixel sizes, chroma key and compositions, so OBS needs a single
+  source.
+- **Game-safe by design.** No injection, no game memory access, no anti-cheat or DRM bypass. Only public Windows APIs,
+  the same ones the Snipping Tool and OBS use.
+- **Measured, not guessed.** Every capture shows its real frame rate, dropped frames and latency.
+- **Free and open source.** GPL-3.0, no account, no ads, no tracking, no servers. Everything runs on your PC, in
+  English or Romanian, with dark and light themes.
+
+## Features
+
+### 🎮 Gaming overlays
+
+<img src="docs/screenshots/gaming.png" alt="Gaming mode with a live overlay" width="100%">
+
+Live, always-on-top copies of any window, over windowed and borderless games. Change opacity, make an overlay
+click-through so your clicks reach the game, or hide everything with one key. A small floating bar appears only while
+the pointer is on an overlay, together with an optional performance readout. You can also set the volume of the app
+behind an overlay and listen to it on another audio device.
+
+### ✂️ Crop any region
+
+Only need the minimap, the chat or the scoreboard? Press **Regions…**, draw one or more rectangles on the live window,
+and open each region as its own overlay or OBS window. VIZEN remembers the regions for each app.
+
+### 🎥 Studio / OBS
+
+<img src="docs/screenshots/studio-obs.png" alt="Studio / OBS mode with output windows" width="100%">
+
+Clean output windows made for OBS **Window Capture**: a whole window or a cropped region, at an exact pixel size, with
+fit, fill or stretch and a black or green (chroma-key) background. They play as smoothly as the overlays, and the
+close button that appears under the pointer is never recorded by OBS. **Compositions** combine several captures,
+logos, GIFs and videos into one window.
+
+1. In VIZEN, select a source and press **OBS output** (or open a region as an OBS window).
+2. In OBS, add **Window Capture** and pick `[VIZEN.App.exe]: VIZEN Output · …`.
+3. Set the capture method to **Windows 10 (1903 and up)**.
+
+### 🌐 Browser sources and tabs
+
+<img src="docs/screenshots/browser-tabs.png" alt="Browser page with VIZEN Connector" width="100%">
+
+Open any web page in its own VIZEN window: a YouTube or Twitch chat, an alerts page, a dashboard. With the free
+**VIZEN Connector** extension for the [Chrome Web Store](https://chromewebstore.google.com/detail/eifpggcoejhihbdighpghkacpghehnjb)
+(Chrome, Brave) or [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl),
+every tab appears on its own: switch to it, mute it, move it to its own window, or mirror it live even while it is in
+the background.
+
+<details>
+<summary>Set up VIZEN Connector</summary>
+
+1. In VIZEN, open **Browser** and press **Connect**.
+2. Install VIZEN Connector from your browser's store (links above).
+3. Within 30 seconds VIZEN shows **Connected** and lists every tab under **Sources**.
+
+The extension shares only tab titles and site names (never full addresses or page content), and only with VIZEN on
+your PC. Incognito tabs are never shared. **Disconnect** removes everything VIZEN registered. Developers can also load
+the `browser-extension` folder unpacked.
+</details>
+
+### 🎚️ Smart Audio Mixer
+
+<img src="docs/screenshots/audio-mixer.png" alt="Smart Audio Mixer" width="100%">
+
+The volume of every app that plays sound, plus the Windows volume. Save mixes as profiles (Gaming, Streaming, Meeting,
+Studio or your own) and control them from a small floating mixer over your game (**Ctrl+Shift+F3**).
+**Smart Audio Focus** lowers your music and game while the app you choose (Discord, for example) is heard, then brings
+them back smoothly.
+
+### ✏️ Smart Draw and 📝 Smart Notes
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/smart-draw.png" alt="Smart Draw"></td>
+    <td width="50%"><img src="docs/screenshots/smart-notes.png" alt="Smart Notes"></td>
+  </tr>
+</table>
+
+**Smart Draw**: arrows, shapes, freehand lines and text directly over your screen and borderless games, with
+pass-through so clicks reach the window underneath, undo / redo and a precision eraser.
+**Smart Notes**: notes and checklists that float on your desktop and over games, with lock, see-through and
+click-through. Both are controlled with keyboard shortcuts while you play.
+
+### 🖼️ Media, schedules and profiles
+
+Sponsor logos (PNG, JPG, WebP), animated GIFs and short videos as layers over your game or in an OBS window, shown
+automatically by **Schedules** (for example a logo for 10 seconds every 5 minutes). **Profiles** save your open
+overlays (sources, positions, sizes, settings) and reopen them all in one click.
+
+### 📊 Performance
+
+<img src="docs/screenshots/performance.png" alt="Performance page with measured frame rates" width="100%">
+
+Frames per second from the source and on screen, dropped frames, latency and frame pacing for every capture, plus the
+processor, graphics card and memory VIZEN uses. **Auto Performance** explains why frames drop, and a test pattern
+measures capture quality on your own PC.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/dashboard.png" alt="Dashboard"></td>
+    <td><img src="docs/screenshots/sources.png" alt="Sources"></td>
+  </tr>
+  <tr>
+    <td align="center">Dashboard</td>
+    <td align="center">Sources</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/audio-focus.png" alt="Smart Audio Focus"></td>
+    <td><img src="docs/screenshots/media.png" alt="Media and graphics"></td>
+  </tr>
+  <tr>
+    <td align="center">Smart Audio Focus</td>
+    <td align="center">Media &amp; graphics</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/schedules.png" alt="Schedules"></td>
+    <td><img src="docs/screenshots/profiles.png" alt="Profiles"></td>
+  </tr>
+  <tr>
+    <td align="center">Schedules</td>
+    <td align="center">Profiles</td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/settings.png" alt="Settings"></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center">Settings</td>
+  </tr>
+</table>
+
+<sub>Screenshots use demo content.</sub>
+
+## Download
+
+| | |
+|---|---|
+| **Microsoft Store** | [Get VIZEN from the Microsoft Store](https://apps.microsoft.com/detail/9P7K298JRBK2). Signed by Microsoft, installs in one click and is updated by the Store. |
+| **Installer** | Download `VIZEN-Setup-x64.exe` from [Releases](https://github.com/kalinvisuals/VIZEN/releases/latest) or [vizen.ro](https://vizen.ro/download). It updates itself (vizen.ro, with GitHub as fallback) after you confirm. |
+
+Use one of the two, not both. Settings, notes and profiles are kept in your user folder (`%LOCALAPPDATA%\VIZEN`) by
+both. The installer asks for administrator permission once, because VIZEN is installed in *Program Files*; VIZEN itself
+runs as a normal app. Uninstall from *Settings → Apps → Installed apps*.
+
+<details>
+<summary>System requirements</summary>
 
 |  | Minimum | Recommended |
 |---|---|---|
@@ -39,175 +189,21 @@ Website: [www.vizen.ro](https://www.vizen.ro) · Contact: [hi@vizen.ro](mailto:h
 | Disk space | 250 MB | 250 MB |
 | What to expect | One or two overlays at 720p, 30 fps | Several 1080p sources at 60 fps |
 
-- Microsoft Edge WebView2 Runtime for browser sources (already installed on Windows 11 and on most Windows 10 PCs).
+- Microsoft Edge WebView2 Runtime for browser sources (already installed on Windows 11 and most Windows 10 PCs).
 - VIZEN Connector (optional): Microsoft Edge, Google Chrome or Brave, version 116 or later.
-- The Performance page in VIZEN measures your own PC and shows which level it reaches.
+- The Performance page measures your own PC and shows which level it reaches.
+</details>
 
-## Install
+## Quick start
 
-**Microsoft Store:** [get VIZEN from the Microsoft Store](https://apps.microsoft.com/detail/9P7K298JRBK2). It is signed by
-Microsoft, installs in one click and is updated by the Store.
-
-**Installer** (from GitHub, also linked from [vizen.ro](https://vizen.ro/download)):
-
-1. Download `VIZEN-Setup-x64.exe` from the [Releases](../../releases) page.
-2. Run it and follow the steps. Windows asks for administrator permission once, because VIZEN is installed in
-   *Program Files*. VIZEN itself then runs as a normal app.
-3. Start VIZEN from the Start menu or the desktop shortcut.
-
-The installer version updates itself (vizen.ro, with GitHub as fallback), after you confirm. Use one of the two, not
-both. Settings, notes and profiles are saved in your user folder (`%LOCALAPPDATA%\VIZEN`) by both versions. Uninstall
-from *Settings → Apps → Installed apps*.
-
-## Quick start: your first overlay
-
-1. Open the window you want to see over your game (for example a video call, a live chat or a video).
-2. In VIZEN, open **Sources**. Every open window is listed and sorted into Browsers, Calls, Media, Cameras and Other.
+1. Open the window you want to see over your game, for example a live chat or a video.
+2. In VIZEN, open **Sources**. Every open window is listed and sorted into Browsers, Media, Cameras and Other.
 3. Select the window. A live preview appears on the right.
-4. Press **Create overlay**. A copy of the window appears on top of everything.
-5. Move it by dragging, resize it from its edges, and double-click it to remove black bars.
-6. Want only part of the window? Press **Regions…**, draw a rectangle (or several) over the preview and open each
-   region as its own overlay.
-7. Start your game in **windowed** or **borderless (fullscreen windowed)** mode. The overlay stays on top.
-8. Press **Ctrl+Shift+F9** to make the overlays click-through (your clicks go to the game), and **Ctrl+Shift+F10** to
-   hide or show them all.
-
-## Tour of the app
-
-### Sources
-
-![Sources](docs/screenshots/sources.png)
-
-All open windows, refreshed every 3 seconds and grouped by type. Search by title, app or window class. Select a window
-to see it live, then turn it into an overlay, an OBS output, or open the region editor to crop it. With the browser
-extension, every browser tab also appears here on its own (see [Browser tabs](#browser-tabs)).
-
-### Gaming mode
-
-![Gaming mode](docs/screenshots/gaming.png)
-
-Your open overlays, each with opacity, click-through, visibility and an optional performance readout (measured frames
-per second, dropped frames and latency). You can also set the volume of the app behind an overlay and listen to it on
-another audio device.
-
-### Calls mode
-
-![Calls mode](docs/screenshots/calls.png)
-
-Video calls from Discord, Zoom, Teams, WhatsApp, Skype and browser calls (Google Meet, Messenger and others) are
-detected automatically. Mirror the whole call as one overlay, or use **Crop participants** to draw one region per
-person and give each one its own overlay or OBS window. VIZEN does not detect participants automatically; you choose
-the regions.
-
-### Studio / OBS mode
-
-![Studio / OBS mode](docs/screenshots/studio-obs.png)
-
-Clean output windows made for OBS **Window Capture**: a whole window or a cropped region, with an exact pixel size,
-fit mode and a chroma-key background. **Compositions** combine several captures, logos, GIFs and videos into one
-window, so OBS needs only one source.
-
-How to use it in OBS:
-1. In VIZEN, create an OBS output from a source (or a region).
-2. In OBS, add **Window Capture** and pick `[VIZEN.App.exe]: VIZEN Output · …`.
-3. Set the capture method to *Windows 10 (1903 and up)*.
-
-### Browser sources
-
-Open any web page in its own VIZEN window (a YouTube or Twitch chat, an alerts page, a dashboard). It appears in
-Sources as "VIZEN Browser", so you can crop it, make it an overlay or an OBS output. The built-in browser is Microsoft
-Edge WebView2 with its own profile.
-
-### Browser tabs
-
-![Browser tabs](docs/screenshots/browser-tabs.png)
-
-Windows can only capture windows, not tabs. The optional **VIZEN Connector** extension lets VIZEN see every tab on its own. Get it from
-the [Chrome Web Store](https://chromewebstore.google.com/detail/eifpggcoejhihbdighpghkacpghehnjb) (Chrome, Brave) or
-[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl):
-
-- every tab appears under **Sources** with its title, site and category;
-- **Switch to tab**, **Mute / Unmute** and **Separate window** (moves the tab into its own window, only when you ask);
-- tabs that play sound appear in the **Smart Audio Mixer** under their browser, with a mute button
-  (browsers have no volume per tab, so VIZEN offers mute only);
-- **Mirror this tab live** (in the extension's menu) opens a small window that shows one tab live, even when the tab
-  is in the background, ready to be captured. Chrome asks for your permission once for each mirror.
-
-Set it up once:
-1. In VIZEN, open **Browser** and press **Connect**.
-2. Install VIZEN Connector from the
-   [Chrome Web Store](https://chromewebstore.google.com/detail/eifpggcoejhihbdighpghkacpghehnjb) (Chrome, Brave) or
-   [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/gkingdeoabnhbnjpikdmklembdjoplfl).
-3. Within 30 seconds VIZEN shows **Connected**. Developers can also load the `browser-extension` folder unpacked.
-
-The extension sends only tab titles and site names (never full addresses or page content) to VIZEN on your PC.
-Incognito tabs are never shared. **Disconnect** removes everything VIZEN registered.
-
-### Media & graphics and Schedules
-
-![Media](docs/screenshots/media.png)
-
-Import sponsor logos (PNG with transparency, JPG, WebP, BMP, TIFF), animated GIFs and short videos (MP4, MOV, WMV,
-AVI) and show them as layers over your game or in an OBS window. **Schedules** show them automatically, for example a
-logo for 10 seconds every 5 minutes, or a sponsor playlist.
-
-![Schedules](docs/screenshots/schedules.png)
-
-### Smart Notes
-
-![Smart Notes](docs/screenshots/smart-notes.png)
-
-Text notes and checklists that float on your desktop and over borderless games. Each note can stay on top, be
-see-through, lock its position and be click-through. **Ctrl+Shift+F11** shows or hides all notes, **Ctrl+Shift+F8**
-turns edit mode on or off. Notes are saved automatically.
-
-### Smart Draw
-
-![Smart Draw](docs/screenshots/smart-draw.png)
-
-Draw arrows, rectangles, ellipses, freehand lines and text directly over your screen, apps and borderless games.
-
-- **Ctrl+Shift+F7** turns Smart Draw on or off.
-- **Ctrl+Shift+F6** switches between drawing and pass-through (your drawings stay, clicks go to the window underneath).
-- **Ctrl+Shift+F5** shows or hides the drawings, **Ctrl+Shift+F4** clears them.
-- Undo / redo with Ctrl+Z / Ctrl+Y, a precision or whole-object eraser, and save / restore a drawing.
-
-### Smart Audio Mixer
-
-![Smart Audio Mixer](docs/screenshots/audio-mixer.png)
-
-The volume of every app that plays sound, separately, plus the Windows volume (kept in sync with Windows). Save mixes
-as profiles (Gaming, Streaming, Meeting, Studio or your own) and control everything from a small floating mixer on top
-of your game (**Ctrl+Shift+F3**), with adjustable transparency and size.
-
-**Smart Audio Focus** lowers the apps you choose (music, game) while your priority app (for example Discord) is heard,
-then brings them back smoothly. It reacts to how loud the sound is, not to words. Your own volumes are kept and
-restored.
-
-![Smart Audio Focus](docs/screenshots/audio-focus.png)
-
-### Profiles
-
-![Profiles](docs/screenshots/profiles.png)
-
-Save the overlays you have open (sources, positions, sizes, settings) under a name, for example one per game, and
-reopen them all in one click. VIZEN finds each source again by app and window title and tells you which ones are not
-running.
-
-### Performance
-
-![Performance](docs/screenshots/performance.png)
-
-Measured, not guessed: frames per second from the source and on screen, dropped frames, latency and frame pacing for
-every capture, plus the processor, graphics card and memory VIZEN uses. **Auto Performance** watches every capture and
-tells you the likely cause when frames drop. A test-pattern window lets you measure capture quality on your own PC.
-
-### Settings
-
-![Settings](docs/screenshots/settings.png)
-
-Language, theme and accent colour, source refresh, keyboard shortcuts (all can be changed), launch at sign-in and more.
-Changes apply immediately.
+4. Press **Create overlay**. A copy of the window appears on top of everything, and its settings appear right in the
+   panel: opacity, visible, click-through and performance.
+5. Drag the overlay to move it, drag its edges to resize it, and double-click it to remove black bars.
+6. Start your game in **windowed** or **borderless (fullscreen windowed)** mode. The overlay stays on top.
+7. Press **Ctrl+Shift+F9** to make overlays click-through and **Ctrl+Shift+F10** to hide or show them all.
 
 ## Keyboard shortcuts
 
@@ -215,80 +211,69 @@ All shortcuts work while a game is in front and can be changed in **Settings →
 
 | Shortcut | Action |
 |---|---|
-| Ctrl+Shift+F9 | Overlays: click-through on / off |
-| Ctrl+Shift+F10 | Overlays: show / hide all |
-| Ctrl+Shift+F11 | Smart Notes: show / hide all |
-| Ctrl+Shift+F8 | Smart Notes: edit mode on / off |
-| Ctrl+Shift+F7 | Smart Draw: on / off |
-| Ctrl+Shift+F6 | Smart Draw: draw / pass-through |
-| Ctrl+Shift+F5 | Smart Draw: show / hide drawings |
-| Ctrl+Shift+F4 | Smart Draw: clear drawings |
-| Ctrl+Shift+F3 | Floating audio mixer: show / hide |
+| `Ctrl+Shift+F9` | Overlays: click-through on / off |
+| `Ctrl+Shift+F10` | Overlays: show / hide all |
+| `Ctrl+Shift+F11` | Smart Notes: show / hide all |
+| `Ctrl+Shift+F8` | Smart Notes: edit mode on / off |
+| `Ctrl+Shift+F7` | Smart Draw: on / off |
+| `Ctrl+Shift+F6` | Smart Draw: draw / pass-through |
+| `Ctrl+Shift+F5` | Smart Draw: show / hide drawings |
+| `Ctrl+Shift+F4` | Smart Draw: clear drawings |
+| `Ctrl+Shift+F3` | Floating audio mixer: show / hide |
 
-## Games and anti-cheat
+## Games, anti-cheat and privacy
 
-VIZEN's overlays are ordinary always-on-top windows, like the ones Discord, Steam or NVIDIA show. VIZEN:
+VIZEN's overlays are ordinary always-on-top windows, like the ones Discord, Steam or NVIDIA show. VIZEN never injects
+code into a game, never reads or writes game memory, never automates input and never bypasses anti-cheat or DRM. It
+captures windows with Windows Graphics Capture, the public API used by the Windows Snipping Tool and OBS. No one can
+guarantee how every anti-cheat system decides, because their rules are not public; details and the list of Windows
+APIs VIZEN uses are in [docs/GAME_SAFETY.md](docs/GAME_SAFETY.md).
 
-- never injects code into a game, never reads or writes game memory and never automates input;
-- never bypasses anti-cheat or DRM protection;
-- captures windows with Windows Graphics Capture, the same public API used by the Windows Snipping Tool and OBS.
-
-No one can guarantee how every anti-cheat system decides, because their rules are not public. Details, and the list of
-Windows APIs VIZEN uses, are in [docs/GAME_SAFETY.md](docs/GAME_SAFETY.md).
-
-## Privacy
-
-- No account, no telemetry, no network connections of its own (web pages you open in a browser source load as usual).
-- Settings, notes, profiles and the media library list stay in `%LOCALAPPDATA%\VIZEN` on your PC.
-- The browser extension talks only to VIZEN on the same PC and shares only tab titles and site names.
+VIZEN has no account, no telemetry and no network connections of its own (web pages you open in a browser source load
+as usual). Settings, notes, profiles and the media library list stay on your PC. See [PRIVACY.md](PRIVACY.md).
 
 ## Known limitations
 
 - **Exclusive fullscreen games** draw directly to the screen, so no window can appear over them without injecting into
   the game, which VIZEN never does. Switch the game to *Borderless* or *Fullscreen windowed*; VIZEN shows a hint when it
   detects exclusive fullscreen.
-- **Minimized windows** are not drawn by Windows, so their overlays pause until the window is restored. Windows covered
-  by other windows keep working.
-- **Chrome and Edge windows** stop drawing while they are completely covered by other windows (a browser
-  optimisation). Use the extension's **Mirror this tab live**, which stays live even when covered.
+- **Minimized windows** are not drawn by Windows, so their overlays pause until the window is restored. With
+  **Keep source active**, VIZEN puts a minimized source back behind the active window so it keeps drawing.
+- **Some apps stop drawing while completely covered** by other windows, among them Chrome, Edge and Discord. Keep
+  them partly visible or on a second monitor; for a browser tab, the extension's **Mirror this tab live** stays live
+  even when covered.
 - **Browser tabs** can be muted from VIZEN, but browsers have no volume control per tab.
 
 ## Build from source
 
-Requirements: Windows 10/11, the [.NET 10 SDK](https://dotnet.microsoft.com/download).
+Requirements: Windows 10/11 and the [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ```
-git clone <this repository>
+git clone https://github.com/kalinvisuals/VIZEN.git
 cd VIZEN
 dotnet build VIZEN.App/VIZEN.App.csproj -c Release
 dotnet test VIZEN.Tests/VIZEN.Tests.csproj
 ```
 
-The app is then in `VIZEN.App/bin/Release/net10.0-windows10.0.22621.0/VIZEN.App.exe`.
-
-To build the installer, install [Inno Setup 6](https://jrsoftware.org/isdl.php) and run:
-
-```
-powershell -ExecutionPolicy Bypass -File scripts\build-installer.ps1
-```
-
-The installer is written to `artifacts/installer/VIZEN-Setup-x64.exe`.
-
-Project layout:
+The app is then in `VIZEN.App/bin/Release/net10.0-windows10.0.22621.0/VIZEN.App.exe`. To build the installer, install
+[Inno Setup 6](https://jrsoftware.org/isdl.php) and run
+`powershell -ExecutionPolicy Bypass -File scripts\build-installer.ps1`; it is written to
+`artifacts/installer/VIZEN-Setup-x64.exe`.
 
 | Folder | Contents |
 |---|---|
 | `VIZEN.App` | The WPF app (.NET 10): capture, overlays, pages, services |
 | `VIZEN.Tests` | Unit and integration tests (xUnit) |
 | `browser-extension` | The VIZEN Connector extension (Manifest V3) |
-| `installer`, `scripts` | Inno Setup script and build script |
-| `docs` | Game safety notes and the screenshots used here |
+| `installer`, `scripts` | Inno Setup script, build, release and Microsoft Store scripts |
+| `website` | The vizen.ro website, guide and changelog |
+| `docs` | Game safety notes, update process, release notes and screenshots |
 
 ## Contact
 
 - Website: [www.vizen.ro](https://www.vizen.ro)
 - Questions, partnerships and press: [hi@vizen.ro](mailto:hi@vizen.ro)
-- Bugs and feature requests: [GitHub Issues](../../issues)
+- Bugs and feature requests: [GitHub Issues](https://github.com/kalinvisuals/VIZEN/issues)
 
 ## License
 

@@ -42,7 +42,6 @@
     <sys:String x:Key="Nav.Dashboard">Dashboard</sys:String>
     <sys:String x:Key="Nav.Sources">Sources</sys:String>
     <sys:String x:Key="Nav.Gaming">Gaming</sys:String>
-    <sys:String x:Key="Nav.Calls">Calls</sys:String>
     <sys:String x:Key="Nav.Studio">Studio / OBS</sys:String>
     <sys:String x:Key="Nav.Profiles">Profiles</sys:String>
     <sys:String x:Key="Nav.Settings">Settings</sys:String>
@@ -50,7 +49,6 @@
     <!-- Categories, states -->
     <sys:String x:Key="Category.All">All</sys:String>
     <sys:String x:Key="Category.Browsers">Browsers</sys:String>
-    <sys:String x:Key="Category.Calls">Calls</sys:String>
     <sys:String x:Key="Category.Media">Media</sys:String>
     <sys:String x:Key="Category.Cameras">Cameras</sys:String>
     <sys:String x:Key="Category.Other">Other</sys:String>
@@ -102,7 +100,7 @@
     <sys:String x:Key="Shell.FullscreenTipNever">Don’t show again</sys:String>
     <sys:String x:Key="Activity.SettingsReset">Settings reset</sys:String>
     <sys:String x:Key="Activity.ScanCompleted">Window scan completed</sys:String>
-    <sys:String x:Key="Activity.ScanCompletedDetail">{0} visible windows from {1} processes — Browsers {2} · Calls {3} · Media {4} · Cameras {5} windows + {7} device(s) · Other {6}.</sys:String>
+    <sys:String x:Key="Activity.ScanCompletedDetail">{0} visible windows from {1} processes — Browsers {2} · Media {3} · Cameras {4} windows + {6} device(s) · Other {5}.</sys:String>
     <sys:String x:Key="Activity.ScanFailed">Window scan failed</sys:String>
     <sys:String x:Key="Activity.CopiedDetails">Copied window details</sys:String>
     <sys:String x:Key="Activity.OverlayCreated">Overlay created</sys:String>
@@ -131,7 +129,7 @@
     <sys:String x:Key="Dashboard.GreetingAfternoon">Good afternoon</sys:String>
     <sys:String x:Key="Dashboard.GreetingEvening">Good evening</sys:String>
     <sys:String x:Key="Dashboard.Welcome">Welcome to VIZEN</sys:String>
-    <sys:String x:Key="Dashboard.HeroText">One capture engine for three uses: overlays while you play, call windows, and clean sources for streaming. Pick a source, create an overlay and place it anywhere over your game.</sys:String>
+    <sys:String x:Key="Dashboard.HeroText">One capture engine for two uses: overlays while you play and clean sources for streaming. Pick a source, create an overlay and place it anywhere over your game.</sys:String>
     <sys:String x:Key="Dashboard.CreateOverlayTip">Choose a window source to turn into an overlay.</sys:String>
     <sys:String x:Key="Dashboard.ScanWindows">Scan windows</sys:String>
     <sys:String x:Key="Dashboard.AvailableSources">Available sources</sys:String>
@@ -144,7 +142,6 @@
     <sys:String x:Key="Dashboard.OpenProfiles">Open profiles</sys:String>
     <sys:String x:Key="Dashboard.ModesTitle">MODES</sys:String>
     <sys:String x:Key="Dashboard.GamingCaption">Live overlays over games in borderless or windowed mode, with opacity, click-through, hotkeys and profiles.</sys:String>
-    <sys:String x:Key="Dashboard.CallsCaption"> call window(s) detected right now. Mirror the whole call, or crop each participant into an overlay of their own.</sys:String>
     <sys:String x:Key="Dashboard.StudioCaption">Clean output windows for OBS, made from whole windows, cropped regions or webcams.</sys:String>
     <sys:String x:Key="Dashboard.OpenMode">Open mode</sys:String>
     <sys:String x:Key="Dashboard.RecentActivity">Recent activity</sys:String>
@@ -177,13 +174,19 @@
     <sys:String x:Key="Sources.EmptyFilteredMessage">No windows match this category or search. Try a different category or search term.</sys:String>
     <sys:String x:Key="Sources.EnumerationFailed">Window enumeration failed: {0}</sys:String>
     <sys:String x:Key="Sources.ClipboardBusy">The clipboard is in use by another application. Try again.</sys:String>
-    <sys:String x:Key="Sources.BrowserNote">VIZEN sees browser windows, not individual tabs. Only the active tab's title is visible, so a browser window may move between Browsers, Calls and Media when you switch tabs. To use a single tab, a YouTube player or a live chat on its own, open it on the Browser page: it becomes a separate source.</sys:String>
+    <sys:String x:Key="Sources.BrowserNote">VIZEN sees browser windows, not individual tabs. Only the active tab's title is visible, so a browser window may move between Browsers and Media when you switch tabs. To use a single tab, a YouTube player or a live chat on its own, open it on the Browser page: it becomes a separate source.</sys:String>
     <sys:String x:Key="Sources.CameraError">Camera detection failed: {0}</sys:String>
     <sys:String x:Key="Sources.SelectWindow">Select a window</sys:String>
     <sys:String x:Key="Sources.SelectWindowHint">Select a source from the list to see its live preview and details.</sys:String>
     <sys:String x:Key="Sources.CategoryFromTab">Detected from the active tab's title, so it may change when you switch tabs.</sys:String>
     <sys:String x:Key="Sources.CopyDetails">Copy details</sys:String>
     <sys:String x:Key="Sources.CreateOverlayTip">Open an always-on-top live overlay of this window.</sys:String>
+    <sys:String x:Key="Sources.OverlayActive">Overlay on</sys:String>
+    <sys:String x:Key="Sources.OverlayPanelTitle">Overlay on screen</sys:String>
+    <sys:String x:Key="Sources.OverlayPanelHint">Changes apply instantly.</sys:String>
+    <sys:String x:Key="Sources.CloseOverlay">Close overlay</sys:String>
+    <sys:String x:Key="Sources.AllOverlays">All overlays in Gaming</sys:String>
+    <sys:String x:Key="Sources.MoreDetails">Technical details</sys:String>
 
     <!-- Gaming -->
     <sys:String x:Key="Gaming.Title">Gaming mode</sys:String>
@@ -206,29 +209,9 @@
     <sys:String x:Key="Gaming.TipMoveTitle">Move, resize, snap</sys:String>
     <sys:String x:Key="Gaming.TipMoveText">Drag to move, drag edges to resize, double-click to remove letterboxing. Ctrl+Shift+F9 toggles click-through, Ctrl+Shift+F10 shows/hides all.</sys:String>
     <sys:String x:Key="Gaming.TipMinimizedTitle">Minimized sources pause</sys:String>
-    <sys:String x:Key="Gaming.TipMinimizedText">Windows stops rendering minimized windows, so the overlay freezes until the source is restored. Windows covered by other windows keep updating (verified with Chrome/Edge too). With “Keep source active”, VIZEN automatically brings a minimized source back behind the active window.</sys:String>
+    <sys:String x:Key="Gaming.TipMinimizedText">Windows stops rendering minimized windows, so the overlay freezes until the source is restored. Windows covered by other windows usually keep updating, but some apps (Discord, for example) stop drawing while completely covered. With “Keep source active”, VIZEN automatically brings a minimized source back behind the active window.</sys:String>
     <sys:String x:Key="Overlay.Close">Close overlay</sys:String>
-
-    <!-- Calls -->
-    <sys:String x:Key="Calls.Title">Calls mode</sys:String>
-    <sys:String x:Key="Calls.Subtitle">Video-call windows from Discord, Zoom, Teams, WhatsApp, Skype and browser calls (Google Meet, Messenger and others) are detected automatically. Mirror an entire call as one overlay, or crop each participant into a separate overlay.</sys:String>
-    <sys:String x:Key="Calls.Detected">DETECTED CALL WINDOWS</sys:String>
-    <sys:String x:Key="Calls.ShowInSources">Show in Sources</sys:String>
-    <sys:String x:Key="Calls.InBrowser">browser tab</sys:String>
-    <sys:String x:Key="Calls.MirrorAsOverlay">Mirror as overlay</sys:String>
-    <sys:String x:Key="Calls.OverlayTip">Opens the whole call window as a live overlay (Gaming mode).</sys:String>
-    <sys:String x:Key="Calls.EmptyTitle">No call windows right now</sys:String>
-    <sys:String x:Key="Calls.EmptyText">Start or join a call in Discord, Zoom, Teams, WhatsApp or your browser. It appears here automatically within a few seconds.</sys:String>
-    <sys:String x:Key="Calls.Planned">WHAT THIS MODE DOES</sys:String>
-    <sys:String x:Key="Calls.Milestone4">Milestone 4</sys:String>
-    <sys:String x:Key="Calls.Milestone7">Milestone 7</sys:String>
-    <sys:String x:Key="Calls.NotPlanned">Not promised</sys:String>
-    <sys:String x:Key="Calls.CropTitle">Interactive region cropping</sys:String>
-    <sys:String x:Key="Calls.CropText">Available now: draw rectangles on a call to isolate participants. You can make several crops per window, each with its own live preview and overlay.</sys:String>
-    <sys:String x:Key="Calls.OutputsTitle">Independent outputs per participant</sys:String>
-    <sys:String x:Key="Calls.OutputsText">Available now: from the region editor, open each crop as a separate overlay or as a clean OBS output window.</sys:String>
-    <sys:String x:Key="Calls.AutoDetectTitle">Automatic participant detection</sys:String>
-    <sys:String x:Key="Calls.AutoDetectText">Not implemented. VIZEN does not detect individual participants automatically and will not claim to until the feature is built and tested.</sys:String>
+    <sys:String x:Key="Output.CloseWindow">Close output window</sys:String>
 
     <!-- Studio -->
     <sys:String x:Key="Studio.Title">Studio / OBS mode</sys:String>
@@ -358,8 +341,6 @@
     <sys:String x:Key="Editor.SaveFailed">Regions couldn't be saved: {0}</sys:String>
     <sys:String x:Key="Sources.Regions">Regions…</sys:String>
     <sys:String x:Key="Sources.RegionsTip">Open the region editor to crop parts of this window into separate overlays.</sys:String>
-    <sys:String x:Key="Calls.CropParticipants">Crop participants</sys:String>
-    <sys:String x:Key="Calls.CropTip">Draw one region per participant; each opens as its own overlay.</sys:String>
     <sys:String x:Key="Studio.CropTip">Crop regions of this window</sys:String>
     <sys:String x:Key="Activity.RegionsLoadFailed">Regions couldn't be loaded</sys:String>
 
@@ -401,7 +382,7 @@
 
     <!-- Action confirmations (toasts) -->
     <sys:String x:Key="Activity.CopiedDetailsDetail">“{0}” — title, process, category, executable, handle, class, position, size, state and DPI are in the clipboard. Paste with Ctrl+V.</sys:String>
-    <sys:String x:Key="Activity.OverlayCreatedDetail">“{0}” now floats above all windows (bottom-right). Content: {1}. Drag to move, drag edges to resize, double-click to fit. Ctrl+Shift+F9 toggles click-through. Manage it in Gaming.</sys:String>
+    <sys:String x:Key="Activity.OverlayCreatedDetail">“{0}” now floats above all windows (bottom-right). Content: {1}. Drag to move, drag edges to resize, double-click to fit. Adjust it in Sources or Gaming.</sys:String>
     <sys:String x:Key="Activity.OverlayClosedDetail">“{0}” closed. Its capture stops once nothing else uses that window.</sys:String>
     <sys:String x:Key="Activity.ClickThroughOnDetail">“{0}” now ignores the mouse — clicks go to the window underneath. Turn it off here or with Ctrl+Shift+F9 to move it.</sys:String>
     <sys:String x:Key="Activity.ClickThroughOffDetail">“{0}” accepts the mouse again: you can drag and resize it.</sys:String>

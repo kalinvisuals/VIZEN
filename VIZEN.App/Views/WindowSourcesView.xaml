@@ -138,7 +138,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="340" />
                 <ColumnDefinition Width="20" />
-                <ColumnDefinition Width="340" />
+                <ColumnDefinition Width="380" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="200" />
@@ -178,6 +178,13 @@
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Style="{StaticResource Badge.Success}" Margin="0,0,6,0"
+                                        Visibility="{Binding HasOverlay, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE81E;" FontSize="10" />
+                                        <TextBlock Text="{DynamicResource Sources.OverlayActive}" Margin="5,0,0,0" />
+                                    </StackPanel>
+                                </Border>
                                 <Border Style="{StaticResource Badge.Info}" Margin="0,0,6,0">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Style="{StaticResource Text.Icon}" Text="{Binding CategoryGlyph}" FontSize="10" />
@@ -343,12 +350,13 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <!-- Live preview (Windows Graphics Capture) -->
-                                <Border Height="168" Margin="0,20,0,14" CornerRadius="12" Background="{DynamicResource Brush.Background}"
-                                        BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1">
+                                <!-- Live preview (Windows Graphics Capture), drawn by WPF so badges can sit on it. Hidden while the
+                                     overlay is on screen: the overlay itself shows the video, and its settings take this place. -->
+                                <Border Height="176" Margin="0,18,0,14" CornerRadius="12" Background="{DynamicResource Brush.Background}"
+                                        BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                                        Visibility="{Binding DataContext.HasSelectedOverlay, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
                                     <Grid>
                                         <views:LivePreview Margin="1" CornerRadius="11"
-                                                           Lease="{Binding DataContext.PreviewLease, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                            Capture="{Binding DataContext.Preview, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16"
                                                     Visibility="{Binding DataContext.HasPreviewFrame, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
@@ -358,18 +366,89 @@
                                                        Margin="0,10,0,0" TextAlignment="Center" TextWrapping="Wrap"
                                                        Foreground="{DynamicResource Brush.TextSecondary}" />
                                         </StackPanel>
+
+                                        <!-- Status on the video, top left -->
+                                        <Border Style="{StaticResource Badge.Success}" Margin="10" VerticalAlignment="Top"
+                                                Visibility="{Binding DataContext.HasPreviewFrame, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ellipse Style="{StaticResource StatusDot}" Width="6" Height="6" Fill="{DynamicResource Brush.Success}" />
+                                                <TextBlock Text="{Binding DataContext.Preview.StatusText, RelativeSource={RelativeSource AncestorType=UserControl}}" Margin="6,0,0,0" />
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                 </Border>
 
-                                <!-- Status under the video (nothing can be drawn over the native video) -->
-                                <Border Style="{StaticResource Badge.Success}" Margin="0,-6,0,12" HorizontalAlignment="Left"
-                                        Visibility="{Binding DataContext.HasPreviewFrame, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}}">
-                                    <TextBlock Text="{Binding DataContext.Preview.StatusText, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                <!-- The overlay of this window: its settings live here, so creating one never changes the page -->
+                                <Border Margin="0,18,0,16" Padding="16,14" CornerRadius="14" BorderThickness="1"
+                                        Background="{DynamicResource Brush.SurfaceRaised}" BorderBrush="{DynamicResource Brush.BorderStrong}"
+                                        DataContext="{Binding DataContext.SelectedOverlay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        Visibility="{Binding DataContext.HasSelectedOverlay, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="32" Height="32" CornerRadius="9" Background="{DynamicResource Brush.SuccessSoft}">
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE81E;" FontSize="14" Foreground="{DynamicResource Brush.Success}" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource Sources.OverlayPanelTitle}" FontWeight="SemiBold" Foreground="{DynamicResource Brush.TextPrimary}" />
+                                                <TextBlock Text="{DynamicResource Sources.OverlayPanelHint}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Grid Margin="0,16,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="48" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{DynamicResource Gaming.Opacity}" Foreground="{DynamicResource Brush.TextSecondary}" VerticalAlignment="Center" Margin="0,0,14,0" />
+                                            <Slider Grid.Column="1" Style="{StaticResource Slider.Modern}" Minimum="0.15" Maximum="1"
+                                                    SmallChange="0.05" LargeChange="0.1" Value="{Binding Opacity}"
+                                                    AutomationProperties.Name="{DynamicResource Gaming.Opacity}" />
+                                            <TextBlock Grid.Column="2" Text="{Binding OpacityText}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource Brush.TextPrimary}" FontWeight="SemiBold" />
+                                        </Grid>
+
+                                        <Grid Margin="0,14,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{DynamicResource Gaming.Visible}" VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextPrimary}" />
+                                            <CheckBox Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding IsVisible}" Margin="0,4"
+                                                      AutomationProperties.Name="{DynamicResource Gaming.Visible}" />
+                                            <TextBlock Grid.Row="1" Text="{DynamicResource Gaming.ClickThrough}" VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextPrimary}"
+                                                       ToolTip="{DynamicResource Gaming.ClickThroughTip}" />
+                                            <CheckBox Grid.Row="1" Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding IsClickThrough}" Margin="0,4"
+                                                      ToolTip="{DynamicResource Gaming.ClickThroughTip}" AutomationProperties.Name="{DynamicResource Gaming.ClickThrough}" />
+                                            <TextBlock Grid.Row="2" Text="{DynamicResource Gaming.ShowPerformance}" VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextPrimary}"
+                                                       ToolTip="{DynamicResource Gaming.ShowPerformanceTip}" />
+                                            <CheckBox Grid.Row="2" Grid.Column="1" Style="{StaticResource CheckBox.Toggle}" IsChecked="{Binding ShowPerformance}" Margin="0,4"
+                                                      ToolTip="{DynamicResource Gaming.ShowPerformanceTip}" AutomationProperties.Name="{DynamicResource Gaming.ShowPerformance}" />
+                                        </Grid>
+
+                                        <Button Style="{StaticResource Button.Link}" Margin="-10,10,0,0"
+                                                Command="{Binding DataContext.ShowOverlaysCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                AutomationProperties.Name="{DynamicResource Sources.AllOverlays}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{DynamicResource Sources.AllOverlays}" />
+                                                <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE76C;" FontSize="10" Margin="6,1,0,0" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
                                 </Border>
 
                                 <!-- Minimized-source recovery actions -->
                                 <views:SourceHealthBar Margin="0,-6,0,10"
-                                                       DataContext="{Binding DataContext.Preview, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                       DataContext="{Binding DataContext.ActiveCapture, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                                 <views:AppAudioBar Margin="0,0,0,10"
                                                    DataContext="{Binding DataContext.SelectedAudio, RelativeSource={RelativeSource AncestorType=UserControl}}" />
 
@@ -381,6 +460,40 @@
                                                Foreground="{DynamicResource Brush.Warning}" />
                                 </Border>
 
+                                <!-- Technical details, folded away -->
+                                <ToggleButton x:Name="DetailsToggle" Cursor="Hand" Focusable="True" Margin="0,0,0,10"
+                                              AutomationProperties.Name="{DynamicResource Sources.MoreDetails}">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Background="Transparent" Padding="0,6">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock x:Name="Chevron" Style="{StaticResource Text.Icon}" Text="&#xE76C;" FontSize="10"
+                                                               Foreground="{DynamicResource Brush.TextTertiary}" RenderTransformOrigin="0.5,0.5">
+                                                        <TextBlock.RenderTransform>
+                                                            <RotateTransform />
+                                                        </TextBlock.RenderTransform>
+                                                    </TextBlock>
+                                                    <TextBlock x:Name="Label" Text="{DynamicResource Sources.MoreDetails}" Margin="10,0,0,0" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource Brush.TextSecondary}" />
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Chevron" Property="RenderTransform">
+                                                        <Setter.Value>
+                                                            <RotateTransform Angle="90" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Label" Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+
+                                <StackPanel Visibility="{Binding IsChecked, ElementName=DetailsToggle, Converter={StaticResource BoolToVisibility}}">
                                 <!-- Category -->
                                 <TextBlock Text="{DynamicResource Details.Category}" Style="{StaticResource DetailLabel}" />
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
@@ -419,6 +532,14 @@
 
                                 <TextBlock Text="{DynamicResource Details.Class}" Style="{StaticResource DetailLabel}" />
                                 <TextBlock Text="{Binding ClassName}" Style="{StaticResource DetailValue}" FontFamily="{StaticResource Font.Mono}" FontSize="12" />
+                                <Button Style="{StaticResource Button.Link}" Command="{Binding DataContext.CopyDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        AutomationProperties.Name="{DynamicResource Sources.CopyDetails}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8C8;" FontSize="12" />
+                                        <TextBlock Text="{DynamicResource Sources.CopyDetails}" Margin="8,0,0,0" />
+                                    </StackPanel>
+                                </Button>
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
 
@@ -434,31 +555,37 @@
                                     <RowDefinition Height="10" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <Button Style="{StaticResource Button.Secondary}" Command="{Binding EditRegionsCommand}" Padding="10,9"
+
+                                <!-- Main action: create the overlay, or close it once it is on screen -->
+                                <Button Grid.ColumnSpan="3" Style="{StaticResource Button.Primary}" Command="{Binding CreateOverlayCommand}" Padding="10,11"
+                                        ToolTip="{DynamicResource Sources.CreateOverlayTip}" AutomationProperties.Name="{DynamicResource Common.CreateOverlay}"
+                                        Visibility="{Binding HasSelectedOverlay, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE710;" FontSize="12" Foreground="White" />
+                                        <TextBlock Text="{DynamicResource Common.CreateOverlay}" Margin="8,0,0,0" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.ColumnSpan="3" Style="{StaticResource Button.Secondary}" Command="{Binding SelectedOverlay.CloseCommand}" Padding="10,11"
+                                        AutomationProperties.Name="{DynamicResource Sources.CloseOverlay}"
+                                        Visibility="{Binding HasSelectedOverlay, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE711;" FontSize="11" />
+                                        <TextBlock Text="{DynamicResource Sources.CloseOverlay}" Margin="8,0,0,0" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Grid.Row="2" Style="{StaticResource Button.Secondary}" Command="{Binding EditRegionsCommand}" Padding="10,9"
                                         ToolTip="{DynamicResource Sources.RegionsTip}" AutomationProperties.Name="{DynamicResource Sources.Regions}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE7A8;" FontSize="12" />
                                         <TextBlock Text="{DynamicResource Sources.Regions}" Margin="8,0,0,0" />
                                     </StackPanel>
                                 </Button>
-                                <Button Grid.Column="2" Style="{StaticResource Button.Secondary}" Command="{Binding CreateOutputCommand}" Padding="10,9"
+                                <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource Button.Secondary}" Command="{Binding CreateOutputCommand}" Padding="10,9"
                                         ToolTip="{DynamicResource Sources.OutputTip}" AutomationProperties.Name="{DynamicResource Sources.Output}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE714;" FontSize="12" />
                                         <TextBlock Text="{DynamicResource Sources.Output}" Margin="8,0,0,0" />
-                                    </StackPanel>
-                                </Button>
-                                <Button Grid.Row="2" Style="{StaticResource Button.Secondary}" Command="{Binding CopyDetailsCommand}" Padding="10,9" AutomationProperties.Name="{DynamicResource Sources.CopyDetails}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE8C8;" FontSize="12" />
-                                        <TextBlock Text="{DynamicResource Sources.CopyDetails}" Margin="8,0,0,0" />
-                                    </StackPanel>
-                                </Button>
-                                <Button Grid.Row="2" Grid.Column="2" Style="{StaticResource Button.Primary}" Command="{Binding CreateOverlayCommand}" Padding="10,9"
-                                        ToolTip="{DynamicResource Sources.CreateOverlayTip}" AutomationProperties.Name="{DynamicResource Common.CreateOverlay}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE710;" FontSize="12" Foreground="White" />
-                                        <TextBlock Text="{DynamicResource Common.CreateOverlay}" Margin="8,0,0,0" />
                                     </StackPanel>
                                 </Button>
                             </Grid>

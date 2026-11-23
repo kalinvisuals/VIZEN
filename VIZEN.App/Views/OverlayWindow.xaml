@@ -39,10 +39,9 @@
                        Foreground="{DynamicResource Brush.TextSecondary}" />
         </StackPanel>
 
-        <!-- Optional measured-performance indicator (per overlay, off by default) -->
-        <Border x:Name="Badge" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="6" Padding="7,3" CornerRadius="5"
-                Background="#C0000000" IsHitTestVisible="False"
-                Visibility="{Binding ShowPerformance, Converter={StaticResource BoolToVisibility}}">
+        <!-- Optional measured-performance indicator (per overlay, off by default): shown with the hover chrome, from code -->
+        <Border x:Name="Badge" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" Padding="8,4" CornerRadius="7"
+                Background="#C0000000" IsHitTestVisible="False" Visibility="Collapsed">
             <StackPanel Orientation="Horizontal">
                 <Ellipse Width="7" Height="7" VerticalAlignment="Center" Margin="0,0,6,0">
                     <Ellipse.Style>
@@ -90,42 +89,30 @@
             </StackPanel>
         </Border>
 
-        <!-- Hover chrome: only reachable when the overlay is not click-through -->
-        <Border x:Name="HoverOutline" IsHitTestVisible="False" BorderThickness="1" BorderBrush="{DynamicResource Brush.Accent}">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Opacity" Value="0" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=Root}" Value="True">
-                            <Setter Property="Opacity" Value="0.9" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-        </Border>
+        <!-- Hover chrome (outline, title bar, performance badge): shown from code while the pointer is over the overlay,
+             never while it is click-through -->
+        <Border x:Name="HoverOutline" IsHitTestVisible="False" BorderThickness="1" CornerRadius="8" Opacity="0.9"
+                BorderBrush="{DynamicResource Brush.Accent}" Visibility="Collapsed" />
 
-        <Border x:Name="HoverBar" VerticalAlignment="Top" Height="32" Background="#E00A0D14">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=Root}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Title}" Margin="10,0,8,0" VerticalAlignment="Center"
-                           TextTrimming="CharacterEllipsis" FontWeight="SemiBold" />
-                <Button Grid.Column="2" Style="{StaticResource Button.CaptionClose}" Width="36" Height="32"
-                        Content="&#xE8BB;" ToolTip="{DynamicResource Overlay.Close}" AutomationProperties.Name="{DynamicResource Overlay.Close}" Command="{Binding CloseCommand}" />
-            </Grid>
+        <!-- Floating title pill, inset from the edges by padding (a popup would move a margin back out); the space around
+             it has no background, so it stays see-through and click-through -->
+        <Border x:Name="HoverBar" VerticalAlignment="Top" Padding="8" Visibility="Collapsed">
+            <Border Style="{StaticResource FloatingBar}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="22" Height="22" CornerRadius="7" Background="{DynamicResource Brush.AccentSoft}" VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE81E;" FontSize="11" Foreground="{DynamicResource Brush.Accent}" />
+                    </Border>
+                    <TextBlock Grid.Column="1" Text="{Binding Title}" Margin="9,0,8,1" VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" FontWeight="SemiBold" />
+                    <Button Grid.Column="2" Style="{StaticResource Button.FloatingClose}" Command="{Binding CloseCommand}"
+                            ToolTip="{DynamicResource Overlay.Close}" AutomationProperties.Name="{DynamicResource Overlay.Close}" />
+                </Grid>
+            </Border>
         </Border>
 
         <!-- With native video WPF cannot draw over the video window, so the hover bar and the badge move into these. -->

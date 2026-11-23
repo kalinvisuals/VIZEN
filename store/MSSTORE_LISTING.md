@@ -46,10 +46,6 @@ GAMING
 • Click-through, opacity, snap and one-key show / hide, even while you play
 • Measured performance: source and display frame rate, dropped frames and latency for every capture
 
-CALLS
-• Discord, Zoom, Teams, WhatsApp and browser calls detected automatically
-• Mirror a whole call, or crop each participant into an overlay or an OBS window
-
 STUDIO / OBS
 • Clean output windows for OBS Window Capture with exact sizes and a chroma-key background
 • Compositions: several captures, logos, GIFs and videos in one window
@@ -75,7 +71,6 @@ which VIZEN never uses.
 **Product features** (one per line, up to 20):
 - Live overlays from any window or region
 - Click-through, opacity and hotkeys during games
-- Calls mode with per-participant crops
 - Clean OBS output windows and compositions
 - Smart Notes, Smart Draw and Smart Audio Mixer
 - Smart Audio Focus lowers music while friends talk
@@ -87,7 +82,7 @@ which VIZEN never uses.
 **Search terms** (up to 7): overlay, OBS, streaming, gaming overlay, audio mixer, screen draw, picture in picture
 
 **Screenshots** (1920 x 1008, from `docs\screenshots`, in this order): `dashboard.png`, `gaming.png`, `sources.png`,
-`audio-mixer.png`, `calls.png`, `studio-obs.png`, `smart-draw.png`, `smart-notes.png`, `browser-tabs.png`
+`audio-mixer.png`, `studio-obs.png`, `smart-draw.png`, `smart-notes.png`, `browser-tabs.png`
 
 **Store logos:** 1:1 box art 300 x 300: `store\logo-300.png` (optional ones can stay empty)
 
@@ -106,10 +101,6 @@ GAMING
 • Overlay-uri live din orice fereastră sau zonă decupată, mereu peste jocurile în fereastră și fără margini
 • Click-through, transparență, aliniere și afișare / ascundere dintr-o tastă, chiar în timpul jocului
 • Performanță măsurată: cadre pe secundă la sursă și pe ecran, cadre pierdute și latență pentru fiecare captură
-
-APELURI
-• Apelurile din Discord, Zoom, Teams, WhatsApp și browser sunt detectate automat
-• Oglindești tot apelul sau decupezi fiecare participant într-un overlay sau într-o fereastră OBS
 
 STUDIO / OBS
 • Ferestre curate pentru OBS Window Capture, cu dimensiuni exacte și fundal chroma-key

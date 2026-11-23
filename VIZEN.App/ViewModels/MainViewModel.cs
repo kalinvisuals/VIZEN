@@ -79,7 +79,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         Outputs = new OutputsViewModel(_capture, outputPresenter, Activity);
         Profiles = new ProfilesViewModel(new ProfileStore(), Overlays, Outputs, enumerator,
             () => Sources.Sources.Where(s => s.IsCamera).ToList(), Activity);
-        Calls = new CallsViewModel(Sources, Overlays, NavigateTo);
         Media = new MediaLibraryViewModel(mediaPresenter, mediaFilePicker, Activity);
         Browsers = new BrowserSourcesViewModel(browserPresenter, Activity);
         Notes = new NotesViewModel(notePresenter, Activity);
@@ -101,7 +100,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _monitor = new PerformanceMonitor();
         _autoPerformance = new AutoPerformanceService(_capture, _monitor, _settings, Activity);
         Performance = new PerformanceViewModel(_capture, _monitor, _autoPerformance, _settings, Overlays, Activity, NavigateTo);
-        Dashboard = new DashboardViewModel(Sources, Overlays, Profiles, Calls, Studio, _settings, Activity, NavigateTo);
+        Dashboard = new DashboardViewModel(Sources, Overlays, Profiles, Studio, _settings, Activity, NavigateTo);
 
         _hotkeys = new HotkeyService();
         _hotkeys.Pressed += OnHotkeyPressed;
@@ -179,13 +178,12 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         };
 
         Sources.ConnectBrowserRequested = () => NavigateTo(Browsers);
-        Sources.CreateOverlayRequested = source =>
-        {
-            if (Overlays.CreateOverlay(source))
-            {
-                NavigateTo(Overlays);
-            }
-        };
+        // The overlay's settings appear on the Sources page itself: creating one does not change the page.
+        Sources.CreateOverlayRequested = source => Overlays.CreateOverlay(source);
+        Sources.OverlayFor = source => Overlays.Overlays.FirstOrDefault(o => CaptureService.KeyFor(o.Source).Equals(CaptureService.KeyFor(source)));
+        Sources.ShowOverlaysRequested = () => NavigateTo(Overlays);
+        Overlays.Overlays.CollectionChanged += (_, _) => Sources.RefreshOverlays();
+        Sources.Refreshed += (_, _) => Sources.RefreshOverlays();
 
         _regions = new RegionLibrary(out var regionsError);
         if (regionsError is not null)
@@ -201,7 +199,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
                 NavigateTo(Studio);
             }
         };
-        Calls.EditRegionsRequested = OpenRegionEditor;
         Studio.EditRegionsRequested = OpenRegionEditor;
 
         NavigationItems =
@@ -210,7 +207,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             new NavigationItem("Nav.Sources", "", Sources, "Nav.SectionWorkspace"),
             new NavigationItem("Nav.Browser", "\uE774", Browsers, "Nav.SectionWorkspace"),
             new NavigationItem("Nav.Gaming", "", Overlays, "Nav.SectionModes"),
-            new NavigationItem("Nav.Calls", "", Calls, "Nav.SectionModes"),
             new NavigationItem("Nav.Studio", "", Studio, "Nav.SectionModes"),
             new NavigationItem("Nav.Media", "\uE8B9", Media, "Nav.SectionLibrary"),
             new NavigationItem("Nav.Notes", "\uE70B", Notes, "Nav.SectionLibrary"),
@@ -246,7 +242,6 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public UpdatesViewModel Updates { get; }
     public OutputsViewModel Outputs { get; }
-    public CallsViewModel Calls { get; }
     public StudioViewModel Studio { get; }
     public ProfilesViewModel Profiles { get; }
     public MediaLibraryViewModel Media { get; }
@@ -317,8 +312,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             {
                 CurrentPage = value.Page;
                 Sources.IsActive = ReferenceEquals(value.Page, Sources);
-                // With GPU rendering the thumbnails present natively and need no CPU copies.
-                _capture.ThumbnailsVisible = ReferenceEquals(value.Page, Overlays) && !_capture.GpuRendering;
+                // The Gaming cards show WPF thumbnails of the overlays' captures (CPU copies only while the page is shown).
+                _capture.ThumbnailsVisible = ReferenceEquals(value.Page, Overlays);
                 _monitor.Detailed = ReferenceEquals(value.Page, Performance);
                 Mixer.IsPageVisible = ReferenceEquals(value.Page, Mixer);
                 OnPropertyChanged(nameof(CurrentTitle));

@@ -60,7 +60,7 @@ public class BrowserTabsTests
         Assert.Equal(key, BrowserTabs.TabsOf(TabsMessage(browser, Dto(1, "x", "x.com")))[0].ProcessKey);
 
     [Theory]
-    [InlineData("Meet - abc-defg-hij", "meet.google.com", SourceCategory.Calls)]
+    [InlineData("Meet - abc-defg-hij", "meet.google.com", SourceCategory.Browsers)]
     [InlineData("Lofi radio - YouTube", "youtube.com", SourceCategory.Media)]
     [InlineData("Docs", "docs.google.com", SourceCategory.Browsers)]
     public void EveryTabHasItsOwnCategory(string title, string site, SourceCategory expected) =>

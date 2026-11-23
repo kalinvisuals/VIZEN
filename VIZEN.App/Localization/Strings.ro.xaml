@@ -42,7 +42,6 @@
     <sys:String x:Key="Nav.Dashboard">Panou principal</sys:String>
     <sys:String x:Key="Nav.Sources">Surse</sys:String>
     <sys:String x:Key="Nav.Gaming">Gaming</sys:String>
-    <sys:String x:Key="Nav.Calls">Apeluri</sys:String>
     <sys:String x:Key="Nav.Studio">Studio / OBS</sys:String>
     <sys:String x:Key="Nav.Profiles">Profiluri</sys:String>
     <sys:String x:Key="Nav.Settings">Setări</sys:String>
@@ -50,7 +49,6 @@
     <!-- Categorii, stări -->
     <sys:String x:Key="Category.All">Toate</sys:String>
     <sys:String x:Key="Category.Browsers">Browsere</sys:String>
-    <sys:String x:Key="Category.Calls">Apeluri</sys:String>
     <sys:String x:Key="Category.Media">Media</sys:String>
     <sys:String x:Key="Category.Cameras">Camere</sys:String>
     <sys:String x:Key="Category.Other">Altele</sys:String>
@@ -102,7 +100,7 @@
     <sys:String x:Key="Shell.FullscreenTipNever">Nu mai arăta</sys:String>
     <sys:String x:Key="Activity.SettingsReset">Setări resetate</sys:String>
     <sys:String x:Key="Activity.ScanCompleted">Scanare ferestre finalizată</sys:String>
-    <sys:String x:Key="Activity.ScanCompletedDetail">{0} ferestre vizibile din {1} procese — Browsere {2} · Apeluri {3} · Media {4} · Camere {5} ferestre + {7} dispozitiv(e) · Altele {6}.</sys:String>
+    <sys:String x:Key="Activity.ScanCompletedDetail">{0} ferestre vizibile din {1} procese — Browsere {2} · Media {3} · Camere {4} ferestre + {6} dispozitiv(e) · Altele {5}.</sys:String>
     <sys:String x:Key="Activity.ScanFailed">Scanarea ferestrelor a eșuat</sys:String>
     <sys:String x:Key="Activity.CopiedDetails">Detaliile ferestrei au fost copiate</sys:String>
     <sys:String x:Key="Activity.OverlayCreated">Overlay creat</sys:String>
@@ -131,7 +129,7 @@
     <sys:String x:Key="Dashboard.GreetingAfternoon">Bună ziua</sys:String>
     <sys:String x:Key="Dashboard.GreetingEvening">Bună seara</sys:String>
     <sys:String x:Key="Dashboard.Welcome">Bun venit în VIZEN</sys:String>
-    <sys:String x:Key="Dashboard.HeroText">Un singur motor de captură pentru trei utilizări: overlay-uri în timp ce joci, ferestre de apel și surse curate pentru streaming. Alege o sursă, creează un overlay și așază-l oriunde peste joc.</sys:String>
+    <sys:String x:Key="Dashboard.HeroText">Un singur motor de captură pentru două utilizări: overlay-uri în timp ce joci și surse curate pentru streaming. Alege o sursă, creează un overlay și așază-l oriunde peste joc.</sys:String>
     <sys:String x:Key="Dashboard.CreateOverlayTip">Alege o fereastră sursă pe care s-o transformi în overlay.</sys:String>
     <sys:String x:Key="Dashboard.ScanWindows">Scanează ferestrele</sys:String>
     <sys:String x:Key="Dashboard.AvailableSources">Surse disponibile</sys:String>
@@ -144,7 +142,6 @@
     <sys:String x:Key="Dashboard.OpenProfiles">Deschide profilurile</sys:String>
     <sys:String x:Key="Dashboard.ModesTitle">MODURI</sys:String>
     <sys:String x:Key="Dashboard.GamingCaption">Overlay-uri live peste jocurile în modul fără margini sau în fereastră, cu opacitate, click-through, scurtături și profiluri.</sys:String>
-    <sys:String x:Key="Dashboard.CallsCaption"> ferestre de apel detectate acum. Oglindește apelul întreg sau decupează fiecare participant într-un overlay separat.</sys:String>
     <sys:String x:Key="Dashboard.StudioCaption">Ferestre de ieșire curate pentru OBS, create din ferestre întregi, regiuni decupate sau camere web.</sys:String>
     <sys:String x:Key="Dashboard.OpenMode">Deschide modul</sys:String>
     <sys:String x:Key="Dashboard.RecentActivity">Activitate recentă</sys:String>
@@ -177,13 +174,19 @@
     <sys:String x:Key="Sources.EmptyFilteredMessage">Nicio fereastră nu corespunde acestei categorii sau căutări. Încearcă altă categorie sau alt termen de căutare.</sys:String>
     <sys:String x:Key="Sources.EnumerationFailed">Enumerarea ferestrelor a eșuat: {0}</sys:String>
     <sys:String x:Key="Sources.ClipboardBusy">Clipboard-ul este folosit de altă aplicație. Încearcă din nou.</sys:String>
-    <sys:String x:Key="Sources.BrowserNote">VIZEN vede ferestrele browserului, nu taburile individuale. Este vizibil doar titlul tabului activ, așa că o fereastră de browser poate trece între Browsere, Apeluri și Media când schimbi tabul. Ca să folosești separat un singur tab, un player YouTube sau un chat live, deschide-l în pagina Browser: devine o sursă separată.</sys:String>
+    <sys:String x:Key="Sources.BrowserNote">VIZEN vede ferestrele browserului, nu taburile individuale. Este vizibil doar titlul tabului activ, așa că o fereastră de browser poate trece între Browsere și Media când schimbi tabul. Ca să folosești separat un singur tab, un player YouTube sau un chat live, deschide-l în pagina Browser: devine o sursă separată.</sys:String>
     <sys:String x:Key="Sources.CameraError">Detectarea camerelor a eșuat: {0}</sys:String>
     <sys:String x:Key="Sources.SelectWindow">Selectează o fereastră</sys:String>
     <sys:String x:Key="Sources.SelectWindowHint">Selectează o sursă din listă ca să vezi previzualizarea live și detaliile ei.</sys:String>
     <sys:String x:Key="Sources.CategoryFromTab">Detectat după titlul tabului activ, deci se poate schimba când schimbi tabul.</sys:String>
     <sys:String x:Key="Sources.CopyDetails">Copiază</sys:String>
     <sys:String x:Key="Sources.CreateOverlayTip">Deschide un overlay live al acestei ferestre, mereu deasupra.</sys:String>
+    <sys:String x:Key="Sources.OverlayActive">Overlay activ</sys:String>
+    <sys:String x:Key="Sources.OverlayPanelTitle">Overlay pe ecran</sys:String>
+    <sys:String x:Key="Sources.OverlayPanelHint">Modificările se aplică imediat.</sys:String>
+    <sys:String x:Key="Sources.CloseOverlay">Închide overlay</sys:String>
+    <sys:String x:Key="Sources.AllOverlays">Toate overlay-urile în Gaming</sys:String>
+    <sys:String x:Key="Sources.MoreDetails">Detalii tehnice</sys:String>
 
     <!-- Gaming -->
     <sys:String x:Key="Gaming.Title">Modul Gaming</sys:String>
@@ -206,29 +209,9 @@
     <sys:String x:Key="Gaming.TipMoveTitle">Mută, redimensionează, potrivește</sys:String>
     <sys:String x:Key="Gaming.TipMoveText">Trage ca să muți, trage de margini ca să redimensionezi, dublu-clic ca să elimini benzile negre. Ctrl+Shift+F9 comută click-through, Ctrl+Shift+F10 arată/ascunde toate.</sys:String>
     <sys:String x:Key="Gaming.TipMinimizedTitle">Sursele minimizate se opresc</sys:String>
-    <sys:String x:Key="Gaming.TipMinimizedText">Windows nu mai desenează ferestrele minimizate, așa că overlay-ul îngheață până restaurezi sursa. Ferestrele acoperite de alte ferestre continuă să se actualizeze (verificat și cu Chrome/Edge). Cu „Păstrează sursa activă”, VIZEN readuce automat sursa minimizată în spatele ferestrei active.</sys:String>
+    <sys:String x:Key="Gaming.TipMinimizedText">Windows nu mai desenează ferestrele minimizate, așa că overlay-ul îngheață până restaurezi sursa. Ferestrele acoperite de alte ferestre continuă de obicei să se actualizeze, dar unele aplicații (de exemplu Discord) nu mai desenează când sunt acoperite complet. Cu „Păstrează sursa activă”, VIZEN readuce automat sursa minimizată în spatele ferestrei active.</sys:String>
     <sys:String x:Key="Overlay.Close">Închide overlay-ul</sys:String>
-
-    <!-- Apeluri -->
-    <sys:String x:Key="Calls.Title">Modul Apeluri</sys:String>
-    <sys:String x:Key="Calls.Subtitle">Ferestrele de apel video din Discord, Zoom, Teams, WhatsApp, Skype și apelurile din browser (Google Meet, Messenger și altele) sunt detectate automat. Oglindește întregul apel într-un singur overlay sau decupează fiecare participant într-un overlay separat.</sys:String>
-    <sys:String x:Key="Calls.Detected">FERESTRE DE APEL DETECTATE</sys:String>
-    <sys:String x:Key="Calls.ShowInSources">Arată în Surse</sys:String>
-    <sys:String x:Key="Calls.InBrowser">tab de browser</sys:String>
-    <sys:String x:Key="Calls.MirrorAsOverlay">Oglindește ca overlay</sys:String>
-    <sys:String x:Key="Calls.OverlayTip">Deschide fereastra de apel întreagă ca overlay live (modul Gaming).</sys:String>
-    <sys:String x:Key="Calls.EmptyTitle">Nicio fereastră de apel acum</sys:String>
-    <sys:String x:Key="Calls.EmptyText">Pornește un apel sau intră într-unul în Discord, Zoom, Teams, WhatsApp sau în browser. Apelul apare aici automat în câteva secunde.</sys:String>
-    <sys:String x:Key="Calls.Planned">CE FACE ACEST MOD</sys:String>
-    <sys:String x:Key="Calls.Milestone4">Milestone 4</sys:String>
-    <sys:String x:Key="Calls.Milestone7">Milestone 7</sys:String>
-    <sys:String x:Key="Calls.NotPlanned">Nepromis</sys:String>
-    <sys:String x:Key="Calls.CropTitle">Decupare interactivă pe regiuni</sys:String>
-    <sys:String x:Key="Calls.CropText">Disponibil acum: desenează dreptunghiuri pe apel ca să izolezi participanții. Poți face mai multe decupaje pe aceeași fereastră, fiecare cu previzualizare live și overlay propriu.</sys:String>
-    <sys:String x:Key="Calls.OutputsTitle">Ieșiri independente per participant</sys:String>
-    <sys:String x:Key="Calls.OutputsText">Disponibil acum: din editorul de regiuni, deschide fiecare decupaj ca overlay separat sau ca fereastră de ieșire OBS curată.</sys:String>
-    <sys:String x:Key="Calls.AutoDetectTitle">Detectarea automată a participanților</sys:String>
-    <sys:String x:Key="Calls.AutoDetectText">Neimplementată. VIZEN nu detectează automat participanții și nu va pretinde acest lucru până când funcția nu este construită și testată.</sys:String>
+    <sys:String x:Key="Output.CloseWindow">Închide fereastra de ieșire</sys:String>
 
     <!-- Studio -->
     <sys:String x:Key="Studio.Title">Modul Studio / OBS</sys:String>
@@ -358,8 +341,6 @@
     <sys:String x:Key="Editor.SaveFailed">Regiunile nu au putut fi salvate: {0}</sys:String>
     <sys:String x:Key="Sources.Regions">Regiuni…</sys:String>
     <sys:String x:Key="Sources.RegionsTip">Deschide editorul de regiuni ca să decupezi părți din această fereastră în overlay-uri separate.</sys:String>
-    <sys:String x:Key="Calls.CropParticipants">Decupează participanți</sys:String>
-    <sys:String x:Key="Calls.CropTip">Desenează câte o regiune pentru fiecare participant; fiecare se deschide ca overlay separat.</sys:String>
     <sys:String x:Key="Studio.CropTip">Decupează regiuni din această fereastră</sys:String>
     <sys:String x:Key="Activity.RegionsLoadFailed">Regiunile nu au putut fi încărcate</sys:String>
 
@@ -401,7 +382,7 @@
 
     <!-- Confirmări pentru acțiuni (notificări) -->
     <sys:String x:Key="Activity.CopiedDetailsDetail">„{0}” — titlul, procesul, categoria, executabilul, handle-ul, clasa, poziția, dimensiunea, starea și DPI-ul sunt în clipboard. Lipește cu Ctrl+V.</sys:String>
-    <sys:String x:Key="Activity.OverlayCreatedDetail">„{0}” plutește acum deasupra tuturor ferestrelor (dreapta jos). Conținut: {1}. Trage ca să-l muți, trage de margini ca să-l redimensionezi, dublu-clic ca să se potrivească. Ctrl+Shift+F9 comută click-through. Îl gestionezi în Gaming.</sys:String>
+    <sys:String x:Key="Activity.OverlayCreatedDetail">„{0}” plutește acum deasupra tuturor ferestrelor (dreapta jos). Conținut: {1}. Trage ca să-l muți, trage de margini ca să-l redimensionezi, dublu-clic ca să se potrivească. Îl reglezi în Surse sau în Gaming.</sys:String>
     <sys:String x:Key="Activity.OverlayClosedDetail">„{0}” a fost închis. Captura lui se oprește când nimic altceva nu mai folosește acea fereastră.</sys:String>
     <sys:String x:Key="Activity.ClickThroughOnDetail">„{0}” ignoră acum mouse-ul — clicurile ajung la fereastra de dedesubt. Oprește-l aici sau cu Ctrl+Shift+F9 ca să-l poți muta.</sys:String>
     <sys:String x:Key="Activity.ClickThroughOffDetail">„{0}” acceptă din nou mouse-ul: îl poți muta și redimensiona.</sys:String>

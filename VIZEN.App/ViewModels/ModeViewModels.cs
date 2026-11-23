@@ -7,60 +7,6 @@ using VIZEN.App.Models;
 namespace VIZEN.App.ViewModels;
 
 /// <summary>
-/// Calls mode. What works today: discovering call windows (desktop apps and browser tabs that look like
-/// calls) and mirroring them as overlays. Region cropping per participant is a later milestone.
-/// </summary>
-public sealed class CallsViewModel : ObservableObject
-{
-    private readonly WindowSourcesViewModel _sources;
-
-    public CallsViewModel(WindowSourcesViewModel sources, OverlaysViewModel overlays, Action<ObservableObject> navigate)
-    {
-        _sources = sources;
-        CallWindows = new ListCollectionView(sources.Sources)
-        {
-            Filter = o => o is WindowSource { Category: SourceCategory.Calls },
-        };
-        sources.Refreshed += (_, _) =>
-        {
-            CallWindows.Refresh();
-            OnPropertyChanged(nameof(CallCount));
-            OnPropertyChanged(nameof(HasCallWindows));
-        };
-
-        CreateOverlayCommand = new RelayCommand<WindowSource>(source =>
-        {
-            if (overlays.CreateOverlay(source))
-            {
-                navigate(overlays);
-            }
-        });
-        ShowInSourcesCommand = new RelayCommand(() =>
-        {
-            sources.ShowCategory(SourceCategory.Calls);
-            navigate(sources);
-        });
-        CropCommand = new RelayCommand<WindowSource>(source => EditRegionsRequested?.Invoke(source));
-    }
-
-    /// <summary>Set by the shell: opens the region editor for a call window.</summary>
-    public Action<WindowSource>? EditRegionsRequested { get; set; }
-
-    /// <summary>Opens the region editor to crop participants out of a call window.</summary>
-    public ICommand CropCommand { get; }
-
-    public ICollectionView CallWindows { get; }
-
-    public int CallCount => _sources.Sources.Count(s => s.Category == SourceCategory.Calls);
-
-    public bool HasCallWindows => CallCount > 0;
-
-    public ICommand CreateOverlayCommand { get; }
-
-    public ICommand ShowInSourcesCommand { get; }
-}
-
-/// <summary>
 /// Studio / OBS mode: discovers browser, media and camera sources and manages clean output windows that
 /// OBS Window Capture can grab (whole windows or cropped regions). Camera capture is a later milestone.
 /// </summary>

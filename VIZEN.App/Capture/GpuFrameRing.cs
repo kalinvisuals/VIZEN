@@ -107,9 +107,11 @@ internal sealed unsafe class GpuFrameRing : IDisposable
 
     /// <summary>
     /// Under ContextLock: draws the newest frame (its <paramref name="viewbox"/> part, 0..1) into a render target,
-    /// scaled uniformly and centred, on <paramref name="background"/>. False when there is no frame yet.
+    /// centred and scaled as <paramref name="fit"/> says (like WPF's Stretch), on <paramref name="background"/>.
+    /// False when there is no frame yet.
     /// </summary>
-    public bool Draw(IntPtr renderTarget, int targetWidth, int targetHeight, Rect viewbox, (float R, float G, float B) background)
+    public bool Draw(IntPtr renderTarget, int targetWidth, int targetHeight, Rect viewbox, (float R, float G, float B) background,
+        System.Windows.Media.Stretch fit = System.Windows.Media.Stretch.Uniform)
     {
         var context = _device.Context;
         D3D11Interop.ClearRenderTarget(context, renderTarget, background.R, background.G, background.B);
@@ -125,14 +127,25 @@ internal sealed unsafe class GpuFrameRing : IDisposable
         float vh = (float)(viewbox.Height * _latestContent.Height / _latestHeight);
         D3D11Interop.WriteConstants(context, _constants, [u, v, uw, vh]);
 
-        // Uniform fit, centred (like Stretch="Uniform").
+        // Centred; Uniform letterboxes, UniformToFill crops (the viewport may extend past the target, which clips it),
+        // Fill stretches to the whole target.
         var shownW = viewbox.Width * _latestContent.Width;
         var shownH = viewbox.Height * _latestContent.Height;
-        var scale = Math.Min(targetWidth / shownW, targetHeight / shownH);
-        var w = (float)Math.Round(shownW * scale);
-        var h = (float)Math.Round(shownH * scale);
-        var x = (float)Math.Round((targetWidth - w) / 2);
-        var y = (float)Math.Round((targetHeight - h) / 2);
+        float x, y, w, h;
+        if (fit == System.Windows.Media.Stretch.Fill)
+        {
+            (x, y, w, h) = (0, 0, targetWidth, targetHeight);
+        }
+        else
+        {
+            var scale = fit == System.Windows.Media.Stretch.UniformToFill
+                ? Math.Max(targetWidth / shownW, targetHeight / shownH)
+                : Math.Min(targetWidth / shownW, targetHeight / shownH);
+            w = (float)Math.Round(shownW * scale);
+            h = (float)Math.Round(shownH * scale);
+            x = (float)Math.Round((targetWidth - w) / 2);
+            y = (float)Math.Round((targetHeight - h) / 2);
+        }
 
         D3D11Interop.IASetInputLayout(context, IntPtr.Zero);
         D3D11Interop.IASetPrimitiveTopology(context, D3D11Interop.D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

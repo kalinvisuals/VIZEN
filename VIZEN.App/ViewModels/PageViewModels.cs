@@ -15,7 +15,6 @@ public sealed class DashboardViewModel : ObservableObject
         WindowSourcesViewModel sources,
         OverlaysViewModel overlays,
         ProfilesViewModel profiles,
-        CallsViewModel calls,
         StudioViewModel studio,
         AppSettings settings,
         ActivityLog activity,
@@ -24,7 +23,6 @@ public sealed class DashboardViewModel : ObservableObject
         Sources = sources;
         Overlays = overlays;
         Profiles = profiles;
-        Calls = calls;
         Studio = studio;
         Settings = settings;
         Activity = activity;
@@ -34,14 +32,12 @@ public sealed class DashboardViewModel : ObservableObject
         ViewSourcesCommand = new RelayCommand(() => navigate(sources));
         ViewOverlaysCommand = new RelayCommand(() => navigate(overlays));
         ViewProfilesCommand = new RelayCommand(() => navigate(profiles));
-        ViewCallsCommand = new RelayCommand(() => navigate(calls));
         ViewStudioCommand = new RelayCommand(() => navigate(studio));
     }
 
     public WindowSourcesViewModel Sources { get; }
     public OverlaysViewModel Overlays { get; }
     public ProfilesViewModel Profiles { get; }
-    public CallsViewModel Calls { get; }
     public StudioViewModel Studio { get; }
     public AppSettings Settings { get; }
     public ActivityLog Activity { get; }
@@ -50,7 +46,6 @@ public sealed class DashboardViewModel : ObservableObject
     public ICommand ViewSourcesCommand { get; }
     public ICommand ViewOverlaysCommand { get; }
     public ICommand ViewProfilesCommand { get; }
-    public ICommand ViewCallsCommand { get; }
     public ICommand ViewStudioCommand { get; }
 
     public ICommand ScanCommand => Sources.RefreshCommand;

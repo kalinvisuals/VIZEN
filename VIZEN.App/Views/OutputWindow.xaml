@@ -17,13 +17,44 @@
                       CornerRadius="0" UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
 
-    <Grid Background="Transparent" MouseLeftButtonDown="OnContentMouseLeftButtonDown">
+    <Grid x:Name="Root" Background="Transparent" MouseLeftButtonDown="OnContentMouseLeftButtonDown">
         <!-- Source frame cropped to the region on the GPU; Stretch follows the chosen fit mode -->
-        <Rectangle RenderOptions.BitmapScalingMode="HighQuality">
+        <Rectangle x:Name="WpfVideo" RenderOptions.BitmapScalingMode="HighQuality">
             <Rectangle.Fill>
                 <ImageBrush ImageSource="{Binding Capture.Frame}" Viewbox="{Binding Viewbox}"
                             ViewboxUnits="RelativeToBoundingBox" Stretch="{Binding Stretch}" />
             </Rectangle.Fill>
         </Rectangle>
+
+        <!-- Native video, like the overlays: drawn on the GPU at the source's frame rate; filled from code when possible -->
+        <ContentControl x:Name="NativeSlot" Focusable="False" IsTabStop="False" />
+
+        <!-- Hover bar (name, size OBS receives, close). A popup is a separate window, excluded from screen capture in
+             code, so OBS never records it, even while the pointer is on the window. Padding, not margin: a popup moves
+             its child's margin back out. -->
+        <Popup x:Name="HoverPopup" PlacementTarget="{Binding ElementName=Root}" Placement="Relative" AllowsTransparency="True"
+               Width="{Binding ActualWidth, ElementName=Root}" Focusable="False">
+            <Border Padding="8">
+                <Border Style="{StaticResource FloatingBar}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="22" Height="22" CornerRadius="7" Background="{DynamicResource Brush.AccentSoft}" VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource Text.Icon}" Text="&#xE714;" FontSize="11" Foreground="{DynamicResource Brush.Accent}" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Text="{Binding DisplayName}" Margin="9,0,8,1" VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" FontWeight="SemiBold" />
+                        <TextBlock Grid.Column="2" Text="{Binding SizeText}" Margin="0,0,10,1" VerticalAlignment="Center"
+                                   FontSize="11" Foreground="#99FFFFFF" />
+                        <Button Grid.Column="3" Style="{StaticResource Button.FloatingClose}" Command="{Binding CloseCommand}"
+                                ToolTip="{DynamicResource Output.CloseWindow}" AutomationProperties.Name="{DynamicResource Output.CloseWindow}" />
+                    </Grid>
+                </Border>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

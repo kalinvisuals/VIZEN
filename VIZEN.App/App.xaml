@@ -34,9 +34,6 @@
             <DataTemplate DataType="{x:Type vm:RegionEditorViewModel}">
                 <views:RegionEditorView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:CallsViewModel}">
-                <views:CallsView />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:StudioViewModel}">
                 <views:StudioView />
             </DataTemplate>
