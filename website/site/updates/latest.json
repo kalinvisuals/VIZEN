@@ -2,14 +2,14 @@
   "schema": 1,
   "product": "VIZEN",
   "channel": "stable",
-  "version": "0.4.7",
-  "releaseDate": "2026-10-23",
-  "notes": { "en": "VIZEN Connector from the official stores: the Browser page now has buttons for the Chrome Web Store (Chrome, Brave) and Microsoft Edge Add-ons, instead of loading the extension in Developer mode. The setup steps are clearer, in English and Romanian. Ready for the Microsoft Store: the Store copy of VIZEN no longer needs any special permission besides running as a desktop app, and \"Launch at sign-in\" in the Store copy is removed together with the app when it is uninstalled. Your settings and data are kept.", "ro": "VIZEN Connector din magazinele oficiale: pagina Browser are acum butoane pentru Chrome Web Store (Chrome, Brave) și Microsoft Edge Add-ons, în locul încărcării extensiei în Modul dezvoltator. Pașii de configurare sunt mai clari, în română și engleză. Pregătit pentru Microsoft Store: copia VIZEN din Store nu mai cere nicio permisiune specială în afară de rularea ca aplicație desktop, iar „Pornire la conectare” din copia din Store dispare odată cu aplicația la dezinstalare. Setările și datele se păstrează." },
-  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.7",
+  "version": "0.4.8",
+  "releaseDate": "2026-11-23",
+  "notes": { "en": "Smoother and cleaner. Creating an overlay no longer switches pages: its settings (opacity, visible, click-through, performance) appear right on the Sources page, and windows with an overlay are marked \"Overlay on\". Fixed pages drawn over each other after creating an overlay. The overlay title bar is a rounded floating bar that shows only while the pointer is on the overlay, together with the performance readout, and no longer flickers. OBS output windows play as smoothly as overlays and have a close button under the pointer that OBS never records. Calls mode and the Calls category are removed: call apps are captured like any other window (under Other); some, like Discord, stop drawing while minimized or completely covered.", "ro": "Mai fluid și mai curat. Crearea unui overlay nu mai schimbă pagina: setările lui (opacitate, vizibil, click-through, performanță) apar direct pe pagina Surse, iar ferestrele cu overlay sunt marcate „Overlay activ”. Reparat: pagini desenate una peste alta după crearea unui overlay. Bara de titlu a overlay-ului e acum o bară rotunjită care apare doar cât timp ești cu mouse-ul pe overlay, împreună cu indicatorul de performanță, și nu mai clipește. Ferestrele de ieșire OBS sunt la fel de fluide ca overlay-urile și au un buton de închidere la hover, pe care OBS nu îl înregistrează niciodată. Modul Apeluri și categoria Apeluri au fost scoase: aplicațiile de apel se capturează ca orice fereastră (la Altele); unele, ca Discord, nu mai desenează cât timp sunt minimizate sau acoperite complet." },
+  "notesUrl": "https://github.com/kalinvisuals/VIZEN/releases/tag/v0.4.8",
   "installer": {
-    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.7/VIZEN-Setup-x64.exe",
+    "url": "https://github.com/kalinvisuals/VIZEN/releases/download/v0.4.8/VIZEN-Setup-x64.exe",
     "mirrors": [],
-    "size": 58794774,
-    "sha256": "c965863c8b301a31b3e11fdd18ef99a6a979d065b3b4631c735c254a0cff1def"
+    "size": 58887123,
+    "sha256": "0c6347e61464c49f4f98cc246cc0998f7f590e59148d0cd32ab13b2e5e6480eb"
   }
 }
