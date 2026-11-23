@@ -394,7 +394,7 @@ public sealed class WindowSourcesViewModel : ObservableObject
         ? Loc.T("Capture.Unsupported")
         : Preview?.StatusText ?? string.Empty;
 
-    /// <summary>Selects a category chip (used by other pages, e.g. "show call windows").</summary>
+    /// <summary>Selects a category chip (used by other pages, e.g. Studio's "show media windows").</summary>
     public void ShowCategory(SourceCategory? category)
         => SelectFilter(Filters.First(f => f.Category == category));
 

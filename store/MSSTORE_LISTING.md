@@ -38,7 +38,7 @@ Free, open-source overlays for Windows: any window or region on top of your game
 
 **Description:**
 
-VIZEN turns any window into a live overlay. Pick a video call, a live chat, a video, a web page or a part of a game,
+VIZEN turns any window into a live overlay. Pick a live chat, a video, a web page or a part of a game,
 crop the area you need and keep it on top of your game, in a clean window for OBS, or in a composition.
 
 GAMING
@@ -93,7 +93,7 @@ Overlay-uri gratuite și open source pentru Windows: orice fereastră sau zonă 
 
 **Description:**
 
-VIZEN transformă orice fereastră într-un overlay live. Alegi un apel video, un chat live, un video, o pagină web sau o
+VIZEN transformă orice fereastră într-un overlay live. Alegi un chat live, un video, o pagină web sau o
 parte dintr-un joc, decupezi zona de care ai nevoie și o păstrezi peste joc, într-o fereastră curată pentru OBS sau
 într-o compoziție.
 

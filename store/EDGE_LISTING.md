@@ -29,7 +29,7 @@ VIZEN Connector links your browser to VIZEN, the free and open-source overlay ap
 windows, not tabs; with this extension VIZEN sees every tab on its own.
 
 What you can do from VIZEN:
-• See every tab as its own source, with its title, site and type (calls, media, other)
+• See every tab as its own source, with its title, site and type (media or other sites)
 • Switch to a tab in one click
 • Mute or unmute a tab, also from VIZEN's Smart Audio Mixer
 • Move a tab into its own window, only when you ask
@@ -63,7 +63,7 @@ VIZEN Connector leagă browserul de VIZEN, aplicația gratuită și open source 
 captura doar ferestre, nu taburi; cu această extensie VIZEN vede fiecare tab separat.
 
 Ce poți face din VIZEN:
-• Vezi fiecare tab ca sursă separată, cu titlul, site-ul și tipul lui (apeluri, media, altele)
+• Vezi fiecare tab ca sursă separată, cu titlul, site-ul și tipul lui (media sau alte site-uri)
 • Treci la un tab dintr-un click
 • Oprești sau pornești sunetul unui tab, și din Smart Audio Mixer
 • Muți un tab într-o fereastră proprie, doar când ceri

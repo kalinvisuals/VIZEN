@@ -5,7 +5,7 @@
     "nav.features": "Funcții", "nav.tour": "Tur", "nav.safety": "Siguranță", "nav.download": "Descarcă", "nav.get": "Ia VIZEN",
     "hero.pillTag": "Gratuit · Open source", "hero.pill": "Overlay-uri pentru Windows 10 și 11",
     "hero.title1": "Orice fereastră.", "hero.title2": "Peste jocul tău.",
-    "hero.lead": "Alegi un apel video, un chat live, un video sau o parte dintr-un joc, decupezi ce îți trebuie și îl păstrezi live peste joc, într-o fereastră curată pentru OBS sau într-o compoziție.",
+    "hero.lead": "Alegi un chat live, un video, o pagină web sau o parte dintr-un joc, decupezi ce îți trebuie și îl păstrezi live peste joc, într-o fereastră curată pentru OBS sau într-o compoziție.",
     "hero.download": "Descarcă pentru Windows", "hero.store": "Ia-l din Microsoft Store", "hero.tour": "Vezi cum arată",
     "hero.meta1": "Windows 10 / 11, 64-bit", "hero.meta2": "Fără cont", "hero.meta3": "GPL-3.0",
     "hero.alt": "Modul Gaming din VIZEN cu un overlay live al unui joc, la 53 de cadre pe secundă și fără cadre pierdute",
