@@ -10,6 +10,7 @@ RewriteRule ^ https://vizen.ro%{REQUEST_URI} [L,R=301]
 AddType application/json .json
 AddType text/plain .sig
 AddType image/svg+xml .svg
+AddType application/xml .xml
 AddDefaultCharset utf-8
 
 # Update files: read by VIZEN, refreshed within minutes of a release

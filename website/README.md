@@ -26,6 +26,10 @@ https://vizen.ro/
    links the buttons to the exact installer it describes, so the website and the app always agree. If that file
    cannot be read it asks the GitHub API instead, and without either the built-in values stay.
    Upload the updated `latest.json` only after the GitHub release is published (its installer address must exist).
+6. In `site/sitemap.xml`, set `<lastmod>` of every page that changed to the release date (YYYY-MM-DD). The sitemap
+   lists only the canonical pages (`https://vizen.ro/`, `/help/`, `/changelog/`, `/privacy/`, never `www` or
+   `/download/`, which only leads to `/#download`). It is submitted once in Google Search Console and declared in
+   `robots.txt`; Google reads it again by itself.
 
 Optional mirror: to serve the installer from vizen.ro too, upload it as
 `https://vizen.ro/download/VIZEN-Setup-x64-<version>.exe` **before** making the manifest with `-WebsiteMirror`. VIZEN
